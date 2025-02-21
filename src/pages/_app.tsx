@@ -15,8 +15,8 @@ import { useEffect, useRef, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import { Analytics } from '@vercel/analytics/next'
+// import { SpeedInsights } from '@vercel/speed-insights/next'
+// import { Analytics } from '@vercel/analytics/next'
 
 // Check that PostHog is client-side (used to handle Next.js SSR)
 if (typeof window !== 'undefined') {
@@ -77,8 +77,8 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
   } else {
     return (
       <PostHogProvider client={posthog}>
-        <SpeedInsights />
-        <Analytics />
+        {/* <SpeedInsights /> */}
+        {/* <Analytics /> */}
         <ClerkProvider
           allowedRedirectOrigins={[
             'https://chat.illinois.edu',
