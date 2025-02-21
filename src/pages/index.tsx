@@ -37,7 +37,7 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#0E1116]">
         <div className="container flex w-full max-w-[95vw] flex-col items-center justify-center gap-4 px-4 py-8">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            UIUC.<span className="text-[hsl(280,100%,70%)]">chat</span>
+            AgAnswers.<span className="text-[hsl(280,100%,70%)]">ai</span>
           </h1>
           <div className="w-full max-w-4xl">
             {/* size="lg"
@@ -117,7 +117,7 @@ const Home: NextPage = () => {
             >
               <h3 className="text-2xl font-bold">Bio 👋</h3>
               <div className="text-lg">
-                Made by Kastan Day at the University of Illinois.
+                Made by Kastan Day, Rohan Marwaha and Vikram Adve.
               </div>
               {/* <div className="text-lg">Sponsored by the </div> */}
             </Link>
@@ -270,38 +270,38 @@ export function FeaturesCards() {
 // TODO: USE BETTER CARDS! https://ui.mantine.dev/category/article-cards
 function CourseCard() {
   const cards = [
-    {
-      course_slug: 'ece120',
-      imageSrc: '/media/hero_courses_banners/ECE_logo.jpg',
-      title: 'Electrical & Computer Engineering, ECE 120',
-      badge: 'ECE @ UIUC',
-      description:
-        'Prof. Volodymyr (Vlad) Kindratenko, Director of the Center for Artificial Intelligence Innovation at NCSA, in Fall 2023. We also have <a href="/ECE220FA23/chat">ECE 220</a> & <a href="/ECE408FA23/chat">ECE 408</a>.',
-    },
-    {
-      course_slug: 'NCSA',
-      imageSrc: '/media/hero_courses_banners/NCSA_more_than_imagine.jpg',
-      title: 'NCSA',
-      badge: 'NCSA Docs',
-      description:
-        "Using all of NCSA's public information, get answers for detailed questions about the organization.",
-    },
-    {
-      course_slug: 'NCSADelta',
-      imageSrc: '/media/hero_courses_banners/delta_hero.jpg',
-      title: 'NCSA Delta Documentation',
-      badge: 'NCSA Docs',
-      description:
-        "Using all of Delta's documentation, get detailed examples, advice and information about how to use the Delta supercomputer.",
-    },
-    {
-      course_slug: 'clowder-docs',
-      imageSrc: '/media/hero_courses_banners/clowder_logo.png',
-      title: 'Clowder docs',
-      badge: 'NCSA Docs',
-      description:
-        "Using all of Clowder's documentation, this bot will answer questions and point you to the right docs and YouTube videos about Clowder.",
-    },
+    // {
+    //   course_slug: 'ece120',
+    //   imageSrc: '/media/hero_courses_banners/ECE_logo.jpg',
+    //   title: 'Electrical & Computer Engineering, ECE 120',
+    //   badge: 'ECE @ UIUC',
+    //   description:
+    //     'Prof. Volodymyr (Vlad) Kindratenko, Director of the Center for Artificial Intelligence Innovation at NCSA, in Fall 2023. We also have <a href="/ECE220FA23/chat">ECE 220</a> & <a href="/ECE408FA23/chat">ECE 408</a>.',
+    // },
+    // {
+    //   course_slug: 'NCSA',
+    //   imageSrc: '/media/hero_courses_banners/NCSA_more_than_imagine.jpg',
+    //   title: 'NCSA',
+    //   badge: 'NCSA Docs',
+    //   description:
+    //     "Using all of NCSA's public information, get answers for detailed questions about the organization.",
+    // },
+    // {
+    //   course_slug: 'NCSADelta',
+    //   imageSrc: '/media/hero_courses_banners/delta_hero.jpg',
+    //   title: 'NCSA Delta Documentation',
+    //   badge: 'NCSA Docs',
+    //   description:
+    //     "Using all of Delta's documentation, get detailed examples, advice and information about how to use the Delta supercomputer.",
+    // },
+    // {
+    //   course_slug: 'clowder-docs',
+    //   imageSrc: '/media/hero_courses_banners/clowder_logo.png',
+    //   title: 'Clowder docs',
+    //   badge: 'NCSA Docs',
+    //   description:
+    //     "Using all of Clowder's documentation, this bot will answer questions and point you to the right docs and YouTube videos about Clowder.",
+    // },
     {
       course_slug: 'cropwizard-1.5',
       imageSrc: '/media/hero_courses_banners/aifarms_wide_logo.png',
@@ -310,30 +310,30 @@ function CourseCard() {
       description:
         'Using documents collected from the <a href="https://www.nifa.usda.gov/about-nifa/how-we-work/extension" target="_blank" rel="noopener noreferrer">Farm Extension division</a> at all the US\'s public land-grant universities, this bot acts as a crop advisor. Useful to both farmers and professional farm advisors. Make sure to use image uploads with GPT4-Vision whenever possible!',
     },
-    {
-      course_slug: 'langchain-docs',
-      // imageSrc: "",
-      title: 'Langchain',
-      badge: 'Coding',
-      description:
-        "Using all of Langchain's documentation, this bot will write excellent LangChain code. Just ask it to program whatever you'd like.",
-    },
-    {
-      course_slug: 'ansible',
-      // imageSrc: "",
-      title: 'Ansible',
-      badge: 'Coding',
-      description:
-        "Using all of Ansible's documentation, this bot will write excellent Ansible scripts. Just ask it to program whatever you'd like.",
-    },
-    {
-      course_slug: 'lilian-weng-blog',
-      // imageSrc: '/media/hero_courses_banners/lilian_weng_blog.png',
-      title: 'Lilian Wang Blog (OpenAI popular topics)',
-      badge: 'LLMs',
-      description:
-        'A collection of Lilian Wang\'s blog posts, some of the best in the AI world, from here: <a href="https://lilianweng.github.io/" target="_blank" rel="noopener noreferrer">https://lilianweng.github.io</a>.',
-    },
+    // {
+    //   course_slug: 'langchain-docs',
+    //   // imageSrc: "",
+    //   title: 'Langchain',
+    //   badge: 'Coding',
+    //   description:
+    //     "Using all of Langchain's documentation, this bot will write excellent LangChain code. Just ask it to program whatever you'd like.",
+    // },
+    // {
+    //   course_slug: 'ansible',
+    //   // imageSrc: "",
+    //   title: 'Ansible',
+    //   badge: 'Coding',
+    //   description:
+    //     "Using all of Ansible's documentation, this bot will write excellent Ansible scripts. Just ask it to program whatever you'd like.",
+    // },
+    // {
+    //   course_slug: 'lilian-weng-blog',
+    //   // imageSrc: '/media/hero_courses_banners/lilian_weng_blog.png',
+    //   title: 'Lilian Wang Blog (OpenAI popular topics)',
+    //   badge: 'LLMs',
+    //   description:
+    //     'A collection of Lilian Wang\'s blog posts, some of the best in the AI world, from here: <a href="https://lilianweng.github.io/" target="_blank" rel="noopener noreferrer">https://lilianweng.github.io</a>.',
+    // },
     // Add more cards here
   ]
 
