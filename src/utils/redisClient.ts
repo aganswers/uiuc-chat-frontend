@@ -1,5 +1,7 @@
 import { createClient } from 'redis'
 
+console.log('REDIS_URL', process.env.REDIS_URL)
+
 // Create a Redis client
 export const redisClient = createClient({
   url: process.env.REDIS_URL!,
@@ -10,7 +12,7 @@ export const redisClient = createClient({
 redisClient
   .connect()
   .then(() => {
-    // console.log('Connected to Redis')
+    console.log('Connected to Redis')
   })
   .catch((err) => {
     console.error('Redis connection error:', err)
