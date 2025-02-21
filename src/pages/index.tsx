@@ -98,7 +98,7 @@ const Home: NextPage = () => {
                 <br></br>100% awesome
               </div>
             </Link>
-            <Link
+            {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
               href="https://ai.ncsa.illinois.edu/"
               target="_blank"
@@ -109,7 +109,7 @@ const Home: NextPage = () => {
               <div className="text-lg">
                 Part of the National Center for Supercomputing Applications.
               </div>
-            </Link>
+            </Link> */}
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
               href="https://kastanday.com/"
