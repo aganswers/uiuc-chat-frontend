@@ -8,7 +8,7 @@ export const createProject = async (
     project_description: project_description,
     project_owner_email: project_owner_email,
   }
-  const url = 'https://flask-production-751b.up.railway.app/createProject'
+  const url = 'http://localhost:3004/createProject'
 
   try {
     const response = await fetch(url, {

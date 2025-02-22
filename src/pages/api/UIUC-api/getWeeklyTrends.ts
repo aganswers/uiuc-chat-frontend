@@ -14,7 +14,7 @@ export default async function handler(req: NextRequest) {
 
   try {
     const response = await fetch(
-      `https://flask-production-751b.up.railway.app/getWeeklyTrends?project_name=${project_name}`,
+      `http://localhost:3004/getWeeklyTrends?project_name=${project_name}`,
     )
 
     if (!response.ok) {

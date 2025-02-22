@@ -11,7 +11,7 @@ export default async function handler(req: any, res: any) {
   const limit = 1
 
   const response = await fetch(
-    `${process.env.RAILWAY_URL}/getworkflows?api_key=${n8nApiKey}&limit=${limit}&pagination=${parsedPagination}`,
+    `http://localhost:3004/getworkflows?api_key=${n8nApiKey}&limit=${limit}&pagination=${parsedPagination}`,
   )
 
   if (!response.ok) {
