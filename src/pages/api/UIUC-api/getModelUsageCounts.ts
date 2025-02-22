@@ -20,7 +20,7 @@ export default async function handler(req: NextRequest, res: NextResponse) {
 
   try {
     const response = await fetch(
-      `https://flask-production-751b.up.railway.app/getModelUsageCounts?project_name=${project_name}`,
+      `http://localhost:3004/getModelUsageCounts?project_name=${project_name}`,
     )
 
     if (!response.ok) {

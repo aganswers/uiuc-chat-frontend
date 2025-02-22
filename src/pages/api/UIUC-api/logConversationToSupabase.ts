@@ -40,7 +40,7 @@ const logConversationToSupabase = async (req: any, res: any) => {
   // Send to our custom monitor
   try {
     const response = await fetch(
-      process.env.RAILWAY_URL + '/llm-monitor-message',
+      'http://localhost:3004' + '/llm-monitor-message',
       {
         method: 'POST',
         headers: {

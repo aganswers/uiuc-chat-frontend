@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     console.log('activate', activateCapitalized)
 
     const response = await fetch(
-      `${process.env.RAILWAY_URL}/switch_workflow?id=${id}&api_key=${api_key}&activate=${activateCapitalized}`,
+      `http://localhost:3004/switch_workflow?id=${id}&api_key=${api_key}&activate=${activateCapitalized}`,
     )
     if (!response.ok) {
       console.log('response not ok', response.text)
