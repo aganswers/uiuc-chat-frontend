@@ -20,7 +20,7 @@ export default async function handler(req: NextRequest, res: NextResponse) {
 
   try {
     const response = await fetch(
-      `http://localhost:3004/getModelUsageCounts?project_name=${project_name}`,
+      `https://backend.aganswers.ai/getModelUsageCounts?project_name=${project_name}`,
     )
 
     if (!response.ok) {
