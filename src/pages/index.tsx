@@ -302,14 +302,14 @@ function CourseCard() {
     //   description:
     //     "Using all of Clowder's documentation, this bot will answer questions and point you to the right docs and YouTube videos about Clowder.",
     // },
-    {
-      course_slug: 'cropwizard-1.5',
-      imageSrc: '/media/hero_courses_banners/aifarms_wide_logo.png',
-      title: 'Crop Wizard',
-      badge: 'AIFARMS',
-      description:
-        'Using documents collected from the <a href="https://www.nifa.usda.gov/about-nifa/how-we-work/extension" target="_blank" rel="noopener noreferrer">Farm Extension division</a> at all the US\'s public land-grant universities, this bot acts as a crop advisor. Useful to both farmers and professional farm advisors. Make sure to use image uploads with GPT4-Vision whenever possible!',
-    },
+    // {
+    //   course_slug: 'cropwizard-1.5',
+    //   imageSrc: '/media/hero_courses_banners/aifarms_wide_logo.png',
+    //   title: 'Crop Wizard',
+    //   badge: 'AIFARMS',
+    //   description:
+    //     'Using documents collected from the <a href="https://www.nifa.usda.gov/about-nifa/how-we-work/extension" target="_blank" rel="noopener noreferrer">Farm Extension division</a> at all the US\'s public land-grant universities, this bot acts as a crop advisor. Useful to both farmers and professional farm advisors. Make sure to use image uploads with GPT4-Vision whenever possible!',
+    // },
     // {
     //   course_slug: 'langchain-docs',
     //   // imageSrc: "",
