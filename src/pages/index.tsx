@@ -73,12 +73,12 @@ const Home: NextPage = () => {
 
           <ListProjectTable />
 
-          <Title color="white" order={3}>
+          {/* <Title color="white" order={3}>
             Explore the Courses
-          </Title>
+          </Title> */}
 
           {/* Main courses */}
-          <CourseCard />
+          {/* <CourseCard /> */}
 
           <h4 className="font-extrabold tracking-tight text-white sm:text-[3rem]">
             <div>
