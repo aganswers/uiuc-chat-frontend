@@ -47,7 +47,7 @@ const ToolsPage: NextPage = () => {
       setCourseExists(data)
       if (data) {
         const response = await fetch(
-          `http://localhost:3004/getAll?course_name=${course_name}`,
+          `https://backend.aganswers.ai/getAll?course_name=${course_name}`,
         )
         const data = await response.json()
         const courseData = data.distinct_files

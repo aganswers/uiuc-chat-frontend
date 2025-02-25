@@ -930,7 +930,7 @@ const CourseFilesList = ({ files }: CourseFilesListProps) => {
   const handleDelete = async (s3_path: string, course_name: string) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3004/delete`,
+        `https://backend.aganswers.ai/delete`,
         {
           params: { s3_path, course_name: 'ece120' },
         },

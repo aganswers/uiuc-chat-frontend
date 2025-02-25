@@ -295,7 +295,7 @@ export function ProjectFilesTable({
   const deleteDocumentMutation = useMutation({
     mutationFn: async (recordsToDelete: CourseDocument[]) => {
       console.debug('Deleting records:', recordsToDelete)
-      const API_URL = 'http://localhost:3004'
+      const API_URL = 'https://backend.aganswers.ai'
       const deletePromises = recordsToDelete.map((record) =>
         axios.delete(`${API_URL}/delete`, {
           params: {
@@ -517,8 +517,8 @@ export function ProjectFilesTable({
             <button
               onClick={() => onTabChange('success')}
               className={`rounded-t-lg px-4 py-3 font-medium transition-colors duration-200 ${tabValue === 'success'
-                  ? 'border-b-2 border-purple-500 bg-purple-600/20 text-white'
-                  : 'text-gray-400 hover:bg-purple-600/10 hover:text-white'
+                ? 'border-b-2 border-purple-500 bg-purple-600/20 text-white'
+                : 'text-gray-400 hover:bg-purple-600/10 hover:text-white'
                 } ${montserrat_heading.variable} font-montserratHeading`}
             >
               Success
@@ -534,8 +534,8 @@ export function ProjectFilesTable({
               <button
                 onClick={() => onTabChange('failed')}
                 className={`rounded-t-lg px-4 py-3 font-medium transition-colors duration-200 ${tabValue === 'failed'
-                    ? 'border-b-2 border-purple-500 bg-purple-600/20 text-white'
-                    : 'text-gray-400 hover:bg-purple-600/10 hover:text-white'
+                  ? 'border-b-2 border-purple-500 bg-purple-600/20 text-white'
+                  : 'text-gray-400 hover:bg-purple-600/10 hover:text-white'
                   } ${montserrat_heading.variable} font-montserratHeading`}
               >
                 Failed
@@ -661,8 +661,8 @@ export function ProjectFilesTable({
                         }
                       }}
                       className={`mb-2 w-full border-0 px-4 py-2 text-sm focus:outline-none focus:ring-0 sm:mb-0 sm:w-auto sm:px-6 sm:py-3 sm:text-base ${selectedCount
-                          ? 'bg-red-900 hover:bg-red-800'
-                          : 'bg-transparent'
+                        ? 'bg-red-900 hover:bg-red-800'
+                        : 'bg-transparent'
                         } transition-colors duration-300 ${montserrat_paragraph.variable} font-montserratParagraph`}
                     >
                       <span className="block sm:hidden">

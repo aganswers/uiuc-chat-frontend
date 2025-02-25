@@ -13,7 +13,7 @@ export const downloadConversationHistoryUser = async (
   )
   try {
     const response = await axios.get(
-      `http://localhost:3004/export-convo-history-user?user_email=${userEmail}&project_name=${projectName}`,
+      `https://backend.aganswers.ai/export-convo-history-user?user_email=${userEmail}&project_name=${projectName}`,
       { responseType: 'blob' },
     )
     console.log('Received response:', response)

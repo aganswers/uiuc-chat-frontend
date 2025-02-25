@@ -15,7 +15,7 @@ export default async function handler(req: NextRequest, res: NextResponse) {
 
   try {
     const response = await fetch(
-      `http://localhost:3004/getProjectStats?project_name=${project_name}`,
+      `https://backend.aganswers.ai/getProjectStats?project_name=${project_name}`,
     )
 
     if (!response.ok) {

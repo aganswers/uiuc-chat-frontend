@@ -8,7 +8,7 @@ export const createProject = async (
     project_description: project_description,
     project_owner_email: project_owner_email,
   }
-  const url = 'http://localhost:3004/createProject'
+  const url = 'https://backend.aganswers.ai/createProject'
 
   try {
     const response = await fetch(url, {

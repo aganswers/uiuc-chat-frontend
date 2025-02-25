@@ -9,7 +9,7 @@ export const downloadConversationHistory = async (
 ): Promise<DownloadResult> => {
   try {
     const response = await axios.get(
-      `http://localhost:3004/export-convo-history?course_name=${courseName}`,
+      `https://backend.aganswers.ai/export-convo-history?course_name=${courseName}`,
       { responseType: 'blob' },
     )
 
