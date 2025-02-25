@@ -270,14 +270,14 @@ export function FeaturesCards() {
 // TODO: USE BETTER CARDS! https://ui.mantine.dev/category/article-cards
 function CourseCard() {
   const cards = [
-    // {
-    //   course_slug: 'ece120',
-    //   imageSrc: '/media/hero_courses_banners/ECE_logo.jpg',
-    //   title: 'Electrical & Computer Engineering, ECE 120',
-    //   badge: 'ECE @ UIUC',
-    //   description:
-    //     'Prof. Volodymyr (Vlad) Kindratenko, Director of the Center for Artificial Intelligence Innovation at NCSA, in Fall 2023. We also have <a href="/ECE220FA23/chat">ECE 220</a> & <a href="/ECE408FA23/chat">ECE 408</a>.',
-    // },
+    {
+      course_slug: 'ece120',
+      imageSrc: '/media/hero_courses_banners/ECE_logo.jpg',
+      title: 'Electrical & Computer Engineering, ECE 120',
+      badge: 'ECE @ UIUC',
+      description:
+        'Prof. Volodymyr (Vlad) Kindratenko, Director of the Center for Artificial Intelligence Innovation at NCSA, in Fall 2023. We also have <a href="/ECE220FA23/chat">ECE 220</a> & <a href="/ECE408FA23/chat">ECE 408</a>.',
+    },
     // {
     //   course_slug: 'NCSA',
     //   imageSrc: '/media/hero_courses_banners/NCSA_more_than_imagine.jpg',
