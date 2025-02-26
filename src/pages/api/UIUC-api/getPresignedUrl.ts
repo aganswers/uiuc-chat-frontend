@@ -9,7 +9,7 @@ const region = process.env.AWS_REGION
 let s3Client: S3Client | null = null
 if (region && process.env.AWS_KEY && process.env.AWS_SECRET) {
   s3Client = new S3Client({
-    region: region,
+    region: "auto",
     credentials: {
       accessKeyId: process.env.AWS_KEY,
       secretAccessKey: process.env.AWS_SECRET,

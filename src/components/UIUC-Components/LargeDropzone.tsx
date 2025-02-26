@@ -116,34 +116,70 @@ export function LargeDropzone({
 
     try {
       interface PresignedPostResponse {
-        post: {
+        post?: {
           url: string
           fields: { [key: string]: string }
         }
+        url?: string
+        method?: string
+        filepath?: string
+        message: string
       }
 
       // Then, update the lines where you fetch the response and parse the JSON
+      console.log('Upload to S3 request:', requestObject)
       const response = await fetch('/api/UIUC-api/uploadToS3', requestObject)
+      console.log('Upload to S3 response:', response)
       const data = (await response.json()) as PresignedPostResponse
 
-      const { url, fields } = data.post as {
-        url: string
-        fields: { [key: string]: string }
+      // Handle PUT method for Cloudflare R2
+      if (data.method === 'PUT' && data.url) {
+        console.log('Using PUT method for upload to:', data.url)
+        const uploadResponse = await fetch(data.url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': file.type,
+          },
+          body: file,
+        })
+
+        if (!uploadResponse.ok) {
+          throw new Error(`Upload failed with status: ${uploadResponse.status}`);
+        }
+
+        console.log('Upload successful with PUT method');
+        return;
       }
-      const formData = new FormData()
 
-      Object.entries(fields).forEach(([key, value]) => {
-        formData.append(key, value)
-      })
+      // Handle POST method for S3 and MinIO
+      if (data.post && data.method === 'POST') {
+        console.log('Using POST method for upload to:', data.post.url)
+        const { url, fields } = data.post
+        const formData = new FormData()
 
-      formData.append('file', file)
+        Object.entries(fields).forEach(([key, value]) => {
+          formData.append(key, value)
+        })
 
-      await fetch(url, {
-        method: 'POST',
-        body: formData,
-      })
+        formData.append('file', file)
+
+        const uploadResponse = await fetch(url, {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (!uploadResponse.ok) {
+          throw new Error(`Upload failed with status: ${uploadResponse.status}`);
+        }
+
+        console.log('Upload successful with POST method');
+        return;
+      }
+
+      throw new Error('Invalid response format from server');
     } catch (error) {
       console.error('Error uploading file:', error)
+      throw error;
     }
   }
 
