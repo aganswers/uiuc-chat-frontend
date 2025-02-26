@@ -14,6 +14,8 @@ if (region && process.env.AWS_KEY && process.env.AWS_SECRET) {
       accessKeyId: process.env.AWS_KEY,
       secretAccessKey: process.env.AWS_SECRET,
     },
+    endpoint: process.env.CLOUDFLARE_R2_ENDPOINT,
+    forcePathStyle: true, // Required for S3-compatible services
   })
 }
 
@@ -43,6 +45,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const s3_filepath = `courses/${courseName}/${uniqueFileName}`
+    console.log('s3_filepath', s3_filepath)
 
     let post
     if (courseName === 'vyriad' || courseName === 'pubmed') {
@@ -68,6 +71,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         Expires: 60 * 60, // 1 hour
       })
     }
+
+    console.log('s3 upload post', post)
 
     res
       .status(200)
