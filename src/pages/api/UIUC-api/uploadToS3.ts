@@ -1,7 +1,8 @@
 // upload.ts
-import { S3Client } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 const region = process.env.AWS_REGION
 
@@ -9,7 +10,7 @@ const region = process.env.AWS_REGION
 let s3Client: S3Client | null = null
 if (region && process.env.AWS_KEY && process.env.AWS_SECRET) {
   s3Client = new S3Client({
-    region: region,
+    region: "auto",
     credentials: {
       accessKeyId: process.env.AWS_KEY,
       secretAccessKey: process.env.AWS_SECRET,
@@ -47,36 +48,61 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const s3_filepath = `courses/${courseName}/${uniqueFileName}`
     console.log('s3_filepath', s3_filepath)
 
-    let post
-    if (courseName === 'vyriad' || courseName === 'pubmed') {
-      if (!vyriadMinioClient) {
-        throw new Error(
-          'MinIO client not configured - missing required environment variables',
-        )
-      }
-      post = await createPresignedPost(vyriadMinioClient, {
+    // Using Cloudflare R2 (s3Client with Cloudflare endpoint)
+    if (process.env.CLOUDFLARE_R2_ENDPOINT && s3Client) {
+      // Create a presigned PUT URL for Cloudflare R2
+      const command = new PutObjectCommand({
         Bucket: process.env.S3_BUCKET_NAME!,
         Key: s3_filepath,
-        Expires: 60 * 60, // 1 hour
       })
-    } else {
-      if (!s3Client) {
-        throw new Error(
-          'S3 client not configured - missing required environment variables',
-        )
-      }
-      post = await createPresignedPost(s3Client, {
-        Bucket: process.env.S3_BUCKET_NAME!,
-        Key: s3_filepath,
-        Expires: 60 * 60, // 1 hour
+
+      const signedUrl = await getSignedUrl(s3Client, command, {
+        expiresIn: 60 * 60, // 1 hour
+      })
+
+      console.log('Cloudflare R2 signed URL', signedUrl)
+
+      return res.status(200).json({
+        message: 'Signed URL generated successfully',
+        url: signedUrl,
+        method: 'PUT',
+        filepath: s3_filepath
       })
     }
+    // Using MinIO
+    else if ((courseName === 'vyriad' || courseName === 'pubmed') && vyriadMinioClient) {
+      const post = await createPresignedPost(vyriadMinioClient, {
+        Bucket: process.env.S3_BUCKET_NAME!,
+        Key: s3_filepath,
+        Expires: 60 * 60, // 1 hour
+      })
 
-    console.log('s3 upload post', post)
+      console.log('MinIO presigned post', post)
 
-    res
-      .status(200)
-      .json({ message: 'Presigned URL generated successfully', post })
+      return res.status(200).json({
+        message: 'Presigned URL generated successfully',
+        post,
+        method: 'POST'
+      })
+    }
+    // Use standard S3
+    else if (s3Client) {
+      const post = await createPresignedPost(s3Client, {
+        Bucket: process.env.S3_BUCKET_NAME!,
+        Key: s3_filepath,
+        Expires: 60 * 60, // 1 hour
+      })
+
+      console.log('S3 presigned post', post)
+
+      return res.status(200).json({
+        message: 'Presigned URL generated successfully',
+        post,
+        method: 'POST'
+      })
+    } else {
+      throw new Error('No storage client available')
+    }
   } catch (error) {
     console.error('Error generating presigned URL:', error)
     res.status(500).json({ message: 'Error generating presigned URL', error })
