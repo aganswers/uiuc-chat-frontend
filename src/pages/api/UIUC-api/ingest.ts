@@ -38,8 +38,7 @@ const handler = async (
     const s3_filepath = `courses/${courseName}/${uniqueFileName}`
 
     const response = await fetch(
-      // 'https://app.beam.cloud/taskqueue/aganswers-demo-task-queue/latest',
-      'https://aganswers-demo-task-queue-1bf6066-v2.app.beam.cloud',
+      'https://aganswers-demo-task-queue-1bf6066.app.beam.cloud', // this is the "latest"
       {
         method: 'POST',
         headers: {
