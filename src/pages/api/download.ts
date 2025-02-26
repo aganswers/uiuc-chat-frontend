@@ -14,6 +14,8 @@ if (region && process.env.AWS_KEY && process.env.AWS_SECRET) {
       accessKeyId: process.env.AWS_KEY,
       secretAccessKey: process.env.AWS_SECRET,
     },
+    endpoint: process.env.CLOUDFLARE_R2_ENDPOINT,
+    forcePathStyle: true, // Required for S3-compatible services
   })
 }
 
