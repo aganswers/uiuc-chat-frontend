@@ -58,7 +58,7 @@ export default function Footer({ isNavbar = false }: { isNavbar?: boolean }) {
           </Link>{' '}
           code.
         </span>
-        <div>
+        {/* <div>
           <Link
             href="https://status.uiuc.chat"
             target="_blank"
@@ -71,7 +71,7 @@ export default function Footer({ isNavbar = false }: { isNavbar?: boolean }) {
               height={50}
             />
           </Link>
-        </div>
+        </div> */}
       </div>
     </footer>
   )
