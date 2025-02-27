@@ -6,11 +6,6 @@ export const redisClient = new Redis({
 })
 
 
-await redisClient.set('foo', 'bar');
-const data = await redisClient.get('foo');
-console.log('data from redis', data)
-
-
 // import { createClient } from 'redis'
 // console.log('REDIS_URL', process.env.REDIS_URL)
 // // Create a Redis client
