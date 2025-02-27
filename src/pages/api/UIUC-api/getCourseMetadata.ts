@@ -7,7 +7,7 @@ export const getCourseMetadata = async (
   course_name: string,
 ): Promise<CourseMetadata | null> => {
   try {
-    const rawMetadata = await redisClient.hGet('course_metadatas', course_name)
+    const rawMetadata = await redisClient.hget('course_metadatas', course_name)
     const course_metadata: CourseMetadata = rawMetadata
       ? JSON.parse(rawMetadata)
       : null

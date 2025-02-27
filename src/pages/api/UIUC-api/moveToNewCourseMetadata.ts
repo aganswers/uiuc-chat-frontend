@@ -27,14 +27,14 @@ export default async function handler(req: NextRequest, res: NextResponse) {
 
       // Fetch the existing metadata for the course from the new structure
       const existingMetadata: CourseMetadata = JSON.parse(
-        (await redisClient.hGet('course_metadatas', courseName)) || '{}',
+        (await redisClient.hget('course_metadatas', courseName)) || '{}',
       ) as CourseMetadata
 
       // Merge the old metadata with the existing metadata
       const updatedMetadata = { ...existingMetadata, ...oldMetadata }
 
       // Save the updated metadata in the new structure
-      await redisClient.hSet('course_metadatas', {
+      await redisClient.hset('course_metadatas', {
         [courseName]: JSON.stringify(updatedMetadata),
       })
       console.log('Updating the course metadata in courseName:', courseName)

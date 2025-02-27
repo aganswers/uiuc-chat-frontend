@@ -25,7 +25,7 @@ export default async function handler(req: NextRequest) {
 
     try {
       // FYI Redis itself doesn't provide direct commands to manipulate JSON data within a hash field, so this workaround is necessary.
-      const course_metadata_string = await redisClient.hGet(
+      const course_metadata_string = await redisClient.hget(
         'course_metadatas',
         course_name,
       )
@@ -42,7 +42,7 @@ export default async function handler(req: NextRequest) {
       // Set disabled models
       course_metadata.disabled_models = disabled_models
 
-      await redisClient.hSet('course_metadatas', {
+      await redisClient.hset('course_metadatas', {
         [course_name]: JSON.stringify(course_metadata),
       })
       return NextResponse.json({ message: 'Success' }, { status: 200 })

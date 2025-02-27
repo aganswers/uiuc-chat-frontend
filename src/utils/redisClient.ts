@@ -1,26 +1,33 @@
-import { createClient } from 'redis'
+import { Redis } from '@upstash/redis'
 
-console.log('REDIS_URL', process.env.REDIS_URL)
-
-// Create a Redis client
-export const redisClient = createClient({
-  url: process.env.REDIS_URL!,
-  socket: {
-    reconnectStrategy: (retries) => {
-      console.log(`Redis reconnect attempt #${retries}`)
-      return Math.min(retries * 100, 3000) // Increasing backoff with a maximum of 3 seconds
-    },
-    tls: true,
-    rejectUnauthorized: false // Allow self-signed certificates
-  }
+export const redisClient = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 })
 
-// Connect to the Redis server
-redisClient
-  .connect()
-  .then(() => {
-    console.log('Connected to Redis')
-  })
-  .catch((err) => {
-    console.error('Redis connection error:', err)
-  })
+
+await redisClient.set('foo', 'bar');
+const data = await redisClient.get('foo');
+console.log('data from redis', data)
+
+
+// import { createClient } from 'redis'
+// console.log('REDIS_URL', process.env.REDIS_URL)
+// // Create a Redis client
+// export const redisClient = createClient({
+//   url: process.env.REDIS_URL!,
+//   socket: {
+//     tls: true,
+//     rejectUnauthorized: false // Allow self-signed certificates
+//   }
+// })
+
+// // Connect to the Redis server
+// redisClient
+//   .connect()
+//   .then(() => {
+//     console.log('Connected to Redis')
+//   })
+//   .catch((err) => {
+//     console.error('Redis connection error:', err)
+//   })

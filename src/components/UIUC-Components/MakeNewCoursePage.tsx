@@ -59,7 +59,7 @@ const MakeNewCoursePage = ({
   useEffect(() => {
     // only run when creating new courses.. otherwise VERY wasteful on DB.
     if (checkIfNewCoursePage() == 'new') {
-      async function fetchGetAllCourseNames() {
+      async function fetchgetallCourseNames() {
         const response = await fetch(`/api/UIUC-api/getAllCourseNames`)
 
         if (response.ok) {
@@ -70,7 +70,7 @@ const MakeNewCoursePage = ({
         }
       }
 
-      fetchGetAllCourseNames().catch((error) => {
+      fetchgetallCourseNames().catch((error) => {
         console.error(error)
       })
     }

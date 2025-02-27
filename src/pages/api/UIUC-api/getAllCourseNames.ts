@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   try {
-    const all_course_names = await redisClient.hKeys('course_metadatas')
+    const all_course_names = await redisClient.hkeys('course_metadatas')
     return res.status(200).json({ all_course_names })
   } catch (error) {
     console.log(error)

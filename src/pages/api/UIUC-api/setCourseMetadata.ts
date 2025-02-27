@@ -71,7 +71,7 @@ const setCourseMetadata = async (req: any, res: any) => {
       vector_search_rewrite_disabled,
     }
     console.log('Right before setting course_metadata with: ', course_metadata)
-    await redisClient.hSet('course_metadatas', {
+    await redisClient.hset('course_metadatas', {
       [course_name]: JSON.stringify(course_metadata),
     })
 
