@@ -122,13 +122,12 @@ const Home: NextPage = () => {
               {/* <div className="text-lg">Sponsored by the </div> */}
             </Link>
 
-            <Link
+            {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
               href="https://status.uiuc.chat/"
               target="_blank"
             >
               <h3 className="text-2xl font-bold">Status page 📊</h3>
-              {/* <div className="text-lg">Check service uptime.</div> */}
               <Image
                 src="https://status.uiuc.chat/api/badge/1/uptime/24?label=Uptime%2024%20hours"
                 alt="Service Uptime Badge"
@@ -141,7 +140,7 @@ const Home: NextPage = () => {
                 width={150}
                 height={50}
               />
-            </Link>
+            </Link> */}
           </div>
         </div>
 
