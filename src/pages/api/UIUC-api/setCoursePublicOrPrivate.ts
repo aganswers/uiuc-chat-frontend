@@ -10,7 +10,7 @@ export default async function handler(
   const is_private = req.query.is_private === 'true'
 
   try {
-    const course_metadata_string = await redisClient.hGet(
+    const course_metadata_string = await redisClient.hget(
       'course_metadatas',
       course_name,
     )
@@ -27,7 +27,7 @@ export default async function handler(
       is_private,
     }
 
-    await redisClient.hSet('course_metadatas', {
+    await redisClient.hset('course_metadatas', {
       [course_name]: JSON.stringify(updated_course_metadata),
     })
     return res.status(200).json({ success: true })

@@ -8,7 +8,7 @@ export const getCoursesByOwnerOrAdmin = async (
 ): Promise<{ [key: string]: CourseMetadata }[]> => {
   let all_course_metadata_raw: { [key: string]: string } | null = null
   try {
-    all_course_metadata_raw = await redisClient.hGetAll('course_metadatas')
+    all_course_metadata_raw = await redisClient.hgetall('course_metadatas')
     if (!all_course_metadata_raw) {
       console.error('No course metadata found for ANY course!')
       return []
@@ -52,7 +52,7 @@ export const getAllCourseMetadata = async (): Promise<
 > => {
   let all_course_metadata_raw: { [key: string]: string } | null = null
   try {
-    all_course_metadata_raw = await redisClient.hGetAll('course_metadatas')
+    all_course_metadata_raw = await redisClient.hgetall('course_metadatas')
     if (!all_course_metadata_raw) {
       console.error('No course metadata found for ANY course!')
       return []

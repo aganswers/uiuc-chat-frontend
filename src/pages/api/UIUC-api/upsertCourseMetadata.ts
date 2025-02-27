@@ -63,7 +63,7 @@ export default async function handler(
     }
 
     // Save the combined metadata
-    await redisClient.hSet('course_metadatas', {
+    await redisClient.hset('course_metadatas', {
       [courseName]: JSON.stringify(combined_metadata),
     })
     return res.status(200).json({ success: true })
