@@ -16,7 +16,7 @@ export default async function handler(
     )
 
     if (!course_metadata_string) throw new Error('Course metadata not found')
-    const course_metadata: CourseMetadata = JSON.parse(course_metadata_string)
+    const course_metadata: CourseMetadata = course_metadata_string as CourseMetadata
 
     if (!course_metadata) {
       return res.status(500).json({ success: false })

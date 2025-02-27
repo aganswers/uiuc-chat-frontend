@@ -18,9 +18,9 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     // Iterate over each old metadata key
     for (const oldKey of oldMetadataKeys) {
       // Fetch the old metadata
-      const oldMetadataString = await redisClient.get(oldKey)
-      if (!oldMetadataString) throw new Error('Old metadata not found')
-      const oldMetadata: CourseMetadata = JSON.parse(oldMetadataString)
+      const oldMetadata: CourseMetadata = await redisClient.get(oldKey) as CourseMetadata
+      // if (!oldMetadataString) throw new Error('Old metadata not found')
+      // const oldMetadata: CourseMetadata = JSON.parse(oldMetadataString) as CourseMetadata
 
       // Extract the course name from the old key
       const courseName = oldKey.replace('_metadata', '')

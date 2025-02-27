@@ -19,7 +19,7 @@ const removeUserFromCourse = async (req: any, res: any) => {
       course_name + '_metadata',
     )
     if (!courseMetadataString) throw new Error('Course metadata not found')
-    const course_metadata = JSON.parse(courseMetadataString) as CourseMetadata
+    const course_metadata = courseMetadataString as CourseMetadata
 
     if (!course_metadata) {
       res.status(500).json({ success: false })

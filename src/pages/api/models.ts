@@ -43,7 +43,7 @@ export default async function handler(
     if (!redisValue) {
       llmProviders = {} as AllLLMProviders
     } else {
-      llmProviders = JSON.parse(redisValue) as AllLLMProviders
+      llmProviders = redisValue as AllLLMProviders
     }
 
     // Define a function to create a placeholder provider with default values
