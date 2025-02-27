@@ -18,7 +18,7 @@ export const getCoursesByOwnerOrAdmin = async (
       (acc, [key, value]) => {
         let courseMetadata: CourseMetadata | null = null
         try {
-          courseMetadata = JSON.parse(value) as CourseMetadata
+          courseMetadata = value as unknown as CourseMetadata
           if (
             courseMetadata.course_owner &&
             courseMetadata.course_admins &&
@@ -73,9 +73,10 @@ export const getAllCourseMetadata = async (): Promise<
     // )
     const all_course_metadata = Object.entries(all_course_metadata_raw).map(
       ([key, value]) => {
-        return { [key]: JSON.parse(value) as CourseMetadata }
+        return { [key]: value as unknown as CourseMetadata }
       },
     )
+
     console.log('all_course_metadata', all_course_metadata)
 
     return all_course_metadata
