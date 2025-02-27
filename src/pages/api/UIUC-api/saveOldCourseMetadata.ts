@@ -20,7 +20,7 @@ export default async function handler(req: NextRequest, res: NextResponse) {
       // Fetch the old metadata
       const oldMetadataString = await redisClient.get(oldKey)
       if (!oldMetadataString) throw new Error('Old metadata not found')
-      const oldMetadata = JSON.parse(oldMetadataString) as CourseMetadata
+      const oldMetadata = oldMetadataString as CourseMetadata
 
       // Add the old metadata along with its key to the oldMetadatas array
       oldMetadatas.push({ key: oldKey, value: oldMetadata })
