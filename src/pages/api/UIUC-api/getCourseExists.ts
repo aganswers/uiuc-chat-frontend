@@ -8,7 +8,7 @@ export default async function handler(
   const course_name = req.query.course_name as string
 
   try {
-    const courseExists = await redisClient.hExists(
+    const courseExists = await redisClient.hexists(
       'course_metadatas',
       course_name,
     )
