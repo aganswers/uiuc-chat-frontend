@@ -14,7 +14,7 @@ export default async function handler(req: NextRequest) {
 
   try {
     const response = await fetch(
-      `https://backend.aganswers.ai/getWeeklyTrends?project_name=${project_name}`,
+      `https://backend.aganswers.org/getWeeklyTrends?project_name=${project_name}`,
     )
 
     if (!response.ok) {

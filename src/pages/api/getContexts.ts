@@ -42,7 +42,7 @@ export const fetchContexts = async (
   // ]
   // return dummyContexts
 
-  const url = `https://backend.aganswers.ai/getTopContexts`
+  const url = `https://backend.aganswers.org/getTopContexts`
 
   try {
     const response = await fetch(url, {

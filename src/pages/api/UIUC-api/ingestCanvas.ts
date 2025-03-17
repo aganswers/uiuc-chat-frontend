@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Send email to kastan alerting that he needs to approve a canvas course 
     const sendEmailResponse = await fetch(
-      `https://backend.aganswers.ai/send-transactional-email`,
+      `https://backend.aganswers.org/send-transactional-email`,
       {
         method: 'POST',
         headers: {
