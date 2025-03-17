@@ -40,7 +40,7 @@ const logConversationToSupabase = async (req: any, res: any) => {
   // Send to our custom monitor
   try {
     const response = await fetch(
-      'https://backend.aganswers.ai' + '/llm-monitor-message',
+      'https://backend.aganswers.org' + '/llm-monitor-message',
       {
         method: 'POST',
         headers: {

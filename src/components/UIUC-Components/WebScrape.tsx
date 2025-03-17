@@ -384,7 +384,7 @@ export const WebScrape = ({
       if (!url || !courseName || !localDir) return null
       console.log('calling downloadMITCourse')
       const response = await axios.get(
-        `https://backend.aganswers.ai/mit-download`,
+        `https://backend.aganswers.org/mit-download`,
         {
           params: {
             url: url,
