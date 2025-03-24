@@ -9,13 +9,12 @@ export default async function handler(
     try {
         const redisStartTime = Date.now()
         const maintenanceStatus = await redisClient.get('maintenance-mode')
-        const isMaintenanceMode = maintenanceStatus === true || (typeof maintenanceStatus === 'string' && maintenanceStatus.trim() === 'true')
 
-        console.log("Raw maintance return value: ", isMaintenanceMode)
-        console.log(`[getMaintenanceModeFast] Redis query took ${Date.now() - redisStartTime}ms. maintenanceStatus: ${isMaintenanceMode === 'true'}` )
+        console.log("Raw maintenance return value: ", maintenanceStatus)
+        console.log(`[getMaintenanceModeFast] Redis query took ${Date.now() - redisStartTime}ms. maintenanceStatus: ${maintenanceStatus === 'true'}`)
 
         res.status(200).json({
-            isMaintenanceMode
+            isMaintenanceMode: String(maintenanceStatus) === 'true'
         })
     } catch (error) {
         console.error('[getMaintenanceMode] Failed to check maintenance mode:', error)
