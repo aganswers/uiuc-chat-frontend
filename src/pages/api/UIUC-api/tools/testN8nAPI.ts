@@ -11,7 +11,7 @@ export default async function handler(req: any, res: any) {
   const limit = 1
 
   const response = await fetch(
-    `https://backend.aganswers.org/getworkflows?api_key=${n8nApiKey}&limit=${limit}&pagination=${parsedPagination}`,
+    `https://backend.aganswers.ai/getworkflows?api_key=${n8nApiKey}&limit=${limit}&pagination=${parsedPagination}`,
   )
 
   if (!response.ok) {
