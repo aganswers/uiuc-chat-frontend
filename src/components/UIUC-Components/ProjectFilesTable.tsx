@@ -295,7 +295,7 @@ export function ProjectFilesTable({
   const deleteDocumentMutation = useMutation({
     mutationFn: async (recordsToDelete: CourseDocument[]) => {
       console.debug('Deleting records:', recordsToDelete)
-      const API_URL = 'https://backend.aganswers.org'
+      const API_URL = 'https://backend.aganswers.ai'
       const deletePromises = recordsToDelete.map((record) =>
         axios.delete(`${API_URL}/delete`, {
           params: {
