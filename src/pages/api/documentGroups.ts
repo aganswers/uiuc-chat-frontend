@@ -9,6 +9,7 @@ import {
   fetchEnabledDocGroups,
   removeDocGroup,
   updateDocGroupStatus,
+  createDocumentGroup,
 } from '~/utils/dbUtils'
 
 import { addDocumentsToDocGroupQdrant } from '~/utils/qdrantUtils'
@@ -21,6 +22,7 @@ interface RequestBody {
     | 'getDocumentGroups'
     | 'updateDocGroupStatus'
     | 'fetchEnabledDocGroups'
+    | 'createDocGroup'
   courseName: string
   doc?: CourseDocument
   docGroup?: string
@@ -149,6 +151,19 @@ export default async function handler(
       } else if (action === 'fetchEnabledDocGroups') {
         const documents = await fetchEnabledDocGroups(courseName)
         res.status(200).json({ success: true, documents })
+      } else if (action === 'createDocGroup' && docGroup) {
+        console.log('Creating document group:', docGroup, 'for course:', courseName)
+        
+        posthog.capture('create_doc_group', {
+          distinct_id:
+            req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+          curr_user_id: await getAuth(req).userId,
+          course_name: courseName,
+          doc_group: docGroup,
+        })
+        
+        const result = await createDocumentGroup(courseName, docGroup)
+        res.status(200).json({ success: true, data: result })
       } else {
         res.status(400).json({ success: false, error: 'Invalid action' })
       }

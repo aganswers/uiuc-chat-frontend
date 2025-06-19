@@ -63,6 +63,15 @@ function UploadNotificationContent({
   const [currentFiles, setCurrentFiles] = useState<FileUpload[]>([])
   const { data: failedDocuments } = useQuery<FailedDocumentsResponse>({
     queryKey: ['failedDocuments', projectName, 1, '', '', 'created_at', 'desc'],
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/materialsTable/fetchFailedDocuments?from=0&to=99&course_name=${projectName}&filter_key=&filter_value=&sort_column=created_at&sort_direction=desc`
+      )
+      if (!response.ok) {
+        throw new Error('Failed to fetch failed documents')
+      }
+      return response.json()
+    },
     staleTime: 10000,
     enabled: !!projectName,
   })

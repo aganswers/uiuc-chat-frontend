@@ -161,3 +161,32 @@ export async function updateDocGroupStatus(
     throw error
   }
 }
+
+export async function createDocumentGroup(
+  courseName: string,
+  docGroupName: string,
+) {
+  try {
+    const { data, error } = await supabase
+      .from('doc_groups')
+      .insert([
+        {
+          course_name: courseName,
+          name: docGroupName,
+          enabled: true,
+          doc_count: 0,
+        },
+      ])
+      .select()
+
+    if (error) {
+      console.error('Failed to create document group:', error.message)
+      throw new Error(`Failed to create document group: ${error.message}`)
+    }
+
+    return data
+  } catch (error) {
+    console.error('Error in createDocumentGroup:', error)
+    throw error
+  }
+}

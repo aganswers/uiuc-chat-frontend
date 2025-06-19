@@ -69,6 +69,7 @@
     "ai": "^3.3.37",
     "axios": "^1.6.0",
     "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "dayjs": "^1.11.7",
     "dotenv": "^16.3.1",
     "embla-carousel-react": "^7.1.0",
@@ -110,6 +111,7 @@
     "zod": "^3.22.3"
   },
   "devDependencies": {
+    "@clerk/types": "^4.60.0",
     "@next/bundle-analyzer": "^13.4.3",
     "@nightwatch/selenium-server": "^4.20.0",
     "@swc/core": "^1.9.2",
@@ -149,5 +151,6 @@
     "fs": false,
     "path": false,
     "os": false
-  }
+  },
+  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
 }

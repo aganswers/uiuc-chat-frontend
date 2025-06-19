@@ -29,7 +29,6 @@ if (typeof window !== 'undefined') {
       maskInputOptions: {
         password: true,
         email: true,
-        creditCard: true,
       },
     },
     loaded: (posthog) => {
