@@ -34,7 +34,7 @@ export default function Header({ isNavbar = false }: { isNavbar?: boolean }) {
   useEffect(() => {
     if (clerk_obj.isLoaded) {
       if (clerk_obj.isSignedIn) {
-        const emails = extractEmailsFromClerk(clerk_obj.user)
+        const emails = extractEmailsFromClerk(clerk_obj.user as any)
         setUserEmail(emails[0] || 'no_email')
 
         // Posthog identify
@@ -114,16 +114,20 @@ export function LandingPageHeader({
   const { classes, theme } = useStyles()
   const headerStyle = forGeneralPurposeNotLandingpage
     ? {
-        backgroundColor: '#2e026d',
+        backgroundColor: 'white',
         display: 'flex',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         padding: '2em 2em',
+        borderBottom: '1px solid #e5e7eb',
       }
     : {
-        backgroundColor: '#2e026d',
+        backgroundColor: 'white',
         display: 'flex',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         padding: '1em',
+        borderBottom: '1px solid #e5e7eb',
       }
 
   const clerk_obj = useUser()
@@ -134,7 +138,7 @@ export function LandingPageHeader({
   useEffect(() => {
     if (clerk_obj.isLoaded) {
       if (clerk_obj.isSignedIn) {
-        const emails = extractEmailsFromClerk(clerk_obj.user)
+        const emails = extractEmailsFromClerk(clerk_obj.user as any)
         setUserEmail(emails[0] || 'no_email')
 
         // Posthog identify
@@ -151,8 +155,13 @@ export function LandingPageHeader({
   if (!isLoaded) {
     return (
       <header style={headerStyle} className="py-16">
-        {/* Skeleton placeholders for two icons */}
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* Logo on the left */}
+        <p className="text-lg font-extrabold tracking-tight text-gray-900 sm:text-[5rem]">
+          AgAnswers.<span className="text-[hsl(280,100%,70%)]">ai</span>
+        </p>
+        
+        {/* Navigation and user controls on the right */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           {forGeneralPurposeNotLandingpage === false && (
             <>
               <Link href="/new" className={classes.link}>
@@ -198,6 +207,12 @@ export function LandingPageHeader({
 
   return (
     <header style={headerStyle}>
+      {/* Logo on the left */}
+      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
+        AgAnswers.<span className="text-[hsl(280,100%,70%)]">ai</span>
+      </h1>
+      
+      {/* Navigation and user controls on the right */}
       <Group spacing={'xs'}>
         {forGeneralPurposeNotLandingpage === false && (
           <>
@@ -307,17 +322,17 @@ const useStyles = createStyles((theme) => ({
   link: {
     // textTransform: 'uppercase',
     fontSize: rem(13),
-    color: '#f1f5f9',
+    color: '#374151',
     padding: `${theme.spacing.sm} ${theme.spacing.xs}`,
     // margin: '0.35rem',
-    fontWeight: 700,
+    fontWeight: 600,
     transition:
       'border-color 100ms ease, color 100ms ease, background-color 100ms ease',
     borderRadius: theme.radius.sm, // added to make the square edges round
 
     '&:hover': {
       color: 'hsl(280,100%,70%)', // make the hovered color lighter
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      backgroundColor: 'rgba(0, 0, 0, 0.05)',
       textDecoration: 'none',
       borderRadius: '10px',
     },
@@ -326,7 +341,7 @@ const useStyles = createStyles((theme) => ({
       borderBottom: '2px solid hsl(280,100%,70%)', // make the bottom border of the square thicker and same color as "AI"
       textDecoration: 'none', // remove underline
       borderRadius: '10px', // added to make the square edges round when hovered
-      backgroundColor: 'rgba(255, 255, 255, 0.1)', // add a background color when the link is active
+      backgroundColor: 'rgba(0, 0, 0, 0.05)', // add a background color when the link is active
       textAlign: 'right', // align the text to the right
     },
   },

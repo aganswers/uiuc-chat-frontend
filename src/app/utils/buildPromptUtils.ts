@@ -14,7 +14,7 @@ import { DEFAULT_SYSTEM_PROMPT, GUIDED_LEARNING_PROMPT, DOCUMENT_FOCUS_PROMPT } 
 import { routeModelRequest } from '~/utils/streamProcessing'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { encodingForModel } from 'js-tiktoken'
+import { encodingForModel, get_encoding } from 'js-tiktoken'
 import { v4 as uuidv4 } from 'uuid'
 
 // Define interface for URL link parameters
@@ -73,7 +73,22 @@ const shouldAppendDocumentsOnlyPrompt = (
   )
 }
 
-const encoding = encodingForModel('gpt-4o')
+// js-tiktoken currently doesn't ship a dedicated encoding for the brand-new GPT-4o model. Attempting
+// `encodingForModel('gpt-4o')` therefore throws at module-initialisation time, which crashes any
+// module that imports this file (e.g. the /api/allNewRoutingChat route) and surfaces as a 500 with an
+// empty body on the client. To keep the API functional until tiktoken ships official support we try to
+// load the GPT-4o encoding, but silently fall back to the closest compatible one (the `cl100k_base`
+// tokenizer used by GPT-4 / GPT-3.5-turbo) when it isn't available.
+
+const encoding = (() => {
+  try {
+    return encodingForModel('gpt-4o')
+  } catch {
+    // js-tiktoken hasn't been updated for GPT-4o yet – fall back to the
+    // generic tokenizer that GPT-3.5 & GPT-4 use.
+    return get_encoding('cl100k_base')
+  }
+})();
 
 export const buildPrompt = async ({
   conversation,
