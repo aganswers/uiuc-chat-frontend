@@ -75,7 +75,6 @@
     "endent": "^2.1.0",
     "eventsource-parser": "^1.0.0",
     "framer-motion": "^11.5.2",
-    "google": "link:next/font/google",
     "i18next": "^22.5.0",
     "js-tiktoken": "^1.0.15",
     "jsdom": "^22.0.0",
