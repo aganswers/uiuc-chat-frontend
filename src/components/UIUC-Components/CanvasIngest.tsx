@@ -76,7 +76,7 @@ export const CanvasIngest = ({}: CanvasIngestProps) => {
 
       <Input
         icon={icon}
-        className={`mt-4 w-[80%] min-w-[20rem] disabled:bg-purple-200 lg:w-[75%]`}
+        className={`mt-4 w-[80%] min-w-[20rem] disabled:bg-orange-200 lg:w-[75%]`}
         wrapperProps={{ backgroundColor: '#020307', borderRadius: 'xl' }}
         placeholder="Enter Canvas course ID"
         radius={'xl'}
@@ -100,7 +100,7 @@ export const CanvasIngest = ({}: CanvasIngestProps) => {
             size="md"
             radius={'xl'}
             className={`rounded-s-md ${
-              isCourseIDUpdated ? 'bg-purple-800' : 'border-purple-800'
+              isCourseIDUpdated ? 'bg-orange-800' : 'border-orange-800'
             } overflow-ellipsis text-ellipsis p-2 ${
               isCourseIDUpdated ? 'text-white' : 'text-gray-500'
             } min-w-[5rem] -translate-x-1 transform hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none`}

@@ -361,7 +361,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                 <Title
                   order={3}
                   align="left"
-                  className={`px-4 text-[hsl(280,100%,70%)] ${montserrat_heading.variable} font-montserratHeading`}
+                  className={`px-4 text-orange-500 ${montserrat_heading.variable} font-montserratHeading`}
                   style={{ flexGrow: 2 }}
                 >
                   Usage Overview
@@ -390,7 +390,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
               <Divider className="w-full" color="gray.4" size="sm" />
 
               {/* Project Analytics Dashboard */}
-              <div className="my-6 w-[95%] rounded-xl bg-[#1a1b30] p-6 shadow-lg shadow-purple-900/20">
+              <div className="my-6 w-[95%] rounded-xl bg-[#1a1b30] p-6 shadow-lg shadow-orange-900/20">
                 <div className="mb-6">
                   <Title
                     order={4}
@@ -406,7 +406,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                 {/* Main Stats Grid with Integrated Weekly Trends */}
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                   {/* Conversations Card */}
-                  <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-purple-900/30">
+                  <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-orange-900/30">
                     <div className="mb-3 flex items-center justify-between">
                       <div>
                         <Text size="sm" color="dimmed" weight={500} mb={1}>
@@ -416,10 +416,10 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                           All-time chat sessions
                         </Text>
                       </div>
-                      <div className="rounded-full bg-purple-400/10 p-2">
+                      <div className="rounded-full bg-orange-400/10 p-2">
                         <IconMessageCircle2
                           size={24}
-                          className="text-purple-400"
+                          className="text-orange-400"
                         />
                       </div>
                     </div>
@@ -428,7 +428,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                         <Text
                           size="xl"
                           weight={700}
-                          className="text-purple-400"
+                          className="text-orange-400"
                         >
                           {courseStats?.total_conversations?.toLocaleString() ||
                             '0'}
@@ -480,7 +480,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                   </div>
 
                   {/* Users Card */}
-                  <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-purple-900/30">
+                  <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-orange-900/30">
                     <div className="mb-3 flex items-center justify-between">
                       <div>
                         <Text size="sm" color="dimmed" weight={500} mb={1}>
@@ -490,8 +490,8 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                           All-time unique participants
                         </Text>
                       </div>
-                      <div className="rounded-full bg-purple-400/10 p-2">
-                        <IconUsers size={24} className="text-purple-400" />
+                      <div className="rounded-full bg-orange-400/10 p-2">
+                        <IconUsers size={24} className="text-orange-400" />
                       </div>
                     </div>
                     <div className="mt-4">
@@ -499,7 +499,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                         <Text
                           size="xl"
                           weight={700}
-                          className="text-purple-400"
+                          className="text-orange-400"
                         >
                           {courseStats?.total_users?.toLocaleString() || '0'}
                         </Text>
@@ -550,7 +550,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                   </div>
 
                   {/* Messages Card */}
-                  <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-purple-900/30">
+                  <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-orange-900/30">
                     <div className="mb-3 flex items-center justify-between">
                       <div>
                         <Text size="sm" color="dimmed" weight={500} mb={1}>
@@ -560,8 +560,8 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                           Total exchanges
                         </Text>
                       </div>
-                      <div className="rounded-full bg-purple-400/10 p-2">
-                        <IconMessage2 size={24} className="text-purple-400" />
+                      <div className="rounded-full bg-orange-400/10 p-2">
+                        <IconMessage2 size={24} className="text-orange-400" />
                       </div>
                     </div>
                     <div className="mt-4">
@@ -569,7 +569,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                         <Text
                           size="xl"
                           weight={700}
-                          className="text-purple-400"
+                          className="text-orange-400"
                         >
                           {courseStats?.total_messages?.toLocaleString() || '0'}
                         </Text>
@@ -639,7 +639,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
 
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     {/* Average Conversations per User */}
-                    <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-purple-900/30">
+                    <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-orange-900/30">
                       <div className="mb-3 flex items-center justify-between">
                         <div>
                           <Text size="sm" color="dimmed" weight={500} mb={1}>
@@ -649,10 +649,10 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                             Average engagement frequency
                           </Text>
                         </div>
-                        <div className="rounded-full bg-purple-400/10 p-2">
+                        <div className="rounded-full bg-orange-400/10 p-2">
                           <IconMessageCircle2
                             size={24}
-                            className="text-purple-400"
+                            className="text-orange-400"
                           />
                         </div>
                       </div>
@@ -660,7 +660,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                         <Text
                           size="xl"
                           weight={700}
-                          className="text-purple-400"
+                          className="text-orange-400"
                         >
                           {courseStats?.avg_conversations_per_user?.toFixed(
                             1,
@@ -673,7 +673,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                     </div>
 
                     {/* Average Messages per User */}
-                    <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-purple-900/30">
+                    <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-orange-900/30">
                       <div className="mb-3 flex items-center justify-between">
                         <div>
                           <Text size="sm" color="dimmed" weight={500} mb={1}>
@@ -683,15 +683,15 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                             Average interaction depth
                           </Text>
                         </div>
-                        <div className="rounded-full bg-purple-400/10 p-2">
-                          <IconMessage2 size={24} className="text-purple-400" />
+                        <div className="rounded-full bg-orange-400/10 p-2">
+                          <IconMessage2 size={24} className="text-orange-400" />
                         </div>
                       </div>
                       <div className="mt-4 flex items-baseline gap-2">
                         <Text
                           size="xl"
                           weight={700}
-                          className="text-purple-400"
+                          className="text-orange-400"
                         >
                           {courseStats?.avg_messages_per_user?.toFixed(1) ||
                             '0'}
@@ -703,7 +703,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                     </div>
 
                     {/* Average Messages per Conversation */}
-                    <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-purple-900/30">
+                    <div className="rounded-lg bg-[#232438] p-4 shadow-md transition-all duration-200 hover:shadow-lg hover:shadow-orange-900/30">
                       <div className="mb-3 flex items-center justify-between">
                         <div>
                           <Text size="sm" color="dimmed" weight={500} mb={1}>
@@ -713,15 +713,15 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                             Average conversation length
                           </Text>
                         </div>
-                        <div className="rounded-full bg-purple-400/10 p-2">
-                          <IconChartBar size={24} className="text-purple-400" />
+                        <div className="rounded-full bg-orange-400/10 p-2">
+                          <IconChartBar size={24} className="text-orange-400" />
                         </div>
                       </div>
                       <div className="mt-4 flex items-baseline gap-2">
                         <Text
                           size="xl"
                           weight={700}
-                          className="text-purple-400"
+                          className="text-orange-400"
                         >
                           {courseStats?.avg_messages_per_conversation?.toFixed(
                             1,
@@ -738,7 +738,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
 
               <div className="grid w-[95%] grid-cols-1 gap-6 pb-10 lg:grid-cols-2">
                 {!hasConversationData ? (
-                  <div className="rounded-xl bg-[#1a1b30] p-6 text-center shadow-lg shadow-purple-900/20 lg:col-span-2">
+                  <div className="rounded-xl bg-[#1a1b30] p-6 text-center shadow-lg shadow-orange-900/20 lg:col-span-2">
                     <Title
                       order={4}
                       className={`${montserrat_heading.variable} font-montserratHeading`}
@@ -753,7 +753,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                 ) : (
                   <>
                     {/* Model Usage Chart - Moved to top */}
-                    <div className="rounded-xl bg-[#1a1b30] p-6 shadow-lg shadow-purple-900/20">
+                    <div className="rounded-xl bg-[#1a1b30] p-6 shadow-lg shadow-orange-900/20">
                       <Title
                         order={4}
                         mb="md"
@@ -773,7 +773,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                     </div>
 
                     {/* Conversations Per Day Chart */}
-                    <div className="rounded-xl bg-[#1a1b30] p-6 shadow-lg shadow-purple-900/20">
+                    <div className="rounded-xl bg-[#1a1b30] p-6 shadow-lg shadow-orange-900/20">
                       <Title
                         order={4}
                         mb="md"
@@ -794,7 +794,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                     </div>
 
                     {/* Combined Hour/Weekday Chart */}
-                    <div className="rounded-xl bg-[#1a1b30] p-6 shadow-lg shadow-purple-900/20">
+                    <div className="rounded-xl bg-[#1a1b30] p-6 shadow-lg shadow-orange-900/20">
                       <div className="mb-4 flex items-center justify-between">
                         <div>
                           <Title order={4} className="text-white">
@@ -855,7 +855,7 @@ const MakeQueryAnalysisPage = ({ course_name }: { course_name: string }) => {
                     </div>
 
                     {/* Heatmap Chart */}
-                    <div className="rounded-xl bg-[#1a1b30] p-6 shadow-lg shadow-purple-900/20">
+                    <div className="rounded-xl bg-[#1a1b30] p-6 shadow-lg shadow-orange-900/20">
                       <Title
                         order={4}
                         mb="md"
@@ -948,14 +948,14 @@ const CourseFilesList = ({ files }: CourseFilesListProps) => {
 
   return (
     <div
-      className="mx-auto w-full justify-center rounded-md  bg-violet-100 p-5 shadow-md" // bg-violet-100
+      className="mx-auto w-full justify-center rounded-md  bg-orange-100 p-5 shadow-md" // bg-orange-100
       style={{ marginTop: '-1rem', backgroundColor: '#0F1116' }}
     >
       <ul role="list" className="grid grid-cols-2 gap-4">
         {files.map((file, index) => (
           <li
             key={file.s3_path}
-            className="hover:shadow-xs flex items-center justify-between gap-x-6 rounded-xl bg-violet-300 py-4 pl-4 pr-1 transition duration-200 ease-in-out hover:bg-violet-200 hover:shadow-violet-200"
+            className="hover:shadow-xs flex items-center justify-between gap-x-6 rounded-xl bg-orange-300 py-4 pl-4 pr-1 transition duration-200 ease-in-out hover:bg-orange-200 hover:shadow-orange-200"
             onMouseEnter={(e) => {
               // Removed this because it causes the UI to jump around on mouse enter.
               // e.currentTarget.style.border = 'solid 1.5px'

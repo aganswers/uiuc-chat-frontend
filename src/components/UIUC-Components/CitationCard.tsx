@@ -175,7 +175,7 @@ export const CitationCard = ({ readable_filename, course_name, s3_path, url, pag
         className="flex flex-col bg-[#1E1F3A] text-white overflow-hidden shadow-md transition-all duration-300 ease-in-out
         border-[1px] border-gray-600
         hover:shadow-[0_0_30px_rgba(157,78,221,0.4)] hover:translate-y-[-2px] hover:scale-[1.01]
-        hover:border-[#9D4EDD]"
+        hover:border-[#ea580c]"
         radius="md"
         sx={{
           boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
@@ -217,9 +217,9 @@ export const CitationCard = ({ readable_filename, course_name, s3_path, url, pag
                   <div className="absolute bottom-2 right-2">
                     <div className="bg-gray-900/80 p-1.5 rounded-md">
                       {isWebIcon || isPDF ? (
-                        <IconExternalLink size={14} className="text-[#9D4EDD]" />
+                        <IconExternalLink size={14} className="text-[#ea580c]" />
                       ) : (
-                        <IconDownload size={14} className="text-[#9D4EDD]" />
+                        <IconDownload size={14} className="text-[#ea580c]" />
                       )}
                     </div>
                   </div>
@@ -228,7 +228,7 @@ export const CitationCard = ({ readable_filename, course_name, s3_path, url, pag
             </div>
           ) : (
             <div className="w-full flex justify-center bg-[#1a1b36] p-2 relative">
-              <div className="text-[#9D4EDD] opacity-90 h-12 w-12 flex items-center justify-center">
+              <div className="text-[#ea580c] opacity-90 h-12 w-12 flex items-center justify-center">
                 {getFileType() === 'md' ? (
                   <IconMarkdown size={32} />
                 ) : getFileType() === 'rtf' ? (
@@ -253,9 +253,9 @@ export const CitationCard = ({ readable_filename, course_name, s3_path, url, pag
                   <div className="absolute bottom-2 right-2">
                     <div className="bg-gray-900/80 p-1.5 rounded-md">
                       {isWebIcon || isPDF ? (
-                        <IconExternalLink size={14} className="text-[#9D4EDD]" />
+                        <IconExternalLink size={14} className="text-[#ea580c]" />
                       ) : (
-                        <IconDownload size={14} className="text-[#9D4EDD]" />
+                        <IconDownload size={14} className="text-[#ea580c]" />
                       )}
                     </div>
                   </div>
@@ -276,7 +276,7 @@ export const CitationCard = ({ readable_filename, course_name, s3_path, url, pag
                 <div className="flex flex-col gap-0.5">
                   {isPDF && hasPageNumber && (
                     <Text 
-                      className={`text-xs text-[#9D4EDD]/80 ${montserrat_paragraph.variable} font-montserratParagraph`}
+                      className={`text-xs text-[#ea580c]/80 ${montserrat_paragraph.variable} font-montserratParagraph`}
                     >
                       Page {effectivePageNumber}
                     </Text>

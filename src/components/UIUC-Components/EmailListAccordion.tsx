@@ -37,7 +37,7 @@ function EmailInput({
       <input
         type="text"
         placeholder="Add people by email"
-        className={`${montserrat_paragraph.variable} w-full rounded-lg bg-[#1e1f3d]/50 px-10 py-2.5 font-montserratParagraph text-sm text-gray-200 placeholder-gray-500 ring-1 ring-white/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-violet-500`}
+        className={`${montserrat_paragraph.variable} w-full rounded-lg bg-[#1e1f3d]/50 px-10 py-2.5 font-montserratParagraph text-sm text-gray-200 placeholder-gray-500 ring-1 ring-white/10 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500`}
         value={value}
         onKeyDown={onKeyDown}
         onChange={onChange}
@@ -68,13 +68,13 @@ function EmailListItem({
   const isAdmin = email === course_owner || course_admins.includes(email)
 
   return (
-    <div className="group flex items-center justify-between rounded-lg bg-[#1e1f3d]/50 px-4 py-3 ring-1 ring-white/10 transition-all duration-300 hover:ring-violet-500/50">
+    <div className="group flex items-center justify-between rounded-lg bg-[#1e1f3d]/50 px-4 py-3 ring-1 ring-white/10 transition-all duration-300 hover:ring-orange-500/50">
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#24253c] ring-1 ring-white/10">
           {isAdmin ? (
-            <IconUsers className="h-5 w-5 text-violet-400" />
+            <IconUsers className="h-5 w-5 text-orange-400" />
           ) : (
-            <IconUser className="h-5 w-5 text-violet-400" />
+            <IconUser className="h-5 w-5 text-orange-400" />
           )}
         </div>
         <div className="flex flex-col">
@@ -302,7 +302,7 @@ function EmailListAccordion({
             <AccordionTrigger className="px-4 py-3 hover:no-underline">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#24253c] ring-1 ring-white/10">
-                  <IconUsers className="h-5 w-5 text-violet-400" />
+                  <IconUsers className="h-5 w-5 text-orange-400" />
                 </div>
                 <div className="flex flex-col items-start">
                   <span
@@ -365,7 +365,7 @@ function EmailListAccordion({
           <AccordionTrigger className="px-4 py-3 hover:no-underline">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#24253c] ring-1 ring-white/10">
-                <IconUsers className="h-5 w-5 text-violet-400" />
+                <IconUsers className="h-5 w-5 text-orange-400" />
               </div>
               <div className="flex flex-col items-start">
                 <span

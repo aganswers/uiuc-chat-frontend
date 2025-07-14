@@ -149,7 +149,7 @@ export const APIKeyInput = ({
         <div>
           <Button
             compact
-            className="bg-purple-800 hover:border-indigo-600 hover:bg-indigo-600"
+            className="bg-orange-800 hover:border-indigo-600 hover:bg-indigo-600"
             onClick={() => {
               field.form.handleSubmit()
             }}
@@ -607,7 +607,7 @@ export default function APIKeyInputForm() {
                     border: 'None',
                     color: 'white',
                   }}
-                  className="min-h-full flex-[1_1_100%] bg-gradient-to-r from-purple-900 via-indigo-800 to-blue-800 md:flex-[1_1_70%]"
+                  className="min-h-full flex-[1_1_100%] bg-background md:flex-[1_1_70%]"
                 >
                   <Flex
                     gap="md"
@@ -620,7 +620,7 @@ export default function APIKeyInputForm() {
                       order={2}
                       variant="gradient"
                       align="left"
-                      gradient={{ from: 'gold', to: 'white', deg: 50 }}
+                      gradient={{ from: 'gold', to: 'orange', deg: 50 }}
                       className={`pl-8 pt-8 ${montserrat_heading.variable} font-montserratHeading`}
                     >
                       {/* API Keys: Add LLMs to your Chatbot */}
@@ -783,7 +783,7 @@ export default function APIKeyInputForm() {
                   style={{
                     // flex: isSmallScreen ? '1 1 100%' : '1 1 40%',
                     padding: '1rem',
-                    backgroundColor: '#15162c',
+                    backgroundColor: 'var(--color-surface)',
                     color: 'white',
                   }}
                 >
@@ -918,7 +918,7 @@ export default function APIKeyInputForm() {
 
             {/* SECTION: OTHER INFO, TBD */}
             {/* <div
-              className="mx-auto mt-[2%] w-[90%] items-start rounded-2xl shadow-md shadow-purple-600"
+              className="mx-auto mt-[2%] w-[90%] items-start rounded-2xl shadow-md shadow-orange-600"
               style={{ zIndex: 1, background: '#15162c' }}
             >
               <Flex direction="row" justify="space-between">
@@ -927,7 +927,7 @@ export default function APIKeyInputForm() {
                     className={`${montserrat_heading.variable} font-montserratHeading`}
                     variant="gradient"
                     gradient={{
-                      from: 'hsl(280,100%,70%)',
+                      from: 'orange-500',
                       to: 'white',
                       deg: 185,
                     }}

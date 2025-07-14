@@ -1370,8 +1370,8 @@ export const ChatMessage: React.FC<Props> = memo(
         <div
           className={`group md:px-6 ${
             message.role === 'assistant'
-              ? 'border-b border-black/10 bg-gray-50/50 text-gray-800 dark:border-[rgba(42,42,120,0.50)] dark:bg-[#202134] dark:text-gray-100'
-              : 'border-b border-black/10 bg-white/50 text-gray-800 dark:border-[rgba(42,42,120,0.50)] dark:bg-[#15162B] dark:text-gray-100'
+              ? 'border-b border-black/10 bg-gray-50/50 text-gray-800 dark:border-[rgba(42,42,120,0.50)] bg-adaptive dark:text-gray-100'
+              : 'border-b border-black/10 bg-white/50 text-gray-800 dark:border-[rgba(42,42,120,0.50)] bg-adaptive dark:text-gray-100'
           } max-w-[100%]`}
           style={{ overflowWrap: 'anywhere' }}
         >
@@ -1394,7 +1394,7 @@ export const ChatMessage: React.FC<Props> = memo(
                     <div className="flex w-full flex-col">
                       <textarea
                         ref={textareaRef}
-                        className="w-full resize-none whitespace-pre-wrap rounded-md border border-gray-300 bg-transparent p-3 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 dark:border-gray-600 dark:bg-[#1E1E3F] dark:focus:border-purple-400"
+                        className="w-full resize-none whitespace-pre-wrap rounded-md border border-gray-300 bg-transparent p-3 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 border-adaptive bg-adaptive dark:focus:border-orange-400"
                         value={messageContent}
                         onChange={handleInputChange}
                         onKeyDown={handlePressEnter}
@@ -1409,7 +1409,7 @@ export const ChatMessage: React.FC<Props> = memo(
                       />
                       <div className="mt-4 flex justify-end space-x-3">
                         <button
-                          className="flex items-center gap-2 rounded-md border border-gray-300 bg-transparent px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+                          className="flex items-center gap-2 rounded-md border border-gray-300 bg-transparent px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 border-adaptive dark:text-gray-300 dark:hover:bg-gray-800"
                           onClick={() => {
                             setMessageContent(messageContent)
                             setIsEditing(false)
@@ -1419,7 +1419,7 @@ export const ChatMessage: React.FC<Props> = memo(
                           {t('Cancel')}
                         </button>
                         <button
-                          className="flex items-center gap-2 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-purple-500 dark:hover:bg-purple-600"
+                          className="flex items-center gap-2 rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-orange-500 dark:hover:bg-orange-600"
                           onClick={handleEditMessage}
                           disabled={messageContent.trim().length <= 0}
                         >
@@ -1897,24 +1897,24 @@ export const ChatMessage: React.FC<Props> = memo(
                       ) && (
                         <div className="relative z-0 mb-1 flex justify-start">
                           <button
-                            className="group/button relative flex items-center gap-0 rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-all duration-200 hover:border-purple-300 hover:bg-purple-50/50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-800/30 dark:text-gray-300 dark:hover:border-purple-500/40 dark:hover:bg-purple-900/20 dark:hover:text-gray-100"
+                            className="group/button relative flex items-center gap-0 rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-all duration-200 hover:border-orange-300 hover:bg-orange-50/50 hover:text-gray-900 border-adaptive dark:bg-gray-800/30 dark:text-gray-300 dark:hover:border-orange-500/40 dark:hover:bg-orange-900/20 dark:hover:text-gray-100"
                             onClick={() => handleSourcesSidebarToggle(true)}
                           >
                             <span className="whitespace-nowrap">
                               Sources
-                              <span className="ml-0.5 rounded-md bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600 group-hover/button:bg-purple-100 group-hover/button:text-purple-600 dark:bg-gray-700/50 dark:text-gray-400 dark:group-hover/button:bg-purple-900/30 dark:group-hover/button:text-purple-300">
+                              <span className="ml-0.5 rounded-md bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600 group-hover/button:bg-orange-100 group-hover/button:text-orange-600 dark:bg-gray-700/50 dark:text-gray-400 dark:group-hover/button:bg-orange-900/30 dark:group-hover/button:text-orange-300">
                                 {message.contexts.length}
                               </span>
                             </span>
 
                             {sourceThumbnails.length > 0 && (
                               <div className="flex items-center">
-                                <div className="ml-0.5 mr-1 h-4 border-l border-gray-300 dark:border-gray-600"></div>
+                                <div className="ml-0.5 mr-1 h-4 border-l border-gray-300 border-adaptive"></div>
                                 <div className="relative flex">
                                   {sourceThumbnails.map((thumbnail, index) => (
                                     <div
                                       key={index}
-                                      className="relative h-7 w-7 overflow-hidden rounded-lg border-2 border-gray-200 bg-white shadow-sm transition-transform duration-200 group-hover/button:shadow dark:border-gray-700 dark:bg-gray-800"
+                                      className="relative h-7 w-7 overflow-hidden rounded-lg border-2 border-gray-200 bg-white shadow-sm transition-transform duration-200 group-hover/button:shadow border-adaptive dark:bg-gray-800"
                                       style={{
                                         marginLeft:
                                           index > 0 ? '-0.75rem' : '0',

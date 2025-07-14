@@ -52,7 +52,7 @@ const useStyles = createStyles((theme) => ({
     backgroundPosition: '0% 0%',
     '&:hover': {
       backgroundPosition: '100% 100%',
-      background: 'linear-gradient(135deg, #2a2a40 0%, #1c1c2e 100%)',
+      background: 'linear-gradient(135deg, #fef3f2 0%, #ffffff 100%)',
     },
   },
 }))
@@ -375,17 +375,17 @@ export function LargeDropzone({
               width: '100%',
               minHeight: rem(200),
               height: 'auto',
-              backgroundColor: isDisabled ? '#3a374a' : '#1c1c2e',
+              backgroundColor: isDisabled ? '#fef3f2' : '#ffffff',
               cursor: isDisabled ? 'not-allowed' : 'pointer',
               borderWidth: '2px',
               borderStyle: 'dashed',
-              borderColor: 'rgba(147, 51, 234, 0.3)',
+              borderColor: 'rgba(234, 88, 12, 0.3)',
               borderRadius: rem(12),
               padding: '1rem',
               margin: '0 auto',
               maxWidth: '100%',
               overflow: 'hidden',
-              background: 'linear-gradient(135deg, #1c1c2e 0%, #2a2a40 100%)',
+              background: 'linear-gradient(135deg, #ffffff 0%, #fef3f2 100%)',
               transition: 'all 0.3s ease, background-position 0.3s ease',
               backgroundSize: '200% 200%',
               // backgroundPosition: '0% 0%',
@@ -409,7 +409,7 @@ export function LargeDropzone({
                 <Dropzone.Accept>
                   <IconDownload
                     size={isSmallScreen ? rem(30) : rem(50)}
-                    color="#9333ea"
+                    color="#ea580c"
                     stroke={1.5}
                   />
                 </Dropzone.Accept>
@@ -424,7 +424,7 @@ export function LargeDropzone({
                   <Dropzone.Idle>
                     <IconCloudUpload
                       size={isSmallScreen ? rem(30) : rem(50)}
-                      color="#9333ea"
+                      color="#ea580c"
                       stroke={1.5}
                     />
                   </Dropzone.Idle>

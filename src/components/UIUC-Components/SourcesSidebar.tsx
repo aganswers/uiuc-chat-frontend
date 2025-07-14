@@ -220,7 +220,7 @@ const SourcesSidebar = ({
         <div className="flex-1 overflow-y-auto">{renderContent()}</div>
 
         <button
-          className={`fixed right-[270px] top-5 z-50 h-7 w-7 hover:text-gray-400 dark:text-white dark:hover:text-gray-300 sm:top-0.5 sm:h-8 sm:w-8 sm:text-neutral-700`}
+          className={`fixed right-[270px] top-5 z-50 h-7 w-7 hover:text-gray-400 text-adaptive dark:hover:text-gray-300 sm:top-0.5 sm:h-8 sm:w-8 sm:text-neutral-700`}
           onClick={handleClose}
         >
           <IconArrowBarRight />

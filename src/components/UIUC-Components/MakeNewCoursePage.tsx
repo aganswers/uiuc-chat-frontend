@@ -1,26 +1,14 @@
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
-
 import Navbar from './navbars/Navbar'
-import {
-  Button,
-  Card,
-  Flex,
-  Group,
-  Textarea,
-  TextInput,
-  Title,
-  Tooltip,
-  Loader,
-} from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
 import router from 'next/router'
 import { montserrat_heading, montserrat_paragraph } from 'fonts'
 import createProject from '~/pages/api/UIUC-api/createProject'
-import { callSetCourseMetadata } from '~/utils/apiUtils'
-import { CourseMetadata } from '~/types/courseMetadata'
+import ProjectTable from './ProjectTable'
+import { IconPlus, IconX, IconCheck } from '@tabler/icons-react'
 
-const MakeNewCoursePage = ({
+const ProjectsPage = ({
   project_name,
   current_user_email,
   is_new_course = true,
@@ -33,16 +21,12 @@ const MakeNewCoursePage = ({
 }) => {
   const isSmallScreen = useMediaQuery('(max-width: 960px)')
   const [projectName, setProjectName] = useState(project_name || '')
-  const [projectDescription, setProjectDescription] = useState(
-    project_description || '',
-  )
-  const [isCourseAvailable, setIsCourseAvailable] = useState<
-    boolean | undefined
-  >(undefined)
+  const [projectDescription, setProjectDescription] = useState(project_description || '')
+  const [isCourseAvailable, setIsCourseAvailable] = useState<boolean | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
-  const [allExistingCourseNames, setAllExistingCourseNames] = useState<
-    string[]
-  >([])
+  const [allExistingCourseNames, setAllExistingCourseNames] = useState<string[]>([])
+  const [showCreateForm, setShowCreateForm] = useState(false)
+
   const checkCourseAvailability = () => {
     const courseExists =
       projectName != '' &&
@@ -50,14 +34,12 @@ const MakeNewCoursePage = ({
       allExistingCourseNames.includes(projectName)
     setIsCourseAvailable(!courseExists)
   }
+
   const checkIfNewCoursePage = () => {
-    // `/new` --> `new`
-    // `/new?course_name=mycourse` --> `new`
     return router.asPath.split('/')[1]?.split('?')[0] as string
   }
 
   useEffect(() => {
-    // only run when creating new courses.. otherwise VERY wasteful on DB.
     if (checkIfNewCoursePage() == 'new') {
       async function fetchgetallCourseNames() {
         const response = await fetch(`/api/UIUC-api/getAllCourseNames`)
@@ -104,195 +86,171 @@ const MakeNewCoursePage = ({
     }
   }
 
+  const resetForm = () => {
+    setProjectName('')
+    setProjectDescription('')
+    setShowCreateForm(false)
+  }
+
   return (
     <>
       <Navbar isPlain={true} />
       <Head>
-        <title>{project_name}</title>
-        <meta name="description" content="Create a new project on UIUC.chat." />
+        <title>Projects - UIUC.chat</title>
+        <meta name="description" content="Manage your AI-powered agricultural projects" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main
-        className="course-page-main"
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'start',
-          minHeight: '100vh',
-          padding: '1rem',
-        }}
-      >
-        <Card
-          shadow="xs"
-          padding="none"
-          radius="xl"
-          // style={{ maxWidth: '85%', width: '100%', marginTop: '4%' }}
-          className="mt-[4%] w-[96%] md:w-[90%] lg:max-w-[750px]"
-        >
-          <Flex direction={isSmallScreen ? 'column' : 'row'}>
-            <div
-              style={{
-                flex: isSmallScreen ? '1 1 100%' : '1 1 60%',
-                border: 'None',
-                color: 'white',
-              }}
-              className="min-h-full bg-gradient-to-r from-purple-900 via-indigo-800 to-blue-800"
-            >
-              <Group
-                m="3rem"
-                align="center"
-                style={{ justifyContent: 'center' }}
+      
+      <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-orange-50">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          {/* Header Section */}
+          <div className="text-center mb-12">
+            <h1 className={`text-4xl md:text-5xl font-bold text-gray-900 mb-4 ${montserrat_heading.variable} font-montserratHeading`}>
+              Your Projects
+            </h1>
+            <p className="text-gray-700 text-lg max-w-2xl mx-auto mb-8">
+              Manage and create AI-powered agricultural projects to enhance your farming operations
+            </p>
+            
+            {!showCreateForm && (
+              <button
+                onClick={() => setShowCreateForm(true)}
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-orange-500/25 transform hover:scale-105"
               >
-                {/* Flex just to left align title. */}
-                <Flex
-                  justify="flex-start"
-                  align="flex-start"
-                  w={isSmallScreen ? '80%' : '60%'}
-                >
-                  <Title
-                    order={isSmallScreen ? 3 : 2}
-                    variant="gradient"
-                    gradient={{ from: 'gold', to: 'white', deg: 50 }}
-                    className={`${montserrat_heading.variable} text-left font-montserratHeading`}
-                  >
-                    {!is_new_course ? `${projectName}` : 'Create a new project'}
-                  </Title>
-                </Flex>
+                <IconPlus size={20} className="mr-2" />
+                Create New Project
+              </button>
+            )}
+          </div>
 
-                <Flex
-                  direction="column"
-                  gap="md"
-                  w={isSmallScreen ? '80%' : '60%'}
-                >
-                  <TextInput
-                    autoComplete="off"
-                    data-lpignore="true"
-                    data-form-type="other"
-                    styles={{
-                      input: {
-                        backgroundColor: '#1A1B1E',
-                        paddingRight: '6rem',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        color:
-                          isCourseAvailable && projectName != ''
-                            ? 'green'
-                            : 'red',
-                        '&:focus-within': {
-                          borderColor:
-                            isCourseAvailable && projectName !== ''
-                              ? 'green'
-                              : 'red',
-                        },
-                        fontSize: isSmallScreen ? '12px' : '16px', // Added text styling
-                        font: `${montserrat_paragraph.variable} font-montserratParagraph`,
-                      },
-                      label: {
-                        fontWeight: 'bold',
-                        fontSize: isSmallScreen ? '14px' : '20px',
-                        color: 'white',
-                        marginBottom: '1rem',
-                      },
-                    }}
-                    placeholder="Project name"
-                    radius={'lg'}
-                    type="text"
-                    value={projectName}
-                    label="What is the project name?"
-                    size={'lg'}
-                    disabled={!is_new_course}
-                    onChange={(e) =>
-                      setProjectName(e.target.value.replaceAll(' ', '-'))
-                    }
-                    autoFocus
-                    withAsterisk
-                    className={`${montserrat_paragraph.variable} font-montserratParagraph`}
-                    rightSectionWidth={isSmallScreen ? 'auto' : 'auto'}
-                  />
-                  <Flex direction="row" align="flex-end">
-                    <label
-                      className={`${montserrat_paragraph.variable} mt-4 font-montserratParagraph font-bold`}
-                      style={{ fontSize: isSmallScreen ? '14px' : '20px' }}
-                    >
-                      What do you want to achieve?
+          {/* Create Project Form */}
+          {showCreateForm && (
+            <div className="mb-12">
+              <div className="max-w-2xl mx-auto bg-white backdrop-blur-sm rounded-xl border border-gray-200 p-8 shadow-lg">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900">Create New Project</h2>
+                  <button
+                    onClick={resetForm}
+                    className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <IconX size={20} />
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Project Name *
                     </label>
-                    <label
-                      className={`${montserrat_paragraph.variable} mt-5 pl-2 font-montserratParagraph text-gray-400`}
-                    >
-                      (optional)
+                    <div className="relative">
+                      <input
+                        autoComplete="off"
+                        data-lpignore="true"
+                        data-form-type="other"
+                        type="text"
+                        value={projectName}
+                        onChange={(e) =>
+                          setProjectName(e.target.value.replaceAll(' ', '-'))
+                        }
+                        placeholder="my-agriculture-project"
+                        disabled={!is_new_course}
+                        autoFocus
+                        className={`w-full px-4 py-3 bg-gray-50 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
+                          isCourseAvailable && projectName !== ''
+                            ? 'border-green-600 bg-green-50'
+                            : projectName !== '' && !isCourseAvailable
+                              ? 'border-red-500 bg-red-50'
+                              : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                      />
+                      {projectName !== '' && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          {isCourseAvailable ? (
+                            <IconCheck size={20} className="text-green-600" />
+                          ) : (
+                            <IconX size={20} className="text-red-500" />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {projectName !== '' && !isCourseAvailable && (
+                      <p className="mt-2 text-sm text-red-600">
+                        Project name already exists
+                      </p>
+                    )}
+                    {projectName !== '' && isCourseAvailable && (
+                      <p className="mt-2 text-sm text-green-600">
+                        Project name available
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Project Description
+                      <span className="text-gray-500 font-normal ml-1">(optional)</span>
                     </label>
-                  </Flex>
-                  <Textarea
-                    placeholder="Describe your project, goals, expected impact etc..."
-                    radius={'lg'}
-                    value={projectDescription}
-                    onChange={(e) => setProjectDescription(e.target.value)}
-                    size={'lg'}
-                    minRows={4}
-                    styles={{
-                      input: {
-                        backgroundColor: '#1A1B1E',
-                        fontSize: isSmallScreen ? '12px' : '16px', // Added text styling
-                        font: `${montserrat_paragraph.variable} font-montserratParagraph`,
-                        // borderColor: '#8e44ad', // Grape color
-                        '&:focus': {
-                          borderColor: '#8e44ad', // Grape color when focused/selected
-                        },
-                      },
-                      label: {
-                        fontWeight: 'bold',
-                        color: 'white',
-                      },
-                    }}
-                    className={`${montserrat_paragraph.variable} font-montserratParagraph`}
-                  />
-                  <Flex direction={'row'}>
-                    <Title
-                      order={isSmallScreen ? 5 : 4}
-                      className={`w-full pr-2 pr-7 text-right ${montserrat_paragraph.variable} mt-2 font-montserratParagraph`}
+                    <textarea
+                      value={projectDescription}
+                      onChange={(e) => setProjectDescription(e.target.value)}
+                      placeholder="Describe your project goals, expected impact, or specific agricultural focus..."
+                      rows={4}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent hover:border-gray-400 transition-all resize-none"
+                    />
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <button
+                      onClick={async () => {
+                        await handleSubmit(
+                          projectName,
+                          projectDescription,
+                          current_user_email,
+                        )
+                      }}
+                      disabled={projectName === '' || !isCourseAvailable || isLoading}
+                      className={`flex-1 py-3 px-6 rounded-lg font-medium transition-all ${
+                        projectName !== '' && isCourseAvailable && !isLoading
+                          ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-orange-500/25 transform hover:scale-105'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
                     >
-                      Next: let&apos;s upload some documents
-                    </Title>
-                    <Tooltip
-                      label="Add a project name above :)"
-                      withArrow
-                      disabled={projectName !== ''}
+                      {isLoading ? (
+                        <div className="flex items-center justify-center">
+                          <div className="w-5 h-5 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                          Creating...
+                        </div>
+                      ) : (
+                        'Create Project'
+                      )}
+                    </button>
+                    
+                    <button
+                      onClick={resetForm}
+                      className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
                     >
-                      <span>
-                        <Button
-                          onClick={async (e) => {
-                            await handleSubmit(
-                              projectName,
-                              projectDescription,
-                              current_user_email,
-                            )
-                          }}
-                          size="md"
-                          radius={'md'}
-                          className={`${isCourseAvailable && projectName !== '' ? 'bg-purple-800' : 'border-purple-800'}
-                        overflow-ellipsis text-ellipsis p-2 ${isCourseAvailable && projectName !== '' ? 'text-white' : 'text-gray-500'}
-                        mt-2 min-w-[5-rem] transform hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none lg:min-w-[8rem]`}
-                          // w={`${isSmallScreen ? '5rem' : '50%'}`}
-                          style={{
-                            alignSelf: 'flex-end',
-                          }}
-                          disabled={projectName === '' || isLoading}
-                          leftIcon={isLoading ? <Loader size="xs" color="white" /> : null}
-                        >
-                          {isLoading ? 'Creating...' : 'Create'}
-                        </Button>
-                      </span>
-                    </Tooltip>
-                  </Flex>
-                </Flex>
-              </Group>
+                      Cancel
+                    </button>
+                  </div>
+
+                  {projectName !== '' && isCourseAvailable && (
+                    <p className="text-center text-sm text-gray-600">
+                      Next: Upload documents and configure your AI assistant
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
-          </Flex>
-        </Card>
+          )}
+
+          {/* Projects Table */}
+          <div className="max-w-6xl mx-auto">
+            <ProjectTable />
+          </div>
+        </div>
       </main>
     </>
   )
 }
 
-export default MakeNewCoursePage
+export default ProjectsPage

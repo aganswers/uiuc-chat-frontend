@@ -192,7 +192,7 @@ export const ModelItem = forwardRef<
                     <Text
                       size="s"
                       style={{ marginLeft: '7px' }}
-                      className="text-purple-600"
+                      className="text-orange-600"
                     >
                       loading
                     </Text>
@@ -206,7 +206,7 @@ export const ModelItem = forwardRef<
                         <IconCircleCheck
                           size="1rem"
                           style={{ marginLeft: '8px' }}
-                          className="text-purple-400"
+                          className="text-orange-400"
                         />
                         {/* {isLoading && setLoadingModelId(null)} */}
                       </>
@@ -221,7 +221,7 @@ export const ModelItem = forwardRef<
                         isModelCached ||
                         (state.webLLMModelIdLoading.id == modelId &&
                           !state.webLLMModelIdLoading.isLoading)
-                          ? 'text-purple-400'
+                          ? 'text-orange-400'
                           : ''
                       }
                     >
@@ -499,7 +499,7 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
 
     return (
       <div
-        className="flex h-full w-[100%] flex-col space-y-4 rounded-lg bg-[#1d1f33] p-3 dark:bg-[#1d1f33]"
+        className="flex h-full w-[100%] flex-col space-y-4 rounded-lg bg-[#1d1f33] p-3 bg-adaptive"
         style={{ position: 'relative', zIndex: 100 }}
       >
         <div>
@@ -526,7 +526,7 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
                     className={`pb-1 pl-4 pt-2 ${montserrat_heading.variable} font-montserratHeading`}
                     variant="gradient"
                     gradient={{
-                      from: 'hsl(280,100%,70%)',
+                      from: 'orange-500',
                       to: 'white',
                       deg: 185,
                     }}
@@ -551,7 +551,7 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
                     className="mb-6 overflow-hidden"
                   >
                     <div className="flex bg-[#1e1f3a]/80 backdrop-blur-sm">
-                      <div className="w-1 bg-violet-500/50" />
+                      <div className="w-1 bg-orange-500/50" />
                       <div
                         className={`${montserrat_paragraph.variable} flex-1 p-4 font-montserratParagraph`}
                       >
@@ -590,7 +590,7 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
                                 href="https://platform.openai.com/docs/models"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-500 visited:text-purple-600 hover:text-blue-700 hover:underline"
+                                className="text-blue-500 visited:text-orange-600 hover:text-blue-700 hover:underline"
                               >
                                 model details and pricing.{' '}
                                 <IconExternalLink
@@ -623,7 +623,7 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
                                 href="https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-500 visited:text-purple-600 hover:text-blue-700 hover:underline"
+                                className="text-blue-500 visited:text-orange-600 hover:text-blue-700 hover:underline"
                               >
                                 Azure OpenAI models{' '}
                                 <IconExternalLink
@@ -653,7 +653,7 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
                                 href="https://www.anthropic.com/api"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-500 visited:text-purple-600 hover:text-blue-700 hover:underline"
+                                className="text-blue-500 visited:text-orange-600 hover:text-blue-700 hover:underline"
                               >
                                 Anthropic&apos;s API{' '}
                                 <IconExternalLink
@@ -684,7 +684,7 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
                                 href="https://ollama.ai"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-500 visited:text-purple-600 hover:text-blue-700 hover:underline"
+                                className="text-blue-500 visited:text-orange-600 hover:text-blue-700 hover:underline"
                               >
                                 Ollama{' '}
                                 <IconExternalLink
@@ -715,7 +715,7 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
                               AI. It even uses your GPU. For this, your browser{' '}
                               <Link
                                 href={'https://webgpureport.org/'}
-                                className="text-blue-500 visited:text-purple-600 hover:text-blue-700 hover:underline"
+                                className="text-blue-500 visited:text-orange-600 hover:text-blue-700 hover:underline"
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
@@ -750,7 +750,7 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
                                 href="https://ai.google.dev/gemini-api/docs/models/gemini"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-blue-500 visited:text-purple-600 hover:text-blue-700 hover:underline"
+                                className="text-blue-500 visited:text-orange-600 hover:text-blue-700 hover:underline"
                               >
                                 Gemini&apos;s full suite{' '}
                                 <IconExternalLink
@@ -776,7 +776,7 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
                               We support{' '}
                               <Link
                                 href="https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html"
-                                className="text-blue-500 visited:text-purple-600 hover:text-blue-700 hover:underline"
+                                className="text-blue-500 visited:text-orange-600 hover:text-blue-700 hover:underline"
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >

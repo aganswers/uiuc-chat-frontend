@@ -72,7 +72,7 @@
 
 //               <div
 //                 ref={modalRef}
-//                 className="dark:border-netural-400 inline-block max-h-[400px] transform overflow-y-auto rounded-lg border border-gray-300 bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all dark:bg-[#202123] sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
+//                 className="dark:border-netural-400 inline-block max-h-[400px] transform overflow-y-auto rounded-lg border border-gray-300 bg-white px-4 pb-4 pt-5 text-left align-bottom shadow-xl transition-all bg-adaptive sm:my-8 sm:max-h-[600px] sm:w-full sm:max-w-lg sm:p-6 sm:align-middle"
 //                 role="dialog"
 //               >
 //                 <div className="mb-10 text-4xl">Plugin Keys</div>
@@ -88,7 +88,7 @@
 //                     Google API Key
 //                   </div>
 //                   <input
-//                     className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
+//                     className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 bg-adaptive dark:text-neutral-100"
 //                     type="password"
 //                     value={
 //                       pluginKeys
@@ -147,7 +147,7 @@
 //                     Google CSE ID
 //                   </div>
 //                   <input
-//                     className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-[#40414F] dark:text-neutral-100"
+//                     className="mt-2 w-full rounded-lg border border-neutral-500 px-4 py-2 text-neutral-900 shadow focus:outline-none dark:border-neutral-800 dark:border-opacity-50 bg-adaptive dark:text-neutral-100"
 //                     type="password"
 //                     value={
 //                       pluginKeys

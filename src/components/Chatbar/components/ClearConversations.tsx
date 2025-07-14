@@ -20,16 +20,16 @@ export const ClearConversations: FC<Props> = ({ onClearConversations }) => {
   }
 
   return isConfirming ? (
-    <div className="flex w-full cursor-pointer items-center rounded-lg px-3 py-3 hover:bg-gray-500/10">
-      <IconTrash size={18} />
+    <div className="flex w-full cursor-pointer items-center rounded-md px-3 py-3 text-gray-700 hover:bg-gray-50">
+      <IconTrash size={18} className="text-gray-500" />
 
-      <div className="ml-3 flex-1 text-left text-[12.5px] leading-3 text-white">
+      <div className="ml-3 flex-1 text-left text-sm leading-3">
         {t('Are you sure?')}
       </div>
 
       <div className="flex w-[40px]">
         <IconCheck
-          className="ml-auto mr-1 min-w-[20px] text-neutral-400 hover:text-neutral-100"
+          className="ml-auto mr-1 min-w-[20px] cursor-pointer text-gray-400 hover:text-green-600"
           size={18}
           onClick={(e) => {
             e.stopPropagation()
@@ -38,7 +38,7 @@ export const ClearConversations: FC<Props> = ({ onClearConversations }) => {
         />
 
         <IconX
-          className="ml-auto min-w-[20px] text-neutral-400 hover:text-neutral-100"
+          className="ml-auto min-w-[20px] cursor-pointer text-gray-400 hover:text-red-600"
           size={18}
           onClick={(e) => {
             e.stopPropagation()

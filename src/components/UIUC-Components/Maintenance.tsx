@@ -32,7 +32,7 @@ const Maintenance = ({ }: {
         <div className="container flex flex-col items-center justify-center gap-8 px-4 py-8 text-center">
           <Link href="/">
             <h2 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-              AgAnswers. <span className="text-[hsl(280,100%,70%)]">ai</span>
+              AgAnswers. <span className="text-orange-500">ai</span>
             </h2>
           </Link>
 

@@ -285,7 +285,7 @@ export const WebScrape = ({
         styles: {
           root: {
             backgroundColor: theme.colors.nearlyWhite,
-            borderColor: theme.colors.aiPurple,
+            borderColor: '#ea580c',
           },
           title: {
             color: theme.colors.nearlyBlack,
@@ -442,7 +442,7 @@ export const WebScrape = ({
           <Input
             icon={icon}
             // I can't figure out how to change the background colors.
-            className={`mt-4 w-[80%] min-w-[20rem] disabled:bg-purple-200 lg:w-[75%]`}
+            className={`mt-4 w-[80%] min-w-[20rem] disabled:bg-orange-200 lg:w-[75%]`}
             // wrapperProps={{ borderRadius: 'xl' }}
             // styles={{ input: { backgroundColor: '#1A1B1E' } }}
             styles={{
@@ -516,7 +516,7 @@ export const WebScrape = ({
                 }}
                 size="md"
                 radius={'xl'}
-                className={`rounded-s-md ${isUrlUpdated ? 'bg-purple-800' : 'border-purple-800'
+                className={`rounded-s-md ${isUrlUpdated ? 'bg-orange-800' : 'border-orange-800'
                   } overflow-ellipsis text-ellipsis p-2 ${isUrlUpdated ? 'text-white' : 'text-gray-500'
                   } min-w-[5rem] -translate-x-1 transform hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none`}
                 w={`${isSmallScreen ? 'auto' : 'auto'}`}
@@ -552,7 +552,7 @@ export const WebScrape = ({
             //! THIS BOX IS DUPLICATED (from above). KEEP BOTH IN SYNC. For Loading states.
             icon={icon}
             // I can't figure out how to change the background colors.
-            className={`mt-4 w-[80%] min-w-[20rem] disabled:bg-purple-200 lg:w-[75%]`}
+            className={`mt-4 w-[80%] min-w-[20rem] disabled:bg-orange-200 lg:w-[75%]`}
             // wrapperProps={{ borderRadius: 'xl' }}
             // styles={{ input: { backgroundColor: '#1A1B1E' } }}
             styles={{
@@ -626,7 +626,7 @@ export const WebScrape = ({
                 }}
                 size="md"
                 radius={'xl'}
-                className={`rounded-s-md ${isUrlUpdated ? 'bg-purple-800' : 'border-purple-800'
+                className={`rounded-s-md ${isUrlUpdated ? 'bg-orange-800' : 'border-orange-800'
                   } overflow-ellipsis text-ellipsis p-2 ${isUrlUpdated ? 'text-white' : 'text-gray-500'
                   } min-w-[5rem] -translate-x-1 transform hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none`}
                 w={`${isSmallScreen ? 'auto' : 'auto'}`}
@@ -855,7 +855,7 @@ export const WebScrape = ({
                       <Text style={{ color: '#C1C2C5' }}>
                         For more detail{' '}
                         <a
-                          className={'text-purple-600'}
+                          className={'text-orange-600'}
                           href="https://docs.uiuc.chat/features/web-crawling-details"
                           target="_blank"
                           rel="noopener noreferrer"
