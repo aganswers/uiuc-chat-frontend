@@ -86,10 +86,10 @@ const Home: NextPage = () => {
               <span className="text-[hsl(280,100%,70%)]">about us</span>
             </div>
           </h4>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-8">
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://github.com/kastanday/ai-ta-frontend"
+              href="https://github.com/aganswers/uiuc-chat-frontend"
               target="_blank"
             >
               <h3 className="text-2xl font-bold">Read the code →</h3>
@@ -110,7 +110,7 @@ const Home: NextPage = () => {
                 Part of the National Center for Supercomputing Applications.
               </div>
             </Link> */}
-            <Link
+            {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
               href="https://kastanday.com/"
               target="_blank"
@@ -119,8 +119,8 @@ const Home: NextPage = () => {
               <div className="text-lg">
                 Made by Kastan Day, Rohan Marwaha and Vikram Adve.
               </div>
-              {/* <div className="text-lg">Sponsored by the </div> */}
-            </Link>
+              <div className="text-lg">Sponsored by the </div>
+            </Link> */}
 
             {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
