@@ -4,62 +4,16 @@ import { useUser } from '@clerk/nextjs'
 import { extractEmailsFromClerk } from '~/components/UIUC-Components/clerkHelpers'
 import { type CourseMetadata } from '~/types/courseMetadata'
 import { useRouter } from 'next/router'
-import { DataTable } from 'mantine-datatable'
-import styled from 'styled-components'
 import { montserrat_heading } from 'fonts'
 import Link from 'next/link'
 import React from 'react'
 import { useMediaQuery } from '@mantine/hooks'
-import { IconChevronUp, IconChevronDown, IconSelector } from '@tabler/icons-react'
-
-const StyledRow = styled.tr`
-  &:hover {
-    background-color: hsla(280, 100%, 70%, 0.5);
-  }
-`
-
-const StyledTable = styled(Table)`
-  table-layout: fixed;
-  width: 100%;
-
-  th,
-  td {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    padding: 8px;
-  }
-`
-
-const ResponsiveTableWrapper = styled.div`
-  overflow-x: auto;
-  width: 100%;
-  background-color: #15162b;
-  box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.5);
-  border-radius: 15px;
-  padding: 0;
-
-  @media (min-width: 640px) {
-    padding: 0 8px;
-  }
-
-  @media (min-width: 768px) {
-    padding: 0 16px;
-  }
-
-  @media (min-width: 1024px) {
-    padding: 0 24px;
-  }
-
-  @media (min-width: 1280px) {
-    padding: 0 32px;
-  }
-`
+import { IconChevronUp, IconChevronDown, IconSelector, IconPlus } from '@tabler/icons-react'
 
 type SortDirection = 'asc' | 'desc' | null;
 type SortableColumn = 'name' | 'privacy' | 'owner' | 'admins';
 
-const ListProjectTable: React.FC = () => {
+const ProjectTable: React.FC = () => {
   const clerk_user = useUser()
   const [courses, setProjects] = useState<{ [key: string]: CourseMetadata }[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -81,8 +35,10 @@ const ListProjectTable: React.FC = () => {
   }
 
   const getSortIcon = (column: SortableColumn) => {
-    if (sortColumn !== column) return <IconSelector size={14} />;
-    return sortDirection === 'asc' ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />;
+    if (sortColumn !== column) return <IconSelector size={16} className="text-gray-500" />;
+    return sortDirection === 'asc' ? 
+      <IconChevronUp size={16} className="text-orange-500" /> : 
+      <IconChevronDown size={16} className="text-orange-500" />;
   }
 
   const sortData = () => {
@@ -130,16 +86,34 @@ const ListProjectTable: React.FC = () => {
         );
         
         return (
-          <StyledRow
+          <tr
             key={courseName}
             onClick={() => router.push(`/${courseName}/chat`)}
-            style={{ cursor: 'pointer' }}
+            className="group cursor-pointer border-b border-gray-200 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent transition-all duration-200"
           >
-            <td>{courseName}</td>
-            <td>{courseMetadata.is_private ? 'Private' : 'Public'}</td>
-            <td>{courseMetadata.course_owner}</td>
-            <td>{filteredAdmins.join(', ')}</td>
-          </StyledRow>
+            <td className="px-6 py-4">
+              <div className="font-medium text-gray-900 group-hover:text-orange-600 transition-colors">
+                {courseName}
+              </div>
+            </td>
+            <td className="px-6 py-4">
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                courseMetadata.is_private 
+                  ? 'bg-red-100 text-red-800 border border-red-200' 
+                  : 'bg-green-100 text-green-800 border border-green-200'
+              }`}>
+                {courseMetadata.is_private ? 'Private' : 'Public'}
+              </span>
+            </td>
+            <td className="px-6 py-4 text-gray-700">
+              {courseMetadata.course_owner}
+            </td>
+            <td className="px-6 py-4 text-gray-700">
+              <div className="max-w-xs truncate">
+                {filteredAdmins.length > 0 ? filteredAdmins.join(', ') : '—'}
+              </div>
+            </td>
+          </tr>
         );
       })
       .filter((row): row is JSX.Element => row !== null);
@@ -160,7 +134,7 @@ const ListProjectTable: React.FC = () => {
 
       if (clerk_user.isSignedIn) {
         console.log('Signed')
-        const emails = extractEmailsFromClerk(clerk_user.user)
+        const emails = extractEmailsFromClerk(clerk_user.user as any)
         const currUserEmail = emails[0]
         console.log(currUserEmail)
         if (!currUserEmail) {
@@ -187,82 +161,80 @@ const ListProjectTable: React.FC = () => {
   }, [clerk_user.isLoaded, clerk_user.isSignedIn])
 
   if (!clerk_user.isLoaded || !isFullyLoaded) {
-    // Loading screen is actually NOT worth it :/ just return null
-    // return <Skeleton animate={true} height={40} width="70%" radius="xl" />
-    return null
-  } else {
-    if (!clerk_user.isSignedIn) {
-      return (
-        <>
-          {/* Todo: add enticing copy for new recruits */}
-          {/* <Title order={3}>
-            <Link className="text-purple-500 underline" href="/new">Make your own project here</Link>
-          </Title> */}
-        </>
-      )
-    }
-
     return (
-      <>
-        <div className="mx-auto w-full md:w-4/5">
-          <Title order={2} color="white" ta="center" pb={16} pt={8}>
-            Your Projects
-          </Title>
-          {rows.length > 0 ? (
-            <div
-              style={{
-                overflowX: 'auto',
-                width: '100%',
-                backgroundColor: '#15162b',
-                boxShadow: '0px 0px 10px 2px rgba(0,0,0,0,5)',
-                borderRadius: '15px',
-              }}
-            >
-              <StyledTable>
-                <thead>
-                  <tr>
-                    {[
-                      { label: 'Project Name', key: 'name' },
-                      { label: 'Privacy', key: 'privacy' },
-                      { label: 'Project Owner', key: 'owner' },
-                      { label: 'Project Admins', key: 'admins' }
-                    ].map(({ label, key }) => (
-                      <th 
-                        key={key} 
-                        onClick={() => handleSort(key as SortableColumn)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <span className={`text-md text-slate-200 ${montserrat_heading.variable} font-montserratHeading`}>
-                            {label}
-                          </span>
-                          {getSortIcon(key as SortableColumn)}
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>{rows}</tbody>
-              </StyledTable>
-            </div>
-          ) : (
-            <Text
-              size="md"
-              className={`${montserrat_heading.variable} font-montserratHeading`}
-              bg={'bg-transparent'}
-              style={{ backgroundColor: 'clear', textAlign: 'center' }}
-            >
-              You haven&apos;t created any projects yet. Let&apos;s{' '}
-              <Link className="text-purple-500 underline" href="/new">
-                go make one here
-              </Link>
-              , don&apos;t worry it&apos;s easy.
-            </Text>
-          )}
-        </div>
-      </>
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-orange-500 border-t-transparent"></div>
+      </div>
     )
   }
+
+  if (!clerk_user.isSignedIn) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-gray-600 mb-4">Sign in to view your projects</div>
+      </div>
+    )
+  }
+
+  if (rows.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="mb-6">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+            <IconPlus size={32} className="text-gray-400" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No projects yet</h3>
+          <p className="text-gray-600 mb-6">
+            Create your first AI-powered agricultural project to get started
+          </p>
+        </div>
+        <Link 
+          href="/new"
+          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 shadow-lg hover:shadow-orange-500/25"
+        >
+          <IconPlus size={20} className="mr-2" />
+          Create Project
+        </Link>
+      </div>
+    )
+  }
+
+  return (
+    <div className="w-full">
+      <div className="bg-white backdrop-blur-sm rounded-xl border border-gray-200 overflow-hidden shadow-lg">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                {[
+                  { label: 'Project Name', key: 'name' },
+                  { label: 'Privacy', key: 'privacy' },
+                  { label: 'Owner', key: 'owner' },
+                  { label: 'Admins', key: 'admins' }
+                ].map(({ label, key }) => (
+                  <th 
+                    key={key} 
+                    onClick={() => handleSort(key as SortableColumn)}
+                    className="px-6 py-4 text-left text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900 transition-colors select-none"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className={`${montserrat_heading.variable} font-montserratHeading`}>
+                        {label}
+                      </span>
+                      {getSortIcon(key as SortableColumn)}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {rows}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
 }
 
-export default ListProjectTable
+export default ProjectTable

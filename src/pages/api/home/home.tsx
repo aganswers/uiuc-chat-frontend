@@ -2,7 +2,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
-import Head from 'next/head'
 
 import { useCreateReducer } from '@/hooks/useCreateReducer'
 
@@ -634,7 +633,7 @@ const Home = ({
     return <>Loading</>
   }
   return (
-    <div>
+    <div className="h-full">
       <HomeContext.Provider
         value={{
           ...contextValue,
@@ -656,18 +655,9 @@ const Home = ({
           setQueryRewriteResult,
         }}
       >
-        <Head>
-          <title>UIUC.chat</title>
-          <meta name="description" content="ChatGPT but better." />
-          <meta
-            name="viewport"
-            content="height=device-height ,width=device-width, initial-scale=1, user-scalable=no"
-          />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
         {selectedConversation && (
           <main
-            className={`flex h-screen w-screen flex-col text-sm text-white dark:text-white ${lightMode}`}
+            className={`flex h-full w-full flex-col text-sm text-white text-adaptive ${lightMode}`}
           >
             <div className="flex h-full w-full sm:pt-0">
               {isDragging &&

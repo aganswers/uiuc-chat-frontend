@@ -88,18 +88,18 @@ const useStyles = createStyles((theme) => ({
     justifyContent: 'center',
 
     '&:hover': {
-      color: 'hsl(280,100%,70%)',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      color: '#ea580c',
+      backgroundColor: 'rgba(234, 88, 12, 0.1)',
       textDecoration: 'none',
       borderRadius: '8px',
     },
 
     '&[data-active="true"]': {
-      color: 'hsl(280,100%,70%)',
-      borderBottom: '2px solid hsl(280,100%,70%)',
+      color: '#ea580c',
+      borderBottom: '2px solid #ea580c',
       textDecoration: 'none',
       borderRadius: '8px',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      backgroundColor: 'rgba(234, 88, 12, 0.1)',
       textAlign: 'right',
     },
 
@@ -125,7 +125,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   iconButton: {
-    color: '#f1f5f9',
+    color: '#374151',
     width: '40px',
     height: '40px',
     display: 'flex',
@@ -135,13 +135,13 @@ const useStyles = createStyles((theme) => ({
     transition: 'all 0.2s ease',
 
     '&:hover': {
-      color: 'hsl(280,100%,70%)',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      color: '#ea580c',
+      backgroundColor: 'rgba(234, 88, 12, 0.1)',
     },
   },
 
   divider: {
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(156, 163, 175, 0.3)',
     height: '2rem',
     marginTop: '0.25rem',
   },
@@ -172,8 +172,8 @@ function Logo() {
   return (
     <div className="flex-1">
       <Link href="/">
-        <h2 className="ms-4 cursor-pointer text-2xl font-extrabold tracking-tight text-white sm:text-[1.8rem]">
-          AgAnswers.<span className="text-[hsl(280,100%,70%)]">ai</span>
+        <h2 className="ms-4 cursor-pointer text-2xl font-extrabold tracking-tight text-gray-900 sm:text-[1.8rem]">
+          AgAnswers.<span className="text-orange-500">ai</span>
         </h2>
       </Link>
     </div>
@@ -289,80 +289,152 @@ function NavigationContent({
 // Icon Components
 export function MessageChatIcon() {
   return (
-    <MessageChatbot
-      size={18}
-      strokeWidth={2}
-      style={{ marginRight: '3px', marginLeft: '3px' }}
-    />
+    <svg
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+      />
+    </svg>
   )
 }
 
 export function DashboardIcon() {
   return (
-    <IconHome
-      size={20}
-      strokeWidth={2}
-      style={{ marginRight: '4px', marginLeft: '4px' }}
-    />
+    <svg
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M8 5v4M16 5v4"
+      />
+    </svg>
   )
 }
 
 export function LLMIcon() {
   return (
-    <Brain
-      size={18}
-      strokeWidth={2}
-      style={{ marginRight: '3px', marginLeft: '3px' }}
-    />
-  )
-}
-
-export function MessageCodeIcon() {
-  return (
-    <MessageCode
-      size={18}
-      strokeWidth={2}
-      style={{ marginRight: '3px', marginLeft: '3px' }}
-    />
+    <svg
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+      />
+    </svg>
   )
 }
 
 export function ReportIcon() {
   return (
-    <ReportAnalytics
-      size={18}
-      strokeWidth={2}
-      style={{ marginRight: '3px', marginLeft: '3px' }}
-    />
+    <svg
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+      />
+    </svg>
   )
 }
 
 export function ApiIcon() {
   return (
-    <Code
-      size={18}
-      strokeWidth={2}
-      style={{ marginRight: '3px', marginLeft: '3px' }}
-    />
+    <svg
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+      />
+    </svg>
   )
 }
 
 export function ChartDots3Icon() {
   return (
-    <ChartDots3
-      size={18}
-      strokeWidth={2}
-      style={{ marginRight: '3px', marginLeft: '3px' }}
-    />
+    <svg
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a1 1 0 01-1-1V9a1 1 0 011-1h1a2 2 0 100-4H4a1 1 0 01-1-1V4a1 1 0 011-1h3a1 1 0 011 1v1a2 2 0 002 2z"
+      />
+    </svg>
   )
 }
 
 export function FileIcon() {
-  return <IconFilePlus size={20} strokeWidth={2} style={{ margin: '0' }} />
+  return (
+    <svg
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 4v16m8-8H4"
+      />
+    </svg>
+  )
 }
 
 export function ClipboardIcon() {
-  return <IconClipboardText size={20} strokeWidth={2} style={{ margin: '0' }} />
+  return (
+    <svg
+      className="h-4 w-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+      />
+    </svg>
+  )
 }
 
 export default function Navbar({
@@ -371,7 +443,6 @@ export default function Navbar({
   isPlain = false,
 }: NavbarProps) {
   const [opened, { toggle, close }] = useDisclosure(false)
-  const { classes } = useStyles()
   const router = useRouter()
   const [activeLink, setActiveLink] = useState<string>('')
 
@@ -383,89 +454,189 @@ export default function Navbar({
 
   const items: NavItem[] = [
     {
-      name: <NavText>Dashboard</NavText>,
+      name: <span>Dashboard</span>,
       icon: <DashboardIcon />,
       link: `/${course_name}/dashboard`,
     },
     {
-      name: <NavText>LLMs</NavText>,
+      name: <span>Chat</span>,
+      icon: <MessageChatIcon />,
+      link: `/${course_name}/chat`,
+    },
+    {
+      name: <span>LLMs</span>,
       icon: <LLMIcon />,
       link: `/${course_name}/llms`,
     },
+    // {
+    //   name: (
+    //     <div className="relative">
+    //       <span>Analysis</span>
+    //       <span className="absolute -right-6 -top-1 rounded-full bg-orange-500 px-1.5 py-0.5 text-xs text-white">
+    //         New
+    //       </span>
+    //     </div>
+    //   ),
+    //   icon: <ReportIcon />,
+    //   link: `/${course_name}/analysis`,
+    // },
     {
-      name: (
-        <Indicator
-          label="New"
-          color="hsl(280,100%,70%)"
-          size={13}
-          styles={{ indicator: { top: '-4px !important' } }}
-        >
-          <NavText>Analysis</NavText>
-        </Indicator>
-      ),
-      icon: <ReportIcon />,
-      link: `/${course_name}/analysis`,
-    },
-    {
-      name: <NavText>Prompting</NavText>,
-      icon: <MessageCodeIcon />,
-      link: `/${course_name}/prompt`,
-    },
-    {
-      name: <NavText>Tools</NavText>,
+      name: <span>Tools</span>,
       icon: <ChartDots3Icon />,
       link: `/${course_name}/tools`,
     },
-    {
-      name: <NavText>API</NavText>,
-      icon: <ApiIcon />,
-      link: `/${course_name}/api`,
-    },
+    // {
+    //   name: <span>API</span>,
+    //   icon: <ApiIcon />,
+    //   link: `/${course_name}/api`,
+    // },
   ]
 
-  return (
-    <div className="bg-[#2e026d]">
-      <Flex direction="row" align="center" justify="center">
-        <div className="mt-2 w-full max-w-[98%]">
-          <div className="navbar rounded-badge h-20 bg-[#15162c] shadow-lg shadow-purple-800">
-            <Logo />
-            {bannerUrl && <BannerImage url={bannerUrl} />}
-            {!isPlain && (
-              <NavigationContent
-                items={items}
-                opened={opened}
-                activeLink={activeLink}
-                onLinkClick={close}
-                onToggle={toggle}
-                courseName={course_name}
-              />
-            )}
-            <div className="flex items-center">
-              <div className="hidden items-center md:flex">
-                <Divider orientation="vertical" className={classes.divider} />
-                <div className="flex items-center gap-1 px-2">
-                  <Tooltip label="New Project" position="bottom" withArrow>
-                    <Link href="/new" className={classes.iconButton}>
-                      <FileIcon />
-                    </Link>
-                  </Tooltip>
-                  <Tooltip label="Documentation" position="bottom" withArrow>
-                    <Link
-                      href="https://docs.uiuc.chat/"
-                      className={classes.iconButton}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <ClipboardIcon />
-                    </Link>
-                  </Tooltip>
-                </div>
-              </div>
-              <GlobalHeader isNavbar={true} />
-            </div>
+  if (isPlain) {
+    return (
+      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <Link href="/" className="text-2xl font-bold text-gray-900">
+              AgAnswers.<span className="text-orange-500">ai</span>
+            </Link>
+            <GlobalHeader isNavbar={true} />
           </div>
         </div>
-      </Flex>
-    </div>
+      </header>
+    )
+  }
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo and Project Name */}
+          <div className="flex items-center space-x-4">
+            <Link href="/" className="text-xl font-bold text-gray-900">
+              AgAnswers.<span className="text-orange-500">ai</span>
+            </Link>
+            {course_name && (
+              <>
+                <div className="text-gray-400">/</div>
+                <span className="font-medium text-gray-700">{course_name}</span>
+              </>
+            )}
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden items-center space-x-1 md:flex">
+            {items.map((item) => (
+              <Link
+                key={item.link}
+                href={item.link}
+                onClick={close}
+                className={`flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  activeLink === item.link
+                    ? 'bg-orange-50 text-orange-600'
+                    : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
+                }`}
+              >
+                {item.icon}
+                {item.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Right Side Actions */}
+          <div className="flex items-center space-x-4">
+            <div className="hidden items-center space-x-8 md:flex">
+              <Link
+                href="/new"
+                className="flex items-center space-x-1 text-gray-700 transition-colors hover:text-orange-600"
+              >
+                <FileIcon />
+                <span className="text-sm">New Project</span>
+              </Link>
+              <Link
+                href="https://docs.uiuc.chat/"
+                className="text-sm text-gray-700 transition-colors hover:text-orange-600"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Docs
+              </Link>
+            </div>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={toggle}
+              className="rounded-md p-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600 md:hidden"
+            >
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {opened ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
+
+            <GlobalHeader isNavbar={true} />
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {opened && (
+          <div className="border-t border-gray-200 py-4 md:hidden">
+            <nav className="space-y-2">
+              {items.map((item) => (
+                <Link
+                  key={item.link}
+                  href={item.link}
+                  onClick={close}
+                  className={`flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    activeLink === item.link
+                      ? 'bg-orange-50 text-orange-600'
+                      : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600'
+                  }`}
+                >
+                  {item.icon}
+                  {item.name}
+                </Link>
+              ))}
+              <div className="mt-2 border-t border-gray-200 pt-2">
+                <Link
+                  href="/new"
+                  className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                >
+                  <FileIcon />
+                  <span>New Project</span>
+                </Link>
+                <Link
+                  href="https://docs.uiuc.chat/"
+                  className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ClipboardIcon />
+                  <span>Documentation</span>
+                </Link>
+              </div>
+            </nav>
+          </div>
+        )}
+      </div>
+    </header>
   )
 }

@@ -87,7 +87,7 @@ export default function SetExampleQuestions({
         })}
         <Group position="right" mt="md">
           <Button
-            className="bg-purple-800 hover:border-indigo-600 hover:bg-indigo-600"
+            className="bg-orange-800 hover:border-indigo-600 hover:bg-indigo-600"
             type="submit"
           >
             Submit

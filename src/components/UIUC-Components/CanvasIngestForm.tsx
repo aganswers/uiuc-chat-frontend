@@ -138,12 +138,12 @@ export default function CanvasIngestForm({
       >
         <DialogTrigger asChild>
           <Card
-            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-gradient-to-br from-[#1c1c2e] to-[#2a2a40] p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white border border-gray-200 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
             style={{ height: '100%' }}
           >
             <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-900/30">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-900/30">
                   <Image
                     src="/media/canvas_logo.png"
                     alt="Canvas logo"
@@ -152,17 +152,17 @@ export default function CanvasIngestForm({
                     className="object-contain"
                   />
                 </div>
-                <Text className="text-xl font-semibold text-gray-100">
+                <Text className="text-xl font-semibold text-gray-900">
                   Canvas
                 </Text>
               </div>
             </div>
 
-            <Text className="mb-4 text-sm leading-relaxed text-gray-400">
+            <Text className="mb-4 text-sm leading-relaxed text-gray-600">
               Import content directly from your Canvas course, including
               assignments, discussions, files, and more.
             </Text>
-            <div className="mt-auto flex items-center text-sm text-purple-400">
+            <div className="mt-auto flex items-center text-sm text-orange-400">
               <span>Configure import</span>
               <IconArrowRight
                 size={16}
@@ -172,22 +172,22 @@ export default function CanvasIngestForm({
           </Card>
         </DialogTrigger>
 
-        <DialogContent className="mx-auto h-auto w-[95%] max-w-2xl !rounded-2xl border-0 bg-[#1c1c2e] px-4 py-6 text-white sm:px-6">
+        <DialogContent className="mx-auto h-auto w-[95%] max-w-2xl !rounded-2xl border-0 bg-white px-4 py-6 text-gray-900 sm:px-6">
           <DialogHeader>
             <DialogTitle className="mb-4 text-left text-xl font-bold">
               Ingest Canvas Course
             </DialogTitle>
           </DialogHeader>
-          <div className="border-t border-gray-800 pt-4">
+          <div className="border-t border-gray-200 pt-4">
             <div className="space-y-4">
               <div>
                 <div className="break-words text-sm sm:text-base">
                   <strong>For Canvas</strong>, just enter a URL like{' '}
-                  <code className="inline-flex items-center rounded-md bg-[#020307] px-2 py-1 font-mono text-xs sm:text-sm">
+                  <code className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 font-mono text-xs text-gray-900 sm:text-sm">
                     canvas.illinois.edu/courses/COURSE_CODE
                   </code>
                   , for example:{' '}
-                  <span className="break-all text-purple-600">
+                  <span className="break-all text-orange-600">
                     <NextLink
                       target="_blank"
                       rel="noreferrer"
@@ -214,12 +214,12 @@ export default function CanvasIngestForm({
                   className="w-full rounded-full"
                   styles={{
                     input: {
-                      backgroundColor: '#1A1B1E',
+                      backgroundColor: '#f9fafb',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       '&:focus': {
-                        borderColor: '#9370DB',
+                        borderColor: '#ea580c',
                       },
                     },
                     wrapper: {
@@ -237,7 +237,7 @@ export default function CanvasIngestForm({
                 />
               </div>
               <div className="space-y-2">
-                <Label className="mb-2 block text-white">
+                <Label className="mb-2 block text-gray-900">
                   Select Content to Ingest
                 </Label>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -251,11 +251,11 @@ export default function CanvasIngestForm({
                   ].map((option) => (
                     <div
                       key={option}
-                      className="flex items-center space-x-2 rounded-lg bg-[#1A1B1E] p-2"
+                      className="flex items-center space-x-2 rounded-lg bg-gray-100 p-2"
                     >
                       <Checkbox
                         id={option.toLowerCase()}
-                        color="violet"
+                        color="orange"
                         checked={selectedOptions.includes(option.toLowerCase())}
                         onChange={() =>
                           handleOptionChange(option.toLowerCase())
@@ -263,11 +263,11 @@ export default function CanvasIngestForm({
                         label={option}
                         styles={{
                           input: {
-                            backgroundColor: '#1A1B1E',
-                            borderColor: '#9370DB',
+                            backgroundColor: '#f9fafb',
+                            borderColor: '#ea580c',
                             '&:checked': {
-                              backgroundColor: '#9370DB',
-                              borderColor: '#9370DB',
+                              backgroundColor: '#ea580c',
+                              borderColor: '#ea580c',
                             },
                           },
                         }}
@@ -284,11 +284,11 @@ export default function CanvasIngestForm({
               </div>
             </div>
           </div>
-          <div className="mt-4 border-t border-gray-800 pt-2">
+          <div className="mt-4 border-t border-gray-200 pt-2">
             <Button
               onClick={handleIngest}
               disabled={!isUrlValid}
-              className="h-11 w-full rounded-xl bg-purple-600 text-white transition-colors hover:bg-purple-700"
+              className="h-11 w-full rounded-xl bg-orange-600 text-gray-900 transition-colors hover:bg-orange-700"
             >
               Ingest Canvas Course
             </Button>

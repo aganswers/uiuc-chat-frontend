@@ -1,25 +1,10 @@
 import Head from 'next/head'
-import {
-  Title,
-  Flex,
-  Blockquote,
-  Text,
-  List,
-  Tabs,
-  Indicator,
-  Paper,
-  Card,
-} from '@mantine/core'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import Navbar from './navbars/Navbar'
 import GlobalFooter from './GlobalFooter'
-import { montserrat_heading, montserrat_paragraph } from 'fonts'
 import { fetchPresignedUrl } from '~/utils/apiUtils'
-import { DocGroupsTable } from './DocGroupsTable'
-import { ProjectFilesTable } from './ProjectFilesTable'
-import { IconInfoCircle } from '@tabler/icons-react'
 
 import { CannotEditCourse } from './CannotEditCourse'
 import { type CourseMetadata } from '~/types/courseMetadata'
@@ -36,10 +21,9 @@ const MakeOldCoursePage = ({
   metadata: CourseMetadata
   current_email: string
 }) => {
-  // Check auth - https://clerk.com/docs/nextjs/read-session-and-user-data
   const [bannerUrl, setBannerUrl] = useState<string>('')
-
   const router = useRouter()
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,7 +35,10 @@ const MakeOldCoursePage = ({
         if (metadata?.banner_image_s3 && metadata.banner_image_s3 !== '') {
           console.log('Getting banner image: ', metadata.banner_image_s3)
           try {
-            const url = await fetchPresignedUrl(metadata.banner_image_s3, course_name)
+            const url = await fetchPresignedUrl(
+              metadata.banner_image_s3,
+              course_name,
+            )
             setBannerUrl(url as string)
             console.log('Got banner image: ', url)
           } catch (error) {
@@ -60,21 +47,19 @@ const MakeOldCoursePage = ({
         }
       } catch (error) {
         console.error(error)
-        // alert('An error occurred while fetching course metadata. Please try again later.')
       }
     }
 
     fetchData()
   }, [metadata])
 
-  // TODO: update this check to consider Admins & participants.
+  // Check authorization
   if (
     metadata &&
     current_email !== (metadata.course_owner as string) &&
     metadata.course_admins.indexOf(current_email) === -1
   ) {
     router.replace(`/${course_name}/not_authorized`)
-
     return <CannotEditCourse course_name={course_name as string} />
   }
 
@@ -83,16 +68,26 @@ const MakeOldCoursePage = ({
       <Navbar course_name={course_name} bannerUrl={bannerUrl} />
 
       <Head>
-        <title>{course_name} - Admin page - UIUC.chat</title>
+        <title>{course_name} - Dashboard - AgAnswers.ai</title>
         <meta
           name="description"
-          content="The AI teaching assistant built for students at UIUC."
+          content="The AI assistant built for agricultural projects."
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="course-page-main min-w-screen flex min-h-screen flex-col items-center">
-        <div className="items-left flex w-full flex-col justify-center py-0">
-          <Flex direction="column" align="center" w="100%">
+
+      <main className="min-h-screen bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <h1 className="mb-2 text-3xl font-bold text-gray-900">
+              Project Dashboard
+            </h1>
+            <p className="text-gray-600">
+              Manage your project content and settings
+            </p>
+          </div>
+
+          <div className="space-y-8">
             {/* Upload Card Section */}
             <UploadCard
               projectName={course_name}
@@ -105,10 +100,9 @@ const MakeOldCoursePage = ({
 
             {/* Project Files Section */}
             <DocumentsCard course_name={course_name} metadata={metadata} />
-
-            {/* <NomicDocumentsCard course_name={course_name} metadata={metadata} /> */}
-          </Flex>
+          </div>
         </div>
+
         <GlobalFooter />
       </main>
     </>

@@ -92,13 +92,13 @@ const Home: NextPage = () => {
 
       <main className="min-h-screen bg-white">
         {/* Hero Section */}
-        <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-gradient-to-b from-purple-50 via-blue-50 to-white">
-          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/5 via-blue-900/5 to-transparent"></div>
+        <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-gradient-to-b from-orange-50 via-orange-25 to-white">
+          <div className="absolute inset-0 bg-gradient-to-b from-orange-900/5 via-orange-800/5 to-transparent"></div>
           
-          <div className="relative z-10 text-center max-w-5xl mx-auto pt-20">
+          <div className="mt-80 relative z-10 text-center max-w-5xl mx-auto pt-20">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-gray-900">
               Build and deploy AI solutions for{' '}
-              <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
                 industrial agriculture
               </span>
             </h1>
@@ -116,12 +116,12 @@ const Home: NextPage = () => {
                   placeholder="you@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 px-4 py-3 bg-white text-gray-900 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none shadow-sm"
+                  className="flex-1 px-4 py-3 bg-white text-gray-900 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none shadow-sm"
                   required
                 />
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-[hsl(280,100%,70%)] hover:bg-[hsl(280,100%,65%)] text-white rounded-lg font-medium transition-colors shadow-sm"
+                  className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors shadow-sm"
                 >
                   Get Started
                 </button>
@@ -159,7 +159,7 @@ const Home: NextPage = () => {
                     {activeCarouselTab === 0 && (
                       <div className="text-center text-white p-8">
                         <div className="relative mb-6">
-                          <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                          <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
                             <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
@@ -175,7 +175,7 @@ const Home: NextPage = () => {
                         <div className="mt-4 bg-gray-700/50 rounded-lg p-3">
                           <div className="text-xs text-gray-400 mb-1">Progress: 87%</div>
                           <div className="w-full bg-gray-600 rounded-full h-2">
-                            <div className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full w-[87%] transition-all duration-300"></div>
+                            <div className="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full w-[87%] transition-all duration-300"></div>
                           </div>
                         </div>
                       </div>
@@ -230,7 +230,7 @@ const Home: NextPage = () => {
             <div className="grid lg:grid-cols-2 gap-12 items-start">
               {/* Demo video */}
               <div className="bg-gray-100 rounded-xl p-8 border border-gray-200 sticky top-8">
-                <div className="aspect-video bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center mb-6">
+                <div className="aspect-video bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mb-6">
                   <video 
                     src="/media/landing/demo.mp4" 
                     autoPlay 
@@ -279,7 +279,7 @@ const Home: NextPage = () => {
                         <div className="grid md:grid-cols-3 gap-4 mb-6">
                           {item.features.map((feature, featureIndex) => (
                             <div key={featureIndex} className="flex items-center space-x-3">
-                              <div className="w-2 h-2 bg-[hsl(280,100%,70%)] rounded-full flex-shrink-0"></div>
+                              <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0"></div>
                               <span className="text-gray-700 text-sm">{feature}</span>
                             </div>
                           ))}
@@ -287,7 +287,7 @@ const Home: NextPage = () => {
 
                         <Link 
                           href="#" 
-                          className="inline-flex items-center text-[hsl(280,100%,70%)] hover:text-[hsl(280,100%,60%)] font-medium"
+                          className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium"
                         >
                           {item.link}
                           <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,7 +304,7 @@ const Home: NextPage = () => {
         </section>
 
         {/* Performance Section */}
-        <section className="py-20 px-4 bg-gradient-to-b from-blue-50/50 to-transparent">
+        <section className="py-20 px-4 bg-gradient-to-b from-orange-50/50 to-transparent">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
@@ -339,7 +339,7 @@ const Home: NextPage = () => {
                   <p className="text-gray-600 mb-6 leading-relaxed">{item.description}</p>
                   <Link 
                     href="#" 
-                    className="inline-flex items-center text-[hsl(280,100%,70%)] hover:text-[hsl(280,100%,60%)] font-medium"
+                    className="inline-flex items-center text-orange-600 hover:text-orange-700 font-medium"
                   >
                     {item.link}
                     <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -370,12 +370,12 @@ const Home: NextPage = () => {
                   placeholder="you@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="px-4 py-3 bg-white text-gray-900 rounded-lg border-0 focus:ring-2 focus:ring-purple-500 outline-none"
+                  className="px-4 py-3 bg-white text-gray-900 rounded-lg border-0 focus:ring-2 focus:ring-orange-500 outline-none"
                   required
                 />
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-[hsl(280,100%,70%)] hover:bg-[hsl(280,100%,65%)] text-white rounded-lg font-medium transition-colors"
+                  className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors"
                 >
                   Get Started
                 </button>

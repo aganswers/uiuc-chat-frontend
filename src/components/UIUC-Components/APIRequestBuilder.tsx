@@ -283,7 +283,7 @@ ${
               }
               variant="subtle"
               size="xs"
-              className="h-[36px] w-[50px] flex-shrink-0 transform rounded-md bg-purple-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
+              className="h-[36px] w-[50px] flex-shrink-0 transform rounded-md bg-orange-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
             >
               {copiedCodeSnippet ? <IconCheck /> : <IconCopy />}
             </Button>

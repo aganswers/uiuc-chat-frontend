@@ -1,83 +1,12 @@
 'use client'
 
-import {
-  TextInput,
-  Text,
-  ScrollArea,
-  Table,
-  Switch,
-  Tooltip,
-} from '@mantine/core'
-import { IconHelp, IconSearch } from '@tabler/icons-react'
 import { useMemo, useState } from 'react'
-import { createGlobalStyle } from 'styled-components'
-
+import { IconHelp, IconSearch } from '@tabler/icons-react'
 import {
   useGetDocumentGroups,
   useUpdateDocGroup,
 } from '~/hooks/docGroupsQueries'
 import { useQueryClient } from '@tanstack/react-query'
-
-const GlobalStyle = createGlobalStyle`
-  .mantine-Checkbox-input:checked {
-    background-color: purple;
-    border-color: hsl(280,100%,80%);
-  } 
-
-  .mantine-Table-root thead tr {
-    background-color: #1e1f3a;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .mantine-Table-root thead th {
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 600;
-  }
-
-  .mantine-Table-root tbody tr {
-    background-color: #15162c;
-  }
-
-  .mantine-Table-root tbody tr:nth-of-type(odd) {
-    background-color: #1e1f3a;
-  }
-
-  .mantine-TextInput-input {
-    background-color: #1e1f3a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-  }
-
-  .mantine-TextInput-input:focus {
-    border-color: rgb(147, 51, 234);
-  }
-
-  .mantine-ScrollArea-root {
-    background-color: #15162c;
-    overflow: hidden;
-    border-radius: 0.75rem;
-  }
-
-  .mantine-Table-root {
-    margin: 0;
-  }
-
-  .mantine-Table-root thead tr th {
-    background-color: #1e1f3a;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .mantine-ScrollArea-scrollbar {
-    background-color: #1e1f3a;
-  }
-
-  .mantine-ScrollArea-thumb {
-    background-color: rgba(147, 51, 234, 0.4);
-  }
-`
 
 export function DocGroupsTable({ course_name }: { course_name: string }) {
   const queryClient = useQueryClient()
@@ -112,107 +41,131 @@ export function DocGroupsTable({ course_name }: { course_name: string }) {
     setDocumentGroupSearch(event.target.value)
   }
 
+  if (isLoadingDocumentGroups) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-[orange-500]"></div>
+      </div>
+    )
+  }
+
+  if (isErrorDocumentGroups) {
+    return (
+      <div className="py-8 text-center">
+        <p className="text-red-600">Error loading document groups</p>
+        <button
+          onClick={() => refetchDocumentGroups()}
+          className="mt-2 rounded-md bg-orange-500 px-4 py-2 text-white hover:bg-orange-600"
+        >
+          Retry
+        </button>
+      </div>
+    )
+  }
+
   return (
-    <>
-      <GlobalStyle />
-      <div className="w-full px-0 py-4 md:px-2">
-        <TextInput
+    <div className="space-y-4">
+      {/* Search Input */}
+      <div className="relative">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <IconSearch className="h-4 w-4 text-gray-400" />
+        </div>
+        <input
+          type="text"
           placeholder="Search by Document Group"
-          mb="sm"
-          radius="md"
-          icon={<IconSearch />}
           value={documentGroupSearch}
           onChange={handleDocumentGroupSearchChange}
-          className="sticky top-0 z-10"
+          className="w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-3 text-sm text-gray-900 placeholder-gray-500 focus:border-[orange-500] focus:outline-none focus:ring-1 focus:ring-[orange-500]"
         />
-        <ScrollArea.Autosize
-          mah="calc(80vh - 16rem)"
-          type="always"
-          offsetScrollbars
-          className="overflow-hidden rounded-xl"
-        >
-          <Table
-            style={{
-              tableLayout: 'fixed',
-              position: 'relative',
-              borderCollapse: 'separate',
-              borderSpacing: 0,
-              overflow: 'hidden',
-            }}
-            // withBorder
-            withColumnBorders
-            highlightOnHover
-          >
-            <thead>
+      </div>
+
+      {/* Table */}
+      <div className="overflow-hidden rounded-lg border border-gray-200">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
               <tr>
-                <th className="w-[50%] sm:w-[60%] md:w-[70%]">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Document Group
                 </th>
-                <th className="w-[30%] sm:w-[25%] md:w-[15%]">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Number of Docs
                 </th>
-                <th className="w-[20%] text-center sm:w-[15%]">
-                  <Tooltip
-                    multiline
-                    color="#CC65FF"
-                    arrowPosition="center"
-                    arrowSize={8}
-                    width={220}
-                    withArrow
-                    label="If a document is included in ANY enabled group, it will be included in chatbot results. Enabled groups take precedence over disabled groups."
-                  >
-                    <span className="flex items-center justify-center whitespace-nowrap">
-                      <span className="hidden sm:inline">Enabled</span>
-                      <IconHelp size={16} className="ml-1" />
-                    </span>
-                  </Tooltip>
+                <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <div className="flex items-center justify-center space-x-1">
+                    <span>Enabled</span>
+                    <div className="group relative">
+                      <IconHelp size={14} className="text-gray-400" />
+                      <div className="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 transform group-hover:block">
+                        <div className="max-w-xs rounded-lg bg-gray-900 px-3 py-2 text-xs text-white">
+                          If a document is included in ANY enabled group, it
+                          will be included in chatbot results. Enabled groups
+                          take precedence over disabled groups.
+                          <div className="absolute left-1/2 top-full -translate-x-1/2 transform border-4 border-transparent border-t-gray-900"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-200 bg-white">
               {filteredDocumentGroups.map((doc_group_obj, index) => (
-                <tr key={index}>
-                  <td style={{ wordWrap: 'break-word' }}>
-                    <Text>{doc_group_obj.name}</Text>
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+                    {doc_group_obj.name}
                   </td>
-                  {/* <td style={{ wordWrap: 'break-word' }}>
-                      <Text>{doc_group_obj.description}</Text>
-                    </td> */}
-                  <td style={{ wordWrap: 'break-word' }}>
-                    <Text>{doc_group_obj.doc_count}</Text>
+                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                    {doc_group_obj.doc_count}
                   </td>
-                  <td
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      wordWrap: 'break-word',
-                    }}
-                  >
-                    <Switch
-                      checked={doc_group_obj.enabled}
-                      onChange={(event) =>
-                        updateDocGroup.mutate({
-                          doc_group_obj,
-                          enabled: event.currentTarget.checked,
-                        })
-                      }
-                      color="grape"
-                      size="lg"
-                    />
+                  <td className="whitespace-nowrap px-6 py-4 text-center">
+                    <label className="relative inline-flex cursor-pointer items-center">
+                      <input
+                        type="checkbox"
+                        checked={doc_group_obj.enabled}
+                        onChange={(event) =>
+                          updateDocGroup.mutate({
+                            doc_group_obj,
+                            enabled: event.currentTarget.checked,
+                          })
+                        }
+                        className="sr-only"
+                      />
+                      <div
+                        className={`h-6 w-11 rounded-full transition-colors ${
+                          doc_group_obj.enabled
+                            ? 'bg-orange-500'
+                            : 'bg-gray-200'
+                        }`}
+                      >
+                        <div
+                          className={`h-5 w-5 transform rounded-full bg-white shadow-md transition-transform ${
+                            doc_group_obj.enabled
+                              ? 'translate-x-5'
+                              : 'translate-x-0.5'
+                          } mt-0.5`}
+                        ></div>
+                      </div>
+                    </label>
                   </td>
                 </tr>
               ))}
               {filteredDocumentGroups.length === 0 && (
                 <tr>
-                  <td colSpan={4}>
-                    <Text align="center">No document groups found</Text>
+                  <td
+                    colSpan={3}
+                    className="px-6 py-8 text-center text-gray-500"
+                  >
+                    {documentGroupSearch
+                      ? 'No document groups found matching your search'
+                      : 'No document groups found'}
                   </td>
                 </tr>
               )}
             </tbody>
-          </Table>
-        </ScrollArea.Autosize>
+          </table>
+        </div>
       </div>
-    </>
+    </div>
   )
 }

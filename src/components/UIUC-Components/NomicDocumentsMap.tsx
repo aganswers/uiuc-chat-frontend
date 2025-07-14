@@ -57,7 +57,7 @@ function NomicDocumentMap({ course_name }: { course_name: string }) {
               <div className="flex min-w-0 items-center gap-2">
                 <Title
                   order={3}
-                  className={`pl-12 text-[hsl(280,100%,70%)] ${montserrat_heading.variable} font-montserratHeading text-lg sm:text-2xl`}
+                  className={`pl-12 text-orange-500 ${montserrat_heading.variable} font-montserratHeading text-lg sm:text-2xl`}
                 >
                   Concept Map of User Queries
                 </Title>
@@ -92,7 +92,7 @@ function NomicDocumentMap({ course_name }: { course_name: string }) {
                     className=" overflow-hidden"
                   >
                     <div className="flex bg-[#1e1f3a]/80 backdrop-blur-sm">
-                      <div className="w-1 bg-violet-500/50" />
+                      <div className="w-1 bg-orange-500/50" />
                       <div
                         className={`${montserrat_paragraph.variable}  flex-1 p-4 font-montserratParagraph`}
                       >
@@ -104,19 +104,19 @@ function NomicDocumentMap({ course_name }: { course_name: string }) {
                         </Text>
                         <ul className="list-inside list-disc space-y-2 text-white/80">
                           <li className="text-sm">
-                            <span className="text-violet-300">
+                            <span className="text-orange-300">
                               Similar topics
                             </span>{' '}
                             cluster together
                           </li>
                           <li className="text-sm">
-                            <span className="text-violet-300">
+                            <span className="text-orange-300">
                               Different topics
                             </span>{' '}
                             are positioned further apart
                           </li>
                           <li className="text-sm">
-                            <span className="text-violet-300">
+                            <span className="text-orange-300">
                               Common themes
                             </span>{' '}
                             and knowledge gaps become visible
@@ -125,7 +125,7 @@ function NomicDocumentMap({ course_name }: { course_name: string }) {
                         <Text className="mt-3 text-gray-400" size="sm">
                           Learn more about{' '}
                           <a
-                            className="text-purple-400 underline hover:text-purple-300"
+                            className="text-orange-400 underline hover:text-orange-300"
                             href="https://atlas.nomic.ai/"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -161,7 +161,7 @@ function NomicDocumentMap({ course_name }: { course_name: string }) {
                   your visualization only. Please{' '}
                   <a
                     href="mailto:kvday2@illinois.edu"
-                    className="text-purple-400 underline hover:text-purple-300"
+                    className="text-orange-400 underline hover:text-orange-300"
                   >
                     contact us
                   </a>{' '}
@@ -186,7 +186,7 @@ function NomicDocumentMap({ course_name }: { course_name: string }) {
                 <Text className="mt-3 text-gray-400" size="sm">
                   Learn more about{' '}
                   <a
-                    className="text-purple-400 underline hover:text-purple-300"
+                    className="text-orange-400 underline hover:text-orange-300"
                     href="https://atlas.nomic.ai/"
                     target="_blank"
                     rel="noopener noreferrer"

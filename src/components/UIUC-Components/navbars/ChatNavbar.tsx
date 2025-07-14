@@ -3,17 +3,6 @@ import Link from 'next/link'
 import { useDisclosure } from '@mantine/hooks'
 import Image from 'next/image'
 import { useEffect, useState, useContext, useRef } from 'react'
-import {
-  Burger,
-  Container,
-  createStyles,
-  Flex,
-  Group,
-  Paper,
-  rem,
-  Transition,
-} from '@mantine/core'
-import { IconHome, IconSettings, IconPlus } from '@tabler/icons-react'
 import { useRouter } from 'next/router'
 import { montserrat_heading } from 'fonts'
 import { useUser } from '@clerk/nextjs'
@@ -22,121 +11,6 @@ import HomeContext from '~/pages/api/home/home.context'
 import { UserSettings } from '../../Chat/UserSettings'
 import { usePostHog } from 'posthog-js/react'
 
-const styles: Record<string, React.CSSProperties> = {
-  logoContainerBox: {
-    height: '52px',
-    maxWidth:
-      typeof window !== 'undefined' && window.innerWidth > 600 ? '80%' : '100%',
-    paddingLeft:
-      typeof window !== 'undefined' && window.innerWidth > 600 ? '25px' : '5px',
-  },
-  thumbnailImage: {
-    objectFit: 'cover',
-    objectPosition: 'center',
-    height: '100%',
-    width: 'auto',
-  },
-}
-
-const HEADER = rem(60)
-const HEADER_HEIGHT = parseFloat(HEADER) * 16
-
-const useStyles = createStyles((theme, { isAdmin }: { isAdmin: boolean }) => ({
-  inner: {
-    height: HEADER_HEIGHT,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  links: {
-    padding: 'theme.spacing.lg, 1em, 1em',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    [theme.fn.smallerThan(825)]: {
-      display: 'none',
-    },
-  },
-  link: {
-    fontSize: rem(12),
-    textAlign: 'center',
-    padding: `3px ${theme.spacing.xs}`,
-    margin: '0.2rem 0.1rem',
-    fontWeight: 700,
-    transition:
-      'border-color 100ms ease, color 100ms ease, background-color 100ms ease',
-    borderRadius: theme.radius.sm,
-    '&:hover': {
-      color: 'hsl(280,100%,70%)',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      textDecoration: 'none',
-      borderRadius: '10px',
-    },
-    '&[data-active="true"]': {
-      color: 'hsl(280,100%,70%)',
-      borderBottom: '2px solid hsl(280,100%,70%)',
-      textDecoration: 'none',
-      borderRadius: '10px',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      textAlign: 'right',
-    },
-    [theme.fn.smallerThan(isAdmin ? 825 : 500)]: {
-      display: 'list-item',
-      textAlign: 'center',
-      borderRadius: 0,
-      padding: theme.spacing.sm,
-      margin: '0.2rem 0 0.2rem 0',
-    },
-  },
-  burger: {
-    [theme.fn.largerThan(isAdmin ? 825 : 500)]: {
-      display: 'none',
-    },
-    marginRight: '3px',
-    marginLeft: '0px',
-  },
-  dropdown: {
-    position: 'absolute',
-    top: HEADER_HEIGHT,
-    right: '20px',
-    zIndex: 10,
-    borderRadius: '10px',
-    overflow: 'hidden',
-    width: '200px',
-    [theme.fn.largerThan(isAdmin ? 825 : 500)]: {
-      display: 'none',
-    },
-  },
-  adminDashboard: {
-    [theme.fn.smallerThan(825)]: {
-      display: 'none',
-    },
-    display: 'block',
-  },
-  settings: {
-    [theme.fn.smallerThan(isAdmin ? 675 : 500)]: {
-      display: 'none',
-    },
-    display: 'block',
-  },
-  newChat: {
-    [theme.fn.smallerThan(isAdmin ? 500 : 350)]: {
-      display: 'none',
-    },
-    display: 'block',
-  },
-  modelSettings: {
-    position: 'absolute',
-    zIndex: 10,
-    borderRadius: '10px',
-    boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-  },
-  modelButtonContainer: {
-    position: 'relative',
-    top: '100%',
-  },
-}))
-
 interface ChatNavbarProps {
   bannerUrl?: string
   isgpt4?: boolean
@@ -144,499 +18,342 @@ interface ChatNavbarProps {
 
 const ChatNavbar = ({ bannerUrl = '', isgpt4 = true }: ChatNavbarProps) => {
   const router = useRouter()
+  const { user, isLoaded, isSignedIn } = useUser()
+  const [windowWidth, setWindowWidth] = useState(0)
   const [opened, { toggle }] = useDisclosure(false)
-  const [show, setShow] = useState(true)
   const [isAdminOrOwner, setIsAdminOrOwner] = useState(false)
-  const { classes, theme } = useStyles({ isAdmin: isAdminOrOwner })
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 825,
-  )
-  const clerk_user = useUser()
-  const posthog = usePostHog()
+
   const {
-    state: { showModelSettings, selectedConversation },
+    state: { showModelSettings },
     dispatch: homeDispatch,
     handleNewConversation,
   } = useContext(HomeContext)
 
-  const topBarRef = useRef<HTMLDivElement | null>(null)
   const getCurrentCourseName = () => {
-    return router.asPath.split('/')[1]
+    return router.query.course_name as string
   }
 
   useEffect(() => {
     const fetchCourses = async () => {
-      if (clerk_user.isLoaded && clerk_user.isSignedIn) {
-        const currUserEmails = extractEmailsFromClerk(clerk_user.user)
-        // Posthog identify
-        posthog?.identify(clerk_user.user.id, {
-          email: currUserEmails[0] || 'no_email',
-        })
+      if (!isLoaded || !isSignedIn) return
 
-        const response = await fetch(
-          `/api/UIUC-api/getCourseMetadata?course_name=${getCurrentCourseName()}`,
-        )
-        const courseMetadata = await response.json().then((data) => {
-          return data['course_metadata']
-        })
+      try {
+        const response = await fetch(`/api/UIUC-api/getAllCourseNames`)
+        if (response.ok) {
+          const data = await response.json()
+          const currentCourse = getCurrentCourseName()
 
-        if (
-          currUserEmails.includes(courseMetadata.course_owner) ||
-          currUserEmails.some((email) =>
-            courseMetadata.course_admins?.includes(email),
-          )
-        ) {
-          setIsAdminOrOwner(true)
-        } else {
-          setIsAdminOrOwner(false)
+          if (data.course_names?.includes(currentCourse)) {
+            const metadataResponse = await fetch(
+              `/api/UIUC-api/getCourseMetadata?course_name=${currentCourse}`,
+            )
+            if (metadataResponse.ok) {
+              const metadataData = await metadataResponse.json()
+              const metadata = metadataData.course_metadata
+
+              if (metadata) {
+                const userEmails = extractEmailsFromClerk(user)
+                const userEmail = userEmails[0]
+
+                const isOwner = metadata.course_owner === userEmail
+                const isAdmin = metadata.course_admins?.includes(userEmail)
+
+                setIsAdminOrOwner(isOwner || isAdmin)
+              }
+            }
+          }
         }
+      } catch (error) {
+        console.error('Error fetching course data:', error)
       }
     }
+
     fetchCourses()
-  }, [clerk_user.isLoaded, clerk_user.isSignedIn])
+  }, [isLoaded, isSignedIn, user, router.query.course_name])
 
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth)
-      if (isAdminOrOwner && window.innerWidth > 825) {
-        opened && toggle()
-      } else if (!isAdminOrOwner && window.innerWidth > 500) {
-        opened && toggle()
-      }
     }
 
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [opened, toggle])
+    if (typeof window !== 'undefined') {
+      setWindowWidth(window.innerWidth)
+      window.addEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   return (
-    <div
-      className={`${isgpt4 ? 'bg-[#15162c]' : 'bg-[#2e026d]'} -mr-0 px-12 pb-16 pl-5`}
-      style={{ display: show ? 'block' : 'none' }}
-    >
-      <div
-        style={{
-          paddingTop: 'Opx',
-          maxWidth: '100vw',
-          marginRight: '0px',
-          paddingLeft: '17px',
-        }}
-      >
-        <Flex
-          justify="flex-start"
-          direction="row"
-          styles={{ height: '10px', flexWrap: 'nowrap', gap: '0rem' }}
-          className="navbar rounded-badge bg-[#15162c] shadow-lg shadow-purple-800"
-        >
-          <Link href="/" style={{ flex: 'none', flexWrap: 'nowrap' }}>
-            <h2 className="cursor-pointer font-extrabold tracking-tight text-white sm:ms-3 sm:text-[2rem] sm:text-[2rem] md:text-3xl">
-              AgAnswers.<span className="text-[hsl(280,100%,70%)]">ai</span>
-            </h2>
-          </Link>
+    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo and Project Name */}
+          <div className="flex items-center space-x-4">
+            <Link href="/" className="text-xl font-bold text-gray-900">
+              AgAnswers.<span className="text-orange-500">ai</span>
+            </Link>
+            {getCurrentCourseName() && (
+              <>
+                <div className="text-gray-400">/</div>
+                <span className="font-medium text-gray-700">
+                  {getCurrentCourseName()}
+                </span>
+              </>
+            )}
+          </div>
 
-          {bannerUrl ? (
-            <div style={{ ...styles.logoContainerBox, flex: '1' }}>
-              <Image
-                src={bannerUrl}
-                style={{ ...styles.thumbnailImage }}
-                width={2000}
-                height={2000}
-                alt="The course creator uploaded a logo for this chatbot."
-                aria-label="The course creator uploaded a logo for this chatbot."
-                onError={(e) => (e.currentTarget.style.display = 'none')} // display nothing if image fails
-              />
-            </div>
-          ) : (
-            // Placeholder div
-            <div
-              style={{
-                ...styles.logoContainerBox,
-                flex: '1',
-                visibility: 'hidden',
+          {/* Desktop Actions - Ordered: New Chat, Settings, Dashboard */}
+          <div className="hidden items-center space-x-4 md:flex">
+            <button
+              onClick={() => {
+                handleNewConversation()
+                setTimeout(() => {
+                  const chatInput = document.querySelector(
+                    'textarea.chat-input',
+                  ) as HTMLTextAreaElement
+                  if (chatInput) {
+                    chatInput.focus()
+                  }
+                }, 100)
               }}
-            ></div>
-          )}
-
-          <Group
-            position="right"
-            styles={{ marginLeft: 'auto', flexWrap: 'nowrap' }}
-            spacing="0px"
-            noWrap
-          >
-            {/* This is the hamburger menu / dropdown */}
-            <Transition
-              transition="pop-top-right"
-              duration={200}
-              mounted={opened}
+              className="flex items-center space-x-2 rounded-md px-3 py-2 text-gray-700 transition-colors hover:bg-gray-50 hover:text-orange-500"
             >
-              {(styles) => (
-                <Paper
-                  className={classes.dropdown}
-                  withBorder
-                  style={{
-                    ...styles,
-                    transform: 'translateY(26px)',
-                    minWidth: '120px',
-                  }}
-                >
-                  {/* New Chat button in hamburger when screen is small */}
-                  <div
-                    className={classes.link}
-                    style={{
-                      display:
-                        windowWidth <= (isAdminOrOwner ? 500 : 350) && opened
-                          ? 'block'
-                          : 'none',
-                      padding: 0,
-                    }}
-                  >
-                    <div
-                      onClick={() => {
-                        handleNewConversation()
-                        toggle()
-                        setTimeout(() => {
-                          const chatInput = document.querySelector(
-                            'textarea.chat-input',
-                          ) as HTMLTextAreaElement
-                          if (chatInput) {
-                            chatInput.focus()
-                          }
-                        }, 100)
-                      }}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        cursor: 'pointer',
-                        height: '100%',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <IconPlus size={24} />
-                        <span
-                          className={`${montserrat_heading.variable} font-montserratHeading`}
-                          style={{ marginLeft: '8px' }}
-                        >
-                          New Chat
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Settings button in hamburger when screen is small */}
-                  <div
-                    className={classes.link}
-                    style={{
-                      display: windowWidth <= 675 && opened ? 'block' : 'none',
-                      padding: 0,
-                    }}
-                  >
-                    <div
-                      onClick={() => {
-                        homeDispatch({
-                          field: 'showModelSettings',
-                          value: !showModelSettings,
-                        })
-                        toggle()
-                      }}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        cursor: 'pointer',
-                        height: '100%',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <IconSettings size={24} />
-                        <span
-                          className={`${montserrat_heading.variable} font-montserratHeading`}
-                          style={{ marginLeft: '8px' }}
-                        >
-                          Settings
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Admin Dashboard in hamburger when screen is small */}
-                  {isAdminOrOwner && (
-                    <div
-                      className={classes.link}
-                      style={{
-                        display:
-                          windowWidth <= 825 && opened ? 'block' : 'none',
-                        padding: 0,
-                      }}
-                    >
-                      <Link
-                        href={`/${getCurrentCourseName()}/dashboard`}
-                        onClick={() => toggle()}
-                        style={{
-                          width: '100%',
-                          padding: '8px',
-                          cursor: 'pointer',
-                          textDecoration: 'none',
-                          color: 'inherit',
-                          display: 'block',
-                          height: '100%',
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <IconHome size={24} />
-                          <span
-                            className={`${montserrat_heading.variable} font-montserratHeading`}
-                            style={{ marginLeft: '8px' }}
-                          >
-                            Admin Dashboard
-                          </span>
-                        </div>
-                      </Link>
-                    </div>
-                  )}
-                </Paper>
-              )}
-            </Transition>
-
-            {/* This is the main links on top  */}
-            <Container
-              className={classes.inner}
-              style={{ padding: 0, margin: 0 }}
-            >
-              <div className={classes.links}>
-                {/* Navigation links can be added here if needed */}
-              </div>
-              <div className={classes.newChat}>
-                <button
-                  className={`${classes.link}`}
-                  style={{ padding: '3px 8px', minWidth: '100px' }}
-                  onClick={() => {
-                    handleNewConversation()
-                    setTimeout(() => {
-                      const chatInput = document.querySelector(
-                        'textarea.chat-input',
-                      ) as HTMLTextAreaElement
-                      if (chatInput) {
-                        chatInput.focus()
-                      }
-                    }, 100)
-                  }}
-                  aria-label="Start a new chat"
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      width: '100%',
-                    }}
-                  >
-                    <IconPlus
-                      size={24}
-                      style={{
-                        position: 'relative',
-                        top: '-2px',
-                        paddingLeft: '-3px',
-                      }}
-                    />
-                    <span
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'flex-center',
-                        padding: '0px',
-                        height: '40px',
-                        whiteSpace: 'nowrap',
-                        marginLeft: '5px',
-                      }}
-                    >
-                      <span
-                        style={{ whiteSpace: 'nowrap' }}
-                        className={`${montserrat_heading.variable} font-montserratHeading`}
-                      >
-                        New Chat
-                      </span>
-                    </span>
-                  </div>
-                </button>
-              </div>
-              <div className={classes.settings}>
-                <button
-                  className={`${classes.link}`}
-                  style={{ padding: '3px 8px', minWidth: '100px' }}
-                  onClick={() => {
-                    homeDispatch({
-                      field: 'showModelSettings',
-                      value: !showModelSettings,
-                    })
-                  }}
-                  aria-label={`Open or close show model settings.`}
-                >
-                  <div
-                    ref={topBarRef}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      width: '100%',
-                    }}
-                  >
-                    <IconSettings
-                      size={24}
-                      style={{
-                        position: 'relative',
-                        top: '-2px',
-                        paddingLeft: '-3px',
-                      }}
-                    />
-                    <span
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'flex-center',
-                        padding: '0px',
-                        height: '40px',
-                        whiteSpace: 'nowrap',
-                        marginLeft: '5px',
-                      }}
-                    >
-                      <span
-                        style={{ whiteSpace: 'nowrap' }}
-                        className={`${montserrat_heading.variable} font-montserratHeading`}
-                      >
-                        Settings
-                      </span>
-                    </span>
-                  </div>
-                </button>
-              </div>
-              {isAdminOrOwner && (
-                <div className={classes.adminDashboard}>
-                  <button
-                    className={`${classes.link}`}
-                    style={{ padding: '3px 8px', minWidth: '100px' }}
-                    onClick={(e) => {
-                      // Handle click with modifier keys
-                      if (e.ctrlKey || e.metaKey || e.shiftKey) {
-                        window.open(
-                          `/${getCurrentCourseName()}/dashboard`,
-                          '_blank',
-                        )
-                      } else {
-                        router.push(`/${getCurrentCourseName()}/dashboard`)
-                      }
-                    }}
-                    onAuxClick={(e) => {
-                      // Handle middle click (button 1)
-                      if (e.button === 1) {
-                        window.open(
-                          `/${getCurrentCourseName()}/dashboard`,
-                          '_blank',
-                        )
-                      }
-                    }}
-                    onContextMenu={(e) => {
-                      // Don't prevent default to allow normal right-click menu
-                      // But add the URL to the clipboard
-                      navigator.clipboard.writeText(
-                        `${window.location.origin}/${getCurrentCourseName()}/dashboard`,
-                      )
-                    }}
-                    aria-label={`Go to dashboard`}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        width: '100%',
-                        position: 'relative',
-                      }}
-                    >
-                      <IconHome
-                        size={30}
-                        strokeWidth={2}
-                        style={{
-                          marginRight: '4px',
-                          marginLeft: '4px',
-                          position: 'relative',
-                          top: '-2px',
-                        }}
-                      />
-                      <span
-                        style={{
-                          backgroundImage:
-                            "url('/media/hero-header-underline-reflow.svg')",
-                          backgroundRepeat: 'no-repeat',
-                          backgroundSize: 'contain',
-                          backgroundPosition: 'bottom',
-                          width: '100%',
-                          height: '40px',
-                          position: 'relative',
-                          top: '13px',
-                        }}
-                      >
-                        <span
-                          className={`${montserrat_heading.variable} font-montserratHeading`}
-                        >
-                          Admin Dashboard
-                        </span>
-                      </span>
-                    </div>
-                  </button>
-                </div>
-              )}
-              <div
-                style={{
-                  position: 'absolute',
-                  zIndex: 100,
-                  right: '30px',
-                  top: '75px',
-                }}
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <UserSettings />
-              </div>
-            </Container>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              <span>New Chat</span>
+            </button>
 
-            <Container style={{ padding: 0, margin: 0 }}>
-              <Burger
-                opened={opened}
-                onClick={toggle}
-                className={classes.burger}
-                size="sm"
-              />
-            </Container>
-
-            {/* Sign in buttons */}
-            <div
-              className="pl-1 pr-2"
-              style={{
-                // marginLeft: '-5px',
-                position: 'relative',
-                top: '-2px',
-                justifyContent: 'flex-center',
+            <button
+              onClick={() => {
+                homeDispatch({
+                  field: 'showModelSettings',
+                  value: !showModelSettings,
+                })
               }}
+              className="flex items-center space-x-2 rounded-md px-3 py-2 text-gray-700 transition-colors hover:bg-gray-50 hover:text-orange-500"
             >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              <span>Settings</span>
+            </button>
+
+            {/* Dashboard button - always visible when inside a project */}
+            {getCurrentCourseName() && (
+              <Link
+                href={`/${getCurrentCourseName()}/dashboard`}
+                className="flex items-center space-x-2 rounded-md px-3 py-2 text-gray-700 transition-colors hover:bg-gray-50 hover:text-orange-500"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 5v4M16 5v4"
+                  />
+                </svg>
+                <span>Dashboard</span>
+              </Link>
+            )}
+
+            {/* User Button */}
+            <div className="flex items-center">
               <SignedIn>
-                <Group grow spacing={'xs'}>
-                  <UserButton afterSignOutUrl="/" />
-                </Group>
+                <UserButton />
               </SignedIn>
               <SignedOut>
-                <SignInButton>
-                  <button className={classes.link}>
-                    <div
-                      className={`${montserrat_heading.variable} font-montserratHeading`}
-                      style={{ fontSize: '12px' }}
-                    >
-                      <span style={{ whiteSpace: 'nowrap' }}>Sign in / </span>
-                      <span> </span>
-                      {/* ^^ THIS SPAN IS REQUIRED !!! TO have nice multiline behavior */}
-                      <span style={{ whiteSpace: 'nowrap' }}>Sign up</span>
-                    </div>
-                  </button>
-                </SignInButton>
+                <SignInButton />
               </SignedOut>
             </div>
-          </Group>
-        </Flex>
+          </div>
+
+          {/* Mobile menu button */}
+          <button
+            onClick={toggle}
+            className="rounded-md p-2 text-gray-700 hover:bg-gray-50 hover:text-orange-500 md:hidden"
+          >
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {opened ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile Navigation */}
+        {opened && (
+          <div className="border-t border-gray-200 py-4 md:hidden">
+            <nav className="space-y-2">
+              <button
+                onClick={() => {
+                  handleNewConversation()
+                  toggle()
+                  setTimeout(() => {
+                    const chatInput = document.querySelector(
+                      'textarea.chat-input',
+                    ) as HTMLTextAreaElement
+                    if (chatInput) {
+                      chatInput.focus()
+                    }
+                  }, 100)
+                }}
+                className="flex w-full items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-500"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                <span>New Chat</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  homeDispatch({
+                    field: 'showModelSettings',
+                    value: !showModelSettings,
+                  })
+                  toggle()
+                }}
+                className="flex w-full items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-500"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <span>Settings</span>
+              </button>
+
+              {/* Dashboard button - always visible when inside a project */}
+              {getCurrentCourseName() && (
+                <Link
+                  href={`/${getCurrentCourseName()}/dashboard`}
+                  className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-500"
+                  onClick={toggle}
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 5v4M16 5v4"
+                    />
+                  </svg>
+                  <span>Dashboard</span>
+                </Link>
+              )}
+
+              {/* Mobile User Button */}
+              <div className="px-3 py-2">
+                <SignedIn>
+                  <UserButton />
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton />
+                </SignedOut>
+              </div>
+            </nav>
+          </div>
+        )}
       </div>
-    </div>
+
+      {/* Model Settings Modal */}
+      {showModelSettings && (
+        <div className="absolute right-4 top-16 z-50 rounded-lg border border-gray-200 bg-white shadow-lg">
+          <UserSettings />
+        </div>
+      )}
+    </header>
   )
 }
+
 export default ChatNavbar

@@ -406,26 +406,26 @@ export default function WebsiteIngestForm({
       >
         <DialogTrigger asChild>
           <Card
-            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-gradient-to-br from-[#1c1c2e] to-[#2a2a40] p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white border border-gray-200 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
             style={{ height: '100%' }}
           >
             <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-900/30">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-900/30">
                   <IconWorldDownload className="h-8 w-8" />
                 </div>
-                <Text className="text-xl font-semibold text-gray-100">
+                <Text className="text-xl font-semibold text-gray-900">
                   Website
                 </Text>
               </div>
             </div>
 
-            <Text className="mb-4 text-sm leading-relaxed text-gray-400">
+            <Text className="mb-4 text-sm leading-relaxed text-gray-600">
               Import content from any website by providing the URL. Supports
               recursive crawling with customizable depth.
             </Text>
 
-            <div className="mt-auto flex items-center text-sm text-purple-400">
+            <div className="mt-auto flex items-center text-sm text-orange-400">
               <span>Configure import</span>
               <IconArrowRight
                 size={16}
@@ -435,13 +435,13 @@ export default function WebsiteIngestForm({
           </Card>
         </DialogTrigger>
 
-        <DialogContent className="mx-auto w-[95%] max-w-2xl !rounded-2xl border-0 bg-[#1c1c2e] px-4 py-6 text-white sm:px-6">
+        <DialogContent className="mx-auto w-[95%] max-w-2xl !rounded-2xl border-0 bg-white px-4 py-6 text-gray-900 sm:px-6">
           <DialogHeader>
             <DialogTitle className="mb-4 text-left text-xl font-bold">
               Ingest Website
             </DialogTitle>
           </DialogHeader>
-          <div className="border-t border-gray-800 pt-4">
+          <div className="border-t border-gray-200 pt-4">
             <div className="max-h-[70vh] overflow-y-auto sm:h-auto sm:max-h-none sm:overflow-visible">
               <div className="space-y-4">
                 <form
@@ -455,12 +455,12 @@ export default function WebsiteIngestForm({
                     className="w-full rounded-full"
                     styles={{
                       input: {
-                        backgroundColor: '#1A1B1E',
+                        backgroundColor: '#f9fafb',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         '&:focus': {
-                          borderColor: '#9370DB',
+                          borderColor: '#ea580c',
                         },
                       },
                       wrapper: {
@@ -497,7 +497,7 @@ export default function WebsiteIngestForm({
                         <TextInput
                           styles={{
                             input: {
-                              backgroundColor: '#1A1B1E',
+                              backgroundColor: '#f9fafb',
                             },
                           }}
                           name="maximumUrls"
@@ -554,7 +554,7 @@ export default function WebsiteIngestForm({
                           <Text style={{ color: '#C1C2C5' }}>
                             For more detail{' '}
                             <a
-                              className={'text-purple-600'}
+                              className={'text-orange-600'}
                               href="https://docs.uiuc.chat/features/web-crawling-details"
                               target="_blank"
                               rel="noopener noreferrer"
@@ -631,11 +631,11 @@ export default function WebsiteIngestForm({
               </div>
             </div>
           </div>
-          <div className="mt-4 border-t border-gray-800 pt-2">
+          <div className="mt-4 border-t border-gray-200 pt-2">
             <Button
               onClick={handleIngest}
               disabled={!isUrlValid}
-              className="h-11 w-full rounded-xl bg-purple-600 text-white transition-colors hover:bg-purple-700"
+              className="h-11 w-full rounded-xl bg-orange-600 text-gray-900 transition-colors hover:bg-orange-700"
             >
               Ingest the Website
             </Button>

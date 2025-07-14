@@ -14,6 +14,8 @@ import { CourseMetadata } from '~/types/courseMetadata'
 import { fetchCourseMetadata } from '~/utils/apiUtils'
 import { useUser } from '@clerk/nextjs'
 import { extractEmailsFromClerk } from '~/components/UIUC-Components/clerkHelpers'
+import Navbar from '~/components/UIUC-Components/navbars/Navbar'
+import Head from 'next/head'
 
 const ChatPage: NextPage = () => {
   const [metadata, setMetadata] = useState<CourseMetadata | null>()
@@ -90,17 +92,31 @@ const ChatPage: NextPage = () => {
 
   return (
     <>
-      <Home
-        current_email={currentEmail}
-        course_metadata={course_metadata}
-        course_name={'chat'}
-        document_count={0}
-        link_parameters={{
-          guidedLearning: false,
-          documentsOnly: false,
-          systemPromptOnly: false,
-        }}
-      />
+      <Head>
+        <title>Chat - UIUC.chat</title>
+        <meta
+          name="description"
+          content="The AI teaching assistant built for students at UIUC."
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <div className="flex h-screen flex-col bg-white">
+        <Navbar isPlain={true} />
+        <div className="flex-1 overflow-hidden">
+          <Home
+            current_email={currentEmail}
+            course_metadata={course_metadata}
+            course_name={'chat'}
+            document_count={0}
+            link_parameters={{
+              guidedLearning: false,
+              documentsOnly: false,
+              systemPromptOnly: false,
+            }}
+          />
+        </div>
+      </div>
     </>
   )
 }

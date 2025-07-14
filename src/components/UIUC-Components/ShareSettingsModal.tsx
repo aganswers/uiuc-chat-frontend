@@ -107,11 +107,11 @@ export default function ShareSettingsModal({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.2 }}
-        className="relative mx-4 max-h-[85vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-[#15162c] shadow-2xl ring-1 ring-white/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-violet-500/40 [&::-webkit-scrollbar-track]:bg-[#1e1f3a] [&::-webkit-scrollbar]:w-2"
+        className="relative mx-4 max-h-[85vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-[#15162c] shadow-2xl ring-1 ring-white/10 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-orange-500/40 [&::-webkit-scrollbar-track]:bg-[#1e1f3a] [&::-webkit-scrollbar]:w-2"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Add subtle gradient border */}
-        <div className="absolute inset-0 -z-10 rounded-2xl bg-gradient-to-tr from-violet-500/20 to-transparent blur-xl" />
+        <div className="absolute inset-0 -z-10 rounded-2xl bg-gradient-to-tr from-orange-500/20 to-transparent blur-xl" />
 
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
@@ -152,12 +152,12 @@ export default function ShareSettingsModal({
                   type="text"
                   value={shareUrl}
                   readOnly
-                  className={`${montserrat_paragraph.variable} w-full rounded-lg bg-[#1e1f3a]/80 px-4 py-2.5 font-montserratParagraph text-sm text-white/90 ring-1 ring-white/10 backdrop-blur-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-violet-500/50`}
+                  className={`${montserrat_paragraph.variable} w-full rounded-lg bg-[#1e1f3a]/80 px-4 py-2.5 font-montserratParagraph text-sm text-white/90 ring-1 ring-white/10 backdrop-blur-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500/50`}
                 />
               </div>
               <button
                 onClick={handleCopy}
-                className="flex min-w-[42px] items-center justify-center rounded-lg bg-violet-600 p-2.5 text-white transition-all duration-300 hover:bg-violet-500 active:scale-95"
+                className="flex min-w-[42px] items-center justify-center rounded-lg bg-orange-600 p-2.5 text-white transition-all duration-300 hover:bg-orange-500 active:scale-95"
               >
                 {isCopied ? <IconCheck size={16} /> : <IconCopy size={16} />}
               </button>
@@ -173,16 +173,16 @@ export default function ShareSettingsModal({
             </h3>
 
             {/* Privacy toggle */}
-            <div className="rounded-lg bg-[#1e1f3a] p-4 ring-1 ring-white/10 transition-all duration-300 hover:ring-violet-500/50">
+            <div className="rounded-lg bg-[#1e1f3a] p-4 ring-1 ring-white/10 transition-all duration-300 hover:ring-orange-500/50">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {isPrivate ? (
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#15162c] ring-1 ring-white/10">
-                      <IconLock className="h-5 w-5 text-violet-400" />
+                      <IconLock className="h-5 w-5 text-orange-400" />
                     </div>
                   ) : (
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#15162c] ring-1 ring-white/10">
-                      <IconLockOpen className="h-5 w-5 text-violet-400" />
+                      <IconLockOpen className="h-5 w-5 text-orange-400" />
                     </div>
                   )}
                   <div>
@@ -203,7 +203,7 @@ export default function ShareSettingsModal({
                 <button
                   onClick={handlePrivacyChange}
                   className={`relative h-6 w-11 rounded-full transition-colors duration-300 ${
-                    isPrivate ? 'bg-violet-600' : 'bg-gray-600'
+                    isPrivate ? 'bg-orange-600' : 'bg-gray-600'
                   }`}
                 >
                   <span

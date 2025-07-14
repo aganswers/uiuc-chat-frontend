@@ -1,461 +1,725 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* .grid-container {
-  display: inline-grid;
-  gap: 20rem 0rem;
-  grid-template: auto / repeat(3, 1fr);
-} */
+/* CSS-First Theme Configuration */
+@theme {
+  /* Light mode colors */
+  --color-background-light: hsla(0, 0%, 100%, 0.95);
+  --color-background-dark: rgba(33, 33, 33, 0.9);
+  --color-surface-light: oklch(0.99 0 0);
+  --color-surface-dark: oklch(0.15 0 0);
+  
+  /* Text colors */
+  --color-text-light: oklch(0.2 0 0);
+  --color-text-dark: oklch(0.95 0 0);
+  --color-text-muted-light: oklch(0.4 0 0);
+  --color-text-muted-dark: oklch(0.7 0 0);
+  
+  /* Primary accent colors (Orange) */
+  --color-primary-light: oklch(0.65 0.2 41.8); /* orange-500 */
+  --color-primary-dark: oklch(0.7 0.18 41.8); /* orange-400 */
+  --color-primary-hover-light: oklch(0.6 0.2 38.8); /* orange-600 */
+  --color-primary-hover-dark: oklch(0.75 0.16 41.8); /* orange-300 */
+  
+  /* Secondary accent colors (Green) */
+  --color-secondary-light: oklch(0.6 0.18 142); /* green-600 */
+  --color-secondary-dark: oklch(0.7 0.16 142); /* green-500 */
+  
+  /* Border colors */
+  --color-border-light: oklch(0.9 0 0);
+  --color-border-dark: oklch(0.25 0 0);
+  
+  /* Surface colors for cards, modals, etc */
+  --color-card-light: oklch(0.98 0 0);
+  --color-card-dark: oklch(0.12 0 0);
+  
+  /* Error/Warning/Success colors */
+  --color-error: oklch(0.55 0.22 27);
+  --color-warning: oklch(0.75 0.18 80);
+  --color-success: oklch(0.7 0.16 142);
+  
+  /* Shadows */
+  --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-dark: 0 1px 3px rgba(0, 0, 0, 0.3);
+  
+  /* Spacing scale */
+  --spacing: 0.25rem;
+  
+  /* Font families */
+  --font-montserrat-heading: var(--font-montserratHeading);
+  --font-montserrat-paragraph: var(--font-montserratParagraph);
+  
+  /* Breakpoints */
+  --breakpoint-3xl: 1920px;
+}
 
-/* Force dark mode for all users!! */
-@media (prefers-color-scheme: dark) {
-  html {
+/* Base layer for adaptive theme system */
+@layer base {
+  /* Adaptive mode - follows system preference */
+  html.color-scheme-adaptive {
+    @media (prefers-color-scheme: dark) {
+      --color-background: var(--color-background-dark);
+      --color-surface: var(--color-surface-dark);
+      --color-text: var(--color-text-dark);
+      --color-text-muted: var(--color-text-muted-dark);
+      --color-primary: var(--color-primary-dark);
+      --color-primary-hover: var(--color-primary-hover-dark);
+      --color-secondary: var(--color-secondary-dark);
+      --color-border: var(--color-border-dark);
+      --color-card: var(--color-card-dark);
+      --shadow: var(--shadow-dark);
+      color-scheme: dark;
+    }
+    
+    @media (prefers-color-scheme: light) {
+      --color-background: var(--color-background-light);
+      --color-surface: var(--color-surface-light);
+      --color-text: var(--color-text-light);
+      --color-text-muted: var(--color-text-muted-light);
+      --color-primary: var(--color-primary-light);
+      --color-primary-hover: var(--color-primary-hover-light);
+      --color-secondary: var(--color-secondary-light);
+      --color-border: var(--color-border-light);
+      --color-card: var(--color-card-light);
+      --shadow: var(--shadow-light);
+      color-scheme: light;
+    }
+  }
+  
+  /* Forced light mode */
+  html.color-scheme-light {
+    --color-background: var(--color-background-light);
+    --color-surface: var(--color-surface-light);
+    --color-text: var(--color-text-light);
+    --color-text-muted: var(--color-text-muted-light);
+    --color-primary: var(--color-primary-light);
+    --color-primary-hover: var(--color-primary-hover-light);
+    --color-secondary: var(--color-secondary-light);
+    --color-border: var(--color-border-light);
+    --color-card: var(--color-card-light);
+    --shadow: var(--shadow-light);
+    color-scheme: light;
+  }
+  
+  /* Forced dark mode */
+  html.color-scheme-dark {
+    --color-background: var(--color-background-dark);
+    --color-surface: var(--color-surface-dark);
+    --color-text: var(--color-text-dark);
+    --color-text-muted: var(--color-text-muted-dark);
+    --color-primary: var(--color-primary-dark);
+    --color-primary-hover: var(--color-primary-hover-dark);
+    --color-secondary: var(--color-secondary-dark);
+    --color-border: var(--color-border-dark);
+    --color-card: var(--color-card-dark);
+    --shadow: var(--shadow-dark);
     color-scheme: dark;
   }
-}
-
-@media (prefers-color-scheme: light) {
+  
+  /* Default to adaptive mode */
+  html:not([class*="color-scheme-"]) {
+    @extend html.color-scheme-adaptive;
+  }
+  
+  /* Base styles */
   html {
-    color-scheme: dark;
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+  
+  /* Standard list properties */
+  ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+
+  ol {
+    list-style-type: decimal;
+    padding-left: 20px;
+  }
+
+  li {
+    margin-bottom: 5px;
   }
 }
 
-/* Scrollbar Styles - Clean gray theme with hover effects */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-  background-color: transparent;
-}
-
-::-webkit-scrollbar-track {
-  background-color: transparent;
-  transition: background-color 0.2s ease;
-}
-
-::-webkit-scrollbar-track:hover {
-  background-color: rgba(255, 255, 255, 0.06);
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-::-webkit-scrollbar-corner {
-  background-color: transparent;
-}
-
-html {
-  background: #202123;
-}
-
-@media (max-width: 720px) {
-  pre {
-    width: calc(100vw - 110px);
+/* Utility classes for adaptive theme */
+@layer utilities {
+  /* Background utilities */
+  .bg-adaptive {
+    background-color: var(--color-background);
+  }
+  
+  .bg-surface {
+    background-color: var(--color-surface);
+  }
+  
+  .bg-card {
+    background-color: var(--color-card);
+  }
+  
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+  
+  .bg-primary-hover {
+    background-color: var(--color-primary-hover);
+  }
+  
+  .bg-secondary {
+    background-color: var(--color-secondary);
+  }
+  
+  /* Text utilities */
+  .text-adaptive {
+    color: var(--color-text);
+  }
+  
+  .text-muted {
+    color: var(--color-text-muted);
+  }
+  
+  .text-primary {
+    color: var(--color-primary);
+  }
+  
+  .text-secondary {
+    color: var(--color-secondary);
+  }
+  
+  /* Border utilities */
+  .border-adaptive {
+    border-color: var(--color-border);
+  }
+  
+  .border-primary {
+    border-color: var(--color-primary);
+  }
+  
+  /* Shadow utilities */
+  .shadow-adaptive {
+    box-shadow: var(--shadow);
+  }
+  
+  /* Hover states */
+  .hover\:bg-primary-hover:hover {
+    background-color: var(--color-primary-hover);
+  }
+  
+  .hover\:text-primary:hover {
+    color: var(--color-primary);
+  }
+  
+  .hover\:text-primary-hover:hover {
+    color: var(--color-primary-hover);
+  }
+  
+  .hover\:border-primary:hover {
+    border-color: var(--color-primary);
   }
 }
 
-pre:has(div.codeblock) {
-  padding: 0;
-}
-
-.courseCardHeroImage {
-  object-fit: cover;
-}
-
-.flex-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.item-wide {
-  flex: 2;
-  padding: 10px;
-  box-sizing: border-box;
-  /* border: 1px solid #ccc; */
-}
-
-.item {
-  flex: 1;
-  padding: 10px;
-  box-sizing: border-box;
-  /* border: 1px solid #ccc; */
-}
-
-/* Make the purple background fade out  */
-.course-page-main {
-  /* height: 400px;     */
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(#2e026d),
-    to(#020307),
-    color-stop(0.75, #15162c)
-  );
-  background-color: #020307;
-  background-size:
-    100% 45%,
-    0%;
-  background-repeat: no-repeat;
-}
-
-.fade-2-lines {
-  overflow: hidden;
-  position: relative;
-  max-height: 1.525em;
-  /* exactly one lines */
-  max-height: 3.05em;
-  /* exactly two lines */
-}
-
-.fade-3-lines {
-  overflow: hidden;
-  position: relative;
-  max-height: 1.525em;
-  /* exactly one lines */
-  max-height: 4.575em;
-  /* exactly two lines */
-}
-
-.fade-2-lines::after {
-  content: '';
-  text-align: right;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 40%;
-  height: 1.2em;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0), #0e1116 90%);
-}
-
-.fade-3-lines::after {
-  content: '';
-  text-align: right;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 40%;
-  height: 1.2em;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0), #0e1116 90%);
-}
-
-/* Standard list properties. Didn't work before manually adding this. */
-ul {
-  list-style-type: disc;
-  padding-left: 20px;
-}
-
-ol {
-  list-style-type: decimal;
-  padding-left: 20px;
-}
-
-li {
-  margin-bottom: 5px;
-}
-
-.kas-gradient-text {
-  background-color: #f3ec78;
-  background-image: linear-gradient(45deg, #f3ec78, #af4261);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-
-/* 👇 FOR EmailChips.tsx -- to make nice email input fields. 👇 */
-.input:focus {
-  border-color: cornflowerblue;
-  outline: none;
-}
-
-.input.has-error {
-  border-color: tomato;
-  outline: none;
-}
-
-.error {
-  /* margin: 0; */
-  font-size: 90%;
-  color: tomato;
-}
-
-.tag-item {
-  background-color: #020307;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 30px;
-  height: 30px;
-  padding: 0 4px 0 1rem;
-  display: inline-flex;
-  align-items: center;
-  margin: 0 0.3rem 0.3rem 0;
-}
-
-.tag-item button {
-  background-color: blueviolet;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  font: inherit;
-  margin-left: 10px;
-  font-weight: bold;
-  padding: 0;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-/* 👆 FOR EmailChips.tsx -- to make nice email input fields. 👆 */
-
-.goldUnderline {
-  text-decoration: underline;
-  text-decoration-color: gold;
-  color: inherit;
-}
-
-/* todo: make this an inline style if easy */
-.nomic-iframe {
-  height: min(75vh, 50vw);
-  width: 90%;
-  min-height: 50vw;
-  /* width: min(75vh, 66vw); */
-}
-
-.home-header_text-underline {
-  background-image: url('/media/hero-header-underline-reflow.svg');
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  width: 100%;
-  height: 100px;
-  display: inline-block;
-  overflow: visible;
-}
-
-/* FOR NOMIC LOADING BOX */
-.skeleton-box {
-  display: inline-block;
-  height: 1em;
-  position: relative;
-  overflow: hidden;
-  /* background-color: #020307; */
-  background-color: #070712;
-}
-
-.skeleton-box::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  transform: translateX(-100%);
-  background-image: linear-gradient(
-    90deg,
-    rgba(99, 39, 175, 0) 0,
-    rgba(75, 85, 72, 0.2) 20%,
-    rgba(30, 64, 175, 0.5) 60%,
-    rgba(66, 1, 95, 0)
-  );
-  /* Changed the primary color to purple-900 */
-  animation: shimmer 5s infinite;
-  content: '';
-}
-
-@keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-/* END NOMIC LOADING BOX */
-
-@keyframes pulsate {
-  0% {
-    color: #ffffff;
+/* Component-specific styles */
+@layer components {
+  /* Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: transparent;
   }
 
-  100% {
-    color: #9d4edd;
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+    transition: background-color 0.2s ease;
   }
-}
 
-.pulsate {
-  animation: pulsate 1s infinite alternate;
-}
+  ::-webkit-scrollbar-track:hover {
+    @media (prefers-color-scheme: dark) {
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+    @media (prefers-color-scheme: light) {
+      background-color: rgba(0, 0, 0, 0.06);
+    }
+  }
 
-a[data-footnote-backref] {
-  visibility: hidden;
-}
+  ::-webkit-scrollbar-thumb {
+    @media (prefers-color-scheme: dark) {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    @media (prefers-color-scheme: light) {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+  }
 
-/* Styling for citation links */
-.supMarkDown a {
-  display: inline;
-  font-size: 100%;
-  line-height: inherit;
-  color: rgba(255, 255, 255, 0.95);
-  text-decoration: none;
-  white-space: normal;
-  font-weight: 400;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  background-color: rgba(157, 78, 221, 0.15);
-  border: 1px solid rgba(157, 78, 221, 0.3);
-  border-radius: 4px;
-  padding: 0 4px;
-  margin: 0;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-  vertical-align: baseline;
-  position: relative;
-  top: 0;
-}
+  ::-webkit-scrollbar-thumb:hover {
+    @media (prefers-color-scheme: dark) {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    @media (prefers-color-scheme: light) {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+  }
 
-/* Add responsive adjustments for small screens */
-@media (max-width: 640px) {
+  ::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+  
+  /* Code blocks */
+  @media (max-width: 720px) {
+    pre {
+      width: calc(100vw - 110px);
+    }
+  }
+
+  pre:has(div.codeblock) {
+    padding: 0;
+  }
+  
+  /* Course card styles */
+  .courseCardHeroImage {
+    object-fit: cover;
+  }
+
+  .flex-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .item-wide {
+    flex: 2;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .item {
+    flex: 1;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  /* Course page background gradient */
+  .course-page-main {
+    background: linear-gradient(
+      to bottom,
+      var(--color-primary),
+      var(--color-background),
+      var(--color-surface)
+    );
+    background-color: var(--color-background);
+    background-size: 100% 45%, 0%;
+    background-repeat: no-repeat;
+  }
+  
+  /* Fade effects */
+  .fade-2-lines {
+    overflow: hidden;
+    position: relative;
+    max-height: 3.05em;
+  }
+
+  .fade-3-lines {
+    overflow: hidden;
+    position: relative;
+    max-height: 4.575em;
+  }
+
+  .fade-2-lines::after,
+  .fade-3-lines::after {
+    content: '';
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 40%;
+    height: 1.2em;
+    background: linear-gradient(to right, transparent, var(--color-background) 90%);
+  }
+  
+  /* Gradient text effect */
+  .kas-gradient-text {
+    background-image: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+  }
+  
+  /* Email chips styles */
+  .input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+  }
+
+  .input.has-error {
+    border-color: var(--color-error);
+    outline: none;
+  }
+
+  .error {
+    font-size: 90%;
+    color: var(--color-error);
+  }
+
+  .tag-item {
+    background-color: var(--color-surface);
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 30px;
+    height: 30px;
+    padding: 0 4px 0 1rem;
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0.3rem 0.3rem 0;
+  }
+
+  .tag-item button {
+    background-color: var(--color-primary);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    margin-left: 10px;
+    font-weight: bold;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  /* Gold underline */
+  .goldUnderline {
+    text-decoration: underline;
+    text-decoration-color: var(--color-warning);
+    color: inherit;
+  }
+  
+  /* Nomic iframe */
+  .nomic-iframe {
+    height: min(75vh, 50vw);
+    width: 90%;
+    min-height: 50vw;
+  }
+  
+  /* Home header underline */
+  .home-header_text-underline {
+    background-image: url('/media/hero-header-underline-reflow.svg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 100%;
+    height: 100px;
+    display: inline-block;
+    overflow: visible;
+  }
+  
+  /* Skeleton loading box */
+  .skeleton-box {
+    display: inline-block;
+    height: 1em;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-surface);
+  }
+
+  .skeleton-box::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      90deg,
+      transparent 0,
+      color-mix(in oklch, var(--color-primary) 20%, transparent) 20%,
+      color-mix(in oklch, var(--color-primary) 50%, transparent) 60%,
+      transparent
+    );
+    animation: shimmer 5s infinite;
+    content: '';
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+  /* Pulsate animation */
+  @keyframes pulsate {
+    0% {
+      color: var(--color-text);
+    }
+    100% {
+      color: var(--color-primary);
+    }
+  }
+
+  .pulsate {
+    animation: pulsate 1s infinite alternate;
+  }
+  
+  /* Hide footnote backrefs */
+  a[data-footnote-backref] {
+    visibility: hidden;
+  }
+  
+  /* Citation link styles */
   .supMarkDown a {
-    padding: 1px 4px;
+    display: inline;
+    font-size: 100%;
+    line-height: inherit;
+    color: var(--color-text);
+    text-decoration: none;
+    white-space: normal;
+    font-weight: 400;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    background-color: color-mix(in oklch, var(--color-primary) 15%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
+    border-radius: 4px;
+    padding: 0 4px;
+    margin: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    vertical-align: baseline;
+    position: relative;
+    top: 0;
+  }
+
+  @media (max-width: 640px) {
+    .supMarkDown a {
+      padding: 1px 4px;
+      line-height: 1.6;
+    }
+  }
+
+  .supMarkDown a:visited {
+    color: var(--color-text-muted);
+    background-color: color-mix(in oklch, var(--color-primary) 12%, transparent);
+    border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
+  }
+
+  .supMarkDown a:hover,
+  .supMarkDown a:focus {
+    background-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+    color: var(--color-text);
+    cursor: pointer;
+    border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
+  }
+  
+  /* Document button styles */
+  .linkMarkDown button:not(.codeblock-button) {
+    height: 100px;
+    width: 150px;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    padding: 10px 10px;
+    color: var(--color-primary);
+    background-color: var(--color-surface);
+    border-radius: 5px;
+    border: none;
+    text-decoration: none;
+    white-space: break-spaces;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    box-shadow: var(--shadow);
+  }
+
+  .linkMarkDown button:not(.codeblock-button):hover,
+  .linkMarkDown button:not(.codeblock-button):focus {
+    background-color: var(--color-primary);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .linkMarkDown button:not(.codeblock-button):visited {
+    color: var(--color-primary-hover);
+  }
+  
+  .linkMarkDown ol:has(> li > button) {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    background-color: var(--color-card);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    scroll-snap-type: x mandatory;
+    counter-reset: section;
+    list-style-type: none;
+  }
+  
+  .codeBlock code:has(> span) {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .codeBlock pre:has(> code) {
+    background-color: var(--color-surface) !important;
+  }
+  
+  .linkMarkDown ol li:has(> button) {
+    max-width: 150px;
+    flex: 0 0 calc(25% - 10px);
+    scroll-snap-align: start;
+    height: 100%;
+  }
+
+  .linkMarkDown ol li:last-child:has(> button) {
+    margin-right: 0;
+  }
+  
+  /* MagicBell styling */
+  body button[class$='EnablePushNotificationsButton'] {
+    background-color: var(--color-surface) !important;
+    color: var(--color-text) !important;
+  }
+
+  button.css-s37qmw {
+    background: var(--color-surface) !important;
+    color: var(--color-text) !important;
+  }
+  
+  /* Think Tag Dropdown Styles */
+  .think-tag-dropdown {
+    @apply mb-4 w-full rounded-lg border shadow-sm transition-all duration-200;
+    border-color: var(--color-border);
+    background-color: color-mix(in oklch, var(--color-surface) 30%, transparent);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .think-tag-dropdown:hover {
+    border-color: var(--color-primary);
+  }
+
+  .think-tag-header {
+    @apply flex cursor-pointer items-center justify-between p-4 transition-colors duration-200;
+    color: var(--color-text);
+    border-radius: 0.5rem;
+  }
+
+  .think-tag-header:hover {
+    background-color: color-mix(in oklch, var(--color-primary) 10%, transparent);
+  }
+
+  .think-tag-header .loading-container {
+    @apply flex items-center gap-2;
+    opacity: 0.8;
+  }
+
+  .think-tag-brain-icon {
+    color: var(--color-primary);
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
+    transition: transform 0.2s ease;
+  }
+
+  .think-tag-header:hover .think-tag-brain-icon {
+    transform: scale(1.1);
+  }
+  
+  .think-tag-content {
+    @apply max-h-0 overflow-hidden transition-all duration-300 ease-in-out;
+    background-color: color-mix(in oklch, var(--color-surface) 50%, transparent);
+    border-top: 1px solid transparent;
+  }
+
+  .think-tag-content > div {
+    @apply p-4;
+    color: var(--color-text);
     line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  .think-tag-content.expanded {
+    max-height: 1000px;
+    border-top-color: var(--color-border);
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .think-tag-content.expanded:hover {
+    background-color: color-mix(in oklch, var(--color-surface) 60%, transparent);
+  }
+
+  .think-tag-content.expanded:focus {
+    outline: 2px solid var(--color-primary);
+  }
+
+  .think-tag-content.expanded > div {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .think-tag-header:focus {
+    outline: 2px solid var(--color-primary);
+  }
+
+  .think-tag-icon {
+    transition: transform 0.3s ease;
+  }
+
+  .think-tag-header:hover .think-tag-icon {
+    transform: scale(1.05);
+  }
+
+  .think-tag-icon.expanded {
+    transform: rotate(180deg);
+    color: var(--color-primary);
+  }
+  
+  /* Link styles */
+  .linkMarkDown a,
+  .prose a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+    text-underline-offset: 2px;
+    transition: all 0.2s ease;
+  }
+
+  .linkMarkDown a:hover,
+  .prose a:hover {
+    color: var(--color-primary-hover);
+    text-decoration-color: var(--color-primary);
+  }
+
+  .linkMarkDown a:active,
+  .prose a:active {
+    color: var(--color-primary-hover);
   }
 }
 
-/* Styling for visited citation links */
-.supMarkDown a:visited {
-  color: rgba(255, 255, 255, 0.8);
-  background-color: rgba(157, 78, 221, 0.12);
-  border-color: rgba(157, 78, 221, 0.25);
-}
-
-/* Simple, consistent hover state for all citation links */
-.supMarkDown a:hover,
-.supMarkDown a:focus {
-  background-color: rgba(157, 78, 221, 0.3);
-  color: rgba(255, 255, 255, 0.95);
-  cursor: pointer;
-  border-color: rgba(157, 78, 221, 0.4);
-}
-
-/* Styling for document buttons */
-.linkMarkDown button:not(.codeblock-button) {
-  height: 100px;
-  width: 150px;
-  text-align: center;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  font-size: 1rem;
-  padding: 10px 10px;
-  color: #4a4ae8;
-  background-color: #15162c;
-  border-radius: 5px;
-  border: none;
-  text-decoration: none;
-  white-space: break-spaces;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-/* Simple, consistent hover state for all document buttons */
-.linkMarkDown button:not(.codeblock-button):hover,
-.linkMarkDown button:not(.codeblock-button):focus {
-  background-color: blueviolet;
-  color: #ffffff;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-/* Visited state for document buttons */
-.linkMarkDown button:not(.codeblock-button):visited {
-  color: rgb(173, 92, 227);
-}
-
-.linkMarkDown ol:has(> li > button) {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: 10px;
-  /* Spacing between buttons */
-  padding: 20px;
-  /* Padding inside the card */
-  margin: 20px 0;
-  /* Margin around the card */
-  background-color: #1e1e2f;
-  /* Slightly lighter than the button background for contrast */
-  border-radius: 10px;
-  /* Rounded corners for the card */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* Subtle shadow for depth */
-  scroll-snap-type: x mandatory;
-  /* Snap scrolling */
-  counter-reset: section;
-  list-style-type: none;
-}
-
-.codeBlock code:has(> span) {
-  max-width: 100% !important;
-  overflow-x: auto !important;
-  white-space: pre-wrap !important;
-  word-break: break-all !important;
-  overflow-wrap: anywhere !important;
-  /* background-color: 'white' !important; */
-  background: 'white' !important;
-}
-
-.codeBlock pre:has(> code) {
-  background-color: #101122 !important;
-}
-
-/* Style for individual list items */
-.linkMarkDown ol li:has(> button) {
-  max-width: 150px;
-  flex: 0 0 calc(25% - 10px);
-  /* Adjusting for the gap */
-  scroll-snap-align: start;
-  /* Align to the start of the scroll container */
-  height: 100%;
-  /* Ensure all buttons are the same height */
-}
-
-.linkMarkDown ol li:last-child:has(> button) {
-  margin-right: 0;
-}
-
-/* For styling MagicBell. We hide the logo, but keep the CTA button.  */
-/* `EnablePushNotificationsButton` works on localhost, `css-s37qmw` works on production. */
-body button[class$='EnablePushNotificationsButton'] {
-  background-color: #f8fafc !important;
-  color: #15162c !important;
-}
-
-/* padding: 10px !important; */
-/* border-radius: 4px !important; */
-button.css-s37qmw {
-  background: #f8fafc !important;
-  color: #15162c !important;
-}
-
-/* Remove branded footer from MagicBell (only works on prod w/ compiled css) */
-/* div.css-p472n8 {
-  display: none !important;
-} */
-
+/* Keyframe animations */
 @property --r {
   syntax: '<angle>';
   inherits: false;
@@ -469,125 +733,4 @@ button.css-s37qmw {
   to {
     --r: 360deg;
   }
-}
-
-/* Think Tag Dropdown Styles */
-.think-tag-dropdown {
-  @apply mb-4 w-full rounded-lg border border-gray-200 bg-gray-50/30 shadow-sm transition-all duration-200 hover:border-purple-200 dark:border-gray-700/50 dark:bg-gray-800/20 dark:hover:border-purple-500/30;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.think-tag-header {
-  @apply flex cursor-pointer items-center justify-between p-4 text-gray-700 transition-colors duration-200 hover:bg-purple-50/50 dark:text-gray-200 dark:hover:bg-purple-900/20;
-  border-radius: 0.5rem;
-}
-
-.think-tag-header .loading-container {
-  @apply flex items-center gap-2;
-  opacity: 0.8;
-}
-
-.think-tag-brain-icon {
-  @apply text-purple-500 dark:text-purple-400;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
-  transition: transform 0.2s ease;
-}
-
-.think-tag-header:hover .think-tag-brain-icon {
-  transform: scale(1.1);
-}
-
-.think-tag-content {
-  @apply overflow-hidden bg-white/80 dark:bg-black/20;
-  position: relative;
-  visibility: hidden;
-  max-height: 0;
-  opacity: 0;
-  transform-origin: top;
-  transform: translateY(-4px);
-  will-change: transform, opacity, max-height;
-  transition: 
-    max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    visibility 0s linear 0.5s;
-}
-
-.think-tag-content > div {
-  @apply px-5 py-4 text-gray-700 dark:text-gray-200;
-  position: absolute;
-  width: 100%;
-  top: 0;
-  left: 0;
-  border-top: 1px solid;
-  @apply border-gray-100 dark:border-gray-700/50;
-  line-height: 1.6;
-}
-
-.think-tag-content.expanded {
-  position: relative;
-  visibility: visible;
-  max-height: 1000px;
-  opacity: 1;
-  transform: translateY(0);
-  cursor: pointer;
-  transition:
-    max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    visibility 0s linear;
-}
-
-.think-tag-content.expanded:hover {
-  @apply bg-purple-50/30 dark:bg-purple-900/10;
-}
-
-.think-tag-content.expanded:focus {
-  @apply outline-none ring-2 ring-purple-500/30 dark:ring-purple-500/20;
-}
-
-.think-tag-content.expanded > div {
-  position: relative;
-}
-
-.think-tag-header:focus {
-  @apply outline-none ring-2 ring-purple-500/30 dark:ring-purple-500/20;
-}
-
-.think-tag-icon {
-  @apply text-gray-400 transform transition-all duration-300 dark:text-gray-500;
-}
-
-.think-tag-header:hover .think-tag-icon {
-  @apply text-purple-500 dark:text-purple-400;
-}
-
-.think-tag-icon.expanded {
-  transform: rotate(180deg);
-  @apply text-purple-500 dark:text-purple-400;
-}
-
-/* Update the link styles to show proper cursor and interaction states */
-.linkMarkDown a,
-.supMarkDown a {
-  cursor: pointer !important;
-  position: relative;
-  z-index: 0;  /* Changed from 1 to 0 to match surrounding text */
-  pointer-events: all !important;
-  user-select: all !important;
-  -webkit-user-drag: element;
-}
-
-.linkMarkDown a:active,
-.supMarkDown a:active {
-  transform: translateY(1px);
-}
-
-/* Ensure parent containers don't interfere with link events */
-.prose a,
-.markdown a {
-  pointer-events: all !important;
-  position: relative;
-  z-index: 0;  /* Changed from 1 to 0 to match surrounding text */
 }

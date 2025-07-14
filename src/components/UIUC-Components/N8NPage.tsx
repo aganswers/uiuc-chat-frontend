@@ -319,7 +319,7 @@ const MakeToolsPage = ({ course_name }: { course_name: string }) => {
                     border: 'None',
                     color: 'white',
                   }}
-                  className="min-h-full flex-[1_1_100%] bg-gradient-to-r from-purple-900 via-indigo-800 to-blue-800 md:flex-[1_1_60%]"
+                  className="min-h-full flex-[1_1_100%] bg-gradient-to-r from-orange-900 via-orange-800 to-orange-700 md:flex-[1_1_60%]"
                 >
                   <Group
                     spacing="lg"
@@ -350,7 +350,7 @@ const MakeToolsPage = ({ course_name }: { course_name: string }) => {
                             href="https://n8n.io"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`text-purple-500 hover:underline ${montserrat_heading.variable} font-montserratHeading`}
+                            className={`text-orange-500 hover:underline ${montserrat_heading.variable} font-montserratHeading`}
                           >
                             n8n.io&apos;s{' '}
                             <IconExternalLink
@@ -368,7 +368,7 @@ const MakeToolsPage = ({ course_name }: { course_name: string }) => {
                               '_blank',
                             )
                           }
-                          className="mx-[8%] mt-2 max-w-[50%] rounded-lg bg-purple-700 hover:border-indigo-600 hover:bg-indigo-600 lg:flex-[1_1_50%] lg:self-center"
+                          className="mx-[8%] mt-2 max-w-[50%] rounded-lg bg-orange-700 hover:border-indigo-600 hover:bg-indigo-600 lg:flex-[1_1_50%] lg:self-center"
                           type="submit"
                           disabled={!n8nApiKey}
                         >
@@ -479,7 +479,7 @@ const MakeToolsPage = ({ course_name }: { course_name: string }) => {
                                     href="https://tools.uiuc.chat/workflows"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-purple-500 hover:underline"
+                                    className="text-orange-500 hover:underline"
                                   >
                                     N8N
                                   </a>
@@ -563,7 +563,7 @@ const MakeToolsPage = ({ course_name }: { course_name: string }) => {
                         <div className="pt-2" />
                         <Button
                           onClick={(event) => handleSaveApiKey()}
-                          className="rounded-lg bg-purple-700 hover:border-indigo-600 hover:bg-indigo-600"
+                          className="rounded-lg bg-orange-700 hover:border-indigo-600 hover:bg-indigo-600"
                           type="submit"
                           disabled={isLoading}
                         >
@@ -578,7 +578,7 @@ const MakeToolsPage = ({ course_name }: { course_name: string }) => {
 
             <div
               // Course files header/background
-              className="mx-auto mt-[2%] w-[90%] items-start rounded-2xl shadow-md shadow-purple-600"
+              className="mx-auto mt-[2%] w-[90%] items-start rounded-2xl shadow-md shadow-orange-600"
               style={{ zIndex: 1, background: '#15162c' }}
             >
               <Flex direction="row" justify="space-between">
@@ -587,7 +587,7 @@ const MakeToolsPage = ({ course_name }: { course_name: string }) => {
                     className={`${montserrat_heading.variable} font-montserratHeading`}
                     variant="gradient"
                     gradient={{
-                      from: 'hsl(280,100%,70%)',
+                      from: 'orange-500',
                       to: 'white',
                       deg: 185,
                     }}
