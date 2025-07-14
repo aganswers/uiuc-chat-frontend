@@ -349,7 +349,7 @@ importers:
         specifier: ^5.56.0
         version: 5.62.0(eslint@8.57.1)(typescript@5.8.3)
       autoprefixer:
-        specifier: ^10.4.14
+        specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.4)
       chromedriver:
         specifier: ^131.0.0
