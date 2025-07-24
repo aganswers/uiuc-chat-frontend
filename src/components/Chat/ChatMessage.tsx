@@ -307,13 +307,8 @@ export const ChatMessage: React.FC<Props> = memo(
         selectedConversation,
         conversations,
         messageIsStreaming,
-        isImg2TextLoading,
-        isRouting,
-        isRunningTool,
-        isRetrievalLoading,
-        isQueryRewriting,
         loading,
-        showChatbar,
+        showSidebar,
       },
       dispatch: homeDispatch,
     } = useContext(HomeContext)
@@ -507,7 +502,7 @@ export const ChatMessage: React.FC<Props> = memo(
       if (message.role === 'user') {
         fetchUrl()
       }
-    }, [message.content, messageIndex, isRunningTool])
+    }, [message.content, messageIndex])
 
     const toggleEditing = () => {
       if (!isEditing) {
@@ -1477,30 +1472,7 @@ export const ChatMessage: React.FC<Props> = memo(
                                   ))}
                               </div>
 
-                              {/* Image description loading state for last message */}
-                              {isImg2TextLoading &&
-                                (messageIndex ===
-                                  (selectedConversation?.messages.length ?? 0) -
-                                    1 ||
-                                  messageIndex ===
-                                    (selectedConversation?.messages.length ?? 0) -
-                                      2) && (
-                                  <IntermediateStateAccordion
-                                    accordionKey="imageDescription"
-                                    title="Image Description"
-                                    isLoading={isImg2TextLoading}
-                                    error={false}
-                                    content={
-                                      message.content.find(
-                                        (content) =>
-                                          content.type === 'text' &&
-                                          content.text
-                                            ?.trim()
-                                            .startsWith('Image description:'),
-                                      )?.text ?? 'No image description found'
-                                    }
-                                  />
-                                )}
+
 
                               {/* Image description for all messages */}
                               {message.content.some(
@@ -1532,43 +1504,7 @@ export const ChatMessage: React.FC<Props> = memo(
                           <>{message.content}</>
                         )}
                         <div className="flex w-full flex-col items-start space-y-2">
-                          {/* Query rewrite loading state - only show for current message */}
-                          {isQueryRewriting &&
-                            (messageIndex ===
-                              (selectedConversation?.messages.length ?? 0) -
-                                1 ||
-                              messageIndex ===
-                                (selectedConversation?.messages.length ?? 0) -
-                                  2) && (
-                              <IntermediateStateAccordion
-                                accordionKey="query-rewrite"
-                                title="Optimizing search query"
-                                isLoading={isQueryRewriting}
-                                error={false}
-                                content={<></>}
-                              />
-                            )}
 
-                          {/* Query rewrite result - show for any message that was optimized */}
-                          {!isQueryRewriting &&
-                            message.wasQueryRewritten !== undefined &&
-                            message.wasQueryRewritten !== null && (
-                              <IntermediateStateAccordion
-                                accordionKey="query-rewrite-result"
-                                title={
-                                  message.wasQueryRewritten
-                                    ? 'Optimized search query'
-                                    : 'No query optimization necessary'
-                                }
-                                isLoading={false}
-                                error={false}
-                                content={
-                                  message.wasQueryRewritten
-                                    ? message.queryRewriteText
-                                    : "The LLM determined no optimization was necessary. We only optimize when it's necessary to turn a single message into a stand-alone search to retrieve the best documents."
-                                }
-                              />
-                            )}
 
                           {/* Retrieval results for all messages */}
                           {message.contexts && message.contexts.length > 0 && (
@@ -1581,43 +1517,12 @@ export const ChatMessage: React.FC<Props> = memo(
                             />
                           )}
 
-                          {/* Retrieval loading state for last message */}
-                          {isRetrievalLoading &&
-                            (messageIndex ===
-                              (selectedConversation?.messages.length ?? 0) -
-                                1 ||
-                              messageIndex ===
-                                (selectedConversation?.messages.length ?? 0) -
-                                  2) && (
-                              <IntermediateStateAccordion
-                                accordionKey="retrieval loading"
-                                title="Retrieving documents"
-                                isLoading={isRetrievalLoading}
-                                error={false}
-                                content={`Found ${message.contexts?.length} document chunks.`}
-                              />
-                            )}
 
-                          {/* Tool Routing loading state for last message */}
-                          {isRouting &&
-                            (messageIndex ===
-                              (selectedConversation?.messages.length ?? 0) -
-                                1 ||
-                              messageIndex ===
-                                (selectedConversation?.messages.length ?? 0) -
-                                  2) && (
-                              <IntermediateStateAccordion
-                                accordionKey={`routing tools`}
-                                title={'Routing the request to relevant tools'}
-                                isLoading={isRouting}
-                                error={false}
-                                content={<></>}
-                              />
-                            )}
+
+
 
                           {/* Tool input arguments state for last message */}
-                          {isRouting === false &&
-                            message.tools &&
+                          {message.tools &&
                             (messageIndex ===
                               (selectedConversation?.messages.length ?? 0) -
                                 1 ||
@@ -1641,7 +1546,7 @@ export const ChatMessage: React.FC<Props> = memo(
                                         </Badge>
                                       </>
                                     }
-                                    isLoading={isRouting}
+                                    isLoading={false}
                                     error={false}
                                     content={
                                       <>
@@ -1803,11 +1708,8 @@ export const ChatMessage: React.FC<Props> = memo(
                             }
                             return null
                           })()}
-                          {!isRouting &&
-                            !isRetrievalLoading &&
-                            !isImg2TextLoading &&
-                            !isQueryRewriting &&
-                            loading &&
+                          {/* Removed loading state for now */}
+                          {/* {loading &&
                             (messageIndex ===
                               (selectedConversation?.messages.length ?? 0) -
                                 1 ||
@@ -1842,7 +1744,7 @@ export const ChatMessage: React.FC<Props> = memo(
                                   <LoadingSpinner size="xs" />
                                 </div>
                               </>
-                            )}
+                            )} */}
                         </div>
                       </div>
                       {!isEditing && (
