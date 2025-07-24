@@ -436,8 +436,8 @@ export const Chat = memo(
           }
 
           // Clear query rewrite fields
-            message.wasQueryRewritten = false
-            message.queryRewriteText = undefined
+          message.wasQueryRewritten = false
+          message.queryRewriteText = undefined
 
           // Tool execution (if needed)
           if (tools.length > 0) {
@@ -609,7 +609,8 @@ export const Chat = memo(
               homeDispatch({ field: 'messageIsStreaming', value: false })
               errorToast({
                 title: 'Stream Error',
-                message: 'Failed to initialize response stream. Please try again.',
+                message:
+                  'Failed to initialize response stream. Please try again.',
               })
               return
             }
@@ -715,7 +716,7 @@ export const Chat = memo(
                       updatedConversation.messages[lastMessageIndex]
                     const lastUserMessage =
                       updatedConversation.messages[lastMessageIndex - 1]
-                    
+
                     // Always accumulate the chunk
                     if (
                       lastMessage &&
@@ -1300,7 +1301,7 @@ export const Chat = memo(
                 <ErrorMessageDiv error={modelError} />
               ) : (
                 <>
-                                  <div
+                  <div
                     key={selectedConversation?.id}
                     className="mt-4 max-h-full"
                     ref={chatContainerRef}
@@ -1335,11 +1336,17 @@ export const Chat = memo(
                               }}
                               onRegenerate={(message, index) => {
                                 // Find the user message that came before this assistant message
-                                const userMessage = selectedConversation?.messages[index - 1]
-                                if (userMessage && userMessage.role === 'user') {
+                                const userMessage =
+                                  selectedConversation?.messages[index - 1]
+                                if (
+                                  userMessage &&
+                                  userMessage.role === 'user'
+                                ) {
                                   handleSend(
                                     userMessage,
-                                    selectedConversation?.messages?.length - index + 1,
+                                    selectedConversation?.messages?.length -
+                                      index +
+                                      1,
                                     null,
                                     tools,
                                     enabledDocumentGroups,

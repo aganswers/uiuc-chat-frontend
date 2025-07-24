@@ -481,7 +481,10 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
 
     const handleModelChange = (model: OpenAIModel) => {
       if (selectedConversation) {
-        handleUpdateConversation(selectedConversation, { key: 'model', value: model })
+        handleUpdateConversation(selectedConversation, {
+          key: 'model',
+          value: model,
+        })
       }
     }
 
@@ -546,7 +549,9 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
               title="Select Model"
               value={selectedConversation?.model.id || ''}
               onChange={async (modelId) => {
-                const selectedModel = models.find((model) => model.id === modelId)
+                const selectedModel = models.find(
+                  (model) => model.id === modelId,
+                )
                 if (selectedModel) {
                   handleModelChange(selectedModel)
                 }
