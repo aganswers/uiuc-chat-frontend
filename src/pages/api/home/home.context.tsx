@@ -20,10 +20,7 @@ export interface HomeContextProps {
     conversation: Conversation,
     data: KeyValuePair,
   ) => void
-  handleFeedbackUpdate: (
-    conversation: Conversation,
-    data: KeyValuePair,
-  ) => void
+  handleFeedbackUpdate: (conversation: Conversation, data: KeyValuePair) => void
   // Remove loading state functions that are no longer needed
   // setIsImg2TextLoading: (isImg2TextLoading: boolean) => void
   // setIsRouting: (isRouting: boolean) => void

@@ -1472,8 +1472,6 @@ export const ChatMessage: React.FC<Props> = memo(
                                   ))}
                               </div>
 
-
-
                               {/* Image description for all messages */}
                               {message.content.some(
                                 (content) =>
@@ -1504,8 +1502,6 @@ export const ChatMessage: React.FC<Props> = memo(
                           <>{message.content}</>
                         )}
                         <div className="flex w-full flex-col items-start space-y-2">
-
-
                           {/* Retrieval results for all messages */}
                           {message.contexts && message.contexts.length > 0 && (
                             <IntermediateStateAccordion
@@ -1516,10 +1512,6 @@ export const ChatMessage: React.FC<Props> = memo(
                               content={`Found ${message.contexts?.length} document chunks.`}
                             />
                           )}
-
-
-
-
 
                           {/* Tool input arguments state for last message */}
                           {message.tools &&
@@ -1978,13 +1970,16 @@ export const ChatMessage: React.FC<Props> = memo(
                               duration: 200,
                             }}
                             classNames={{
-                              tooltip: 'bg-gray-700 text-white text-sm py-1 px-2',
+                              tooltip:
+                                'bg-gray-700 text-white text-sm py-1 px-2',
                               arrow: 'border-gray-700',
                             }}
                           >
                             <button
                               className={`text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 ${
-                                messageIndex === (selectedConversation?.messages?.length ?? 0) - 1
+                                messageIndex ===
+                                (selectedConversation?.messages?.length ?? 0) -
+                                  1
                                   ? 'opacity-100'
                                   : 'opacity-0 transition-opacity duration-200 focus:opacity-100 group-hover:opacity-100'
                               } ${isRegenerating ? 'animate-spin' : ''}`}

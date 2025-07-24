@@ -182,7 +182,6 @@ export const Chatbar = ({
       //     folderId: null,
       //   },
       // })
-
       // localStorage.removeItem('selectedConversation')
     }
 
