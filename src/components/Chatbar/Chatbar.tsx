@@ -45,345 +45,244 @@ export const Chatbar = ({
   const [isExporting, setIsExporting] = useState<boolean>(false)
 
   const {
-    state: { conversations, showChatbar, defaultModelId, folders },
-    dispatch: homeDispatch,
+    state: { conversations, showSidebar, folders },
+    // Remove defaultModelId as it no longer exists
+    handleUpdateConversation,
+    handleDeleteFolder,
     handleCreateFolder,
     handleNewConversation,
-    handleUpdateConversation,
+    dispatch: homeDispatch,
   } = useContext(HomeContext)
 
   const {
     state: { searchTerm, filteredConversations },
     dispatch: chatDispatch,
-  } = chatBarContextValue
+  } = useContext(ChatbarContext)
 
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useDebouncedState(
     searchTerm,
-    500,
+    100,
   )
 
-  const queryClient = useQueryClient()
-  const deleteConversationMutation = useDeleteConversation(
-    current_email as string,
-    queryClient,
-    courseName as string,
-    searchTerm,
-  )
-
-  const deleteAllConversationMutation = useDeleteAllConversations(
-    queryClient,
-    current_email as string,
-    courseName as string,
-  )
-
-  const handleApiKeyChange = useCallback(
-    (apiKey: string) => {
-      homeDispatch({ field: 'apiKey', value: apiKey })
-      localStorage.setItem('apiKey', apiKey)
-    },
-    [homeDispatch],
-  )
-
-  const {
-    data: conversationHistory,
-    error: conversationHistoryError,
-    isLoading: isConversationHistoryLoading,
-    isFetched: isConversationHistoryFetched,
-    fetchNextPage: fetchNextPageConversationHistory,
-    hasNextPage: hasNextPageConversationHistory,
-    isFetchingNextPage: isFetchingNextPageConversationHistory,
-    refetch: refetchConversationHistory,
-  } = useFetchConversationHistory(
-    current_email,
-    debouncedSearchTerm,
-    courseName,
-  )
-
-  const updateConversationMutation = useUpdateConversation(
-    current_email as string,
-    queryClient,
-    courseName as string,
-  )
-
-  const [convoMigrationLoading, setConvoMigrationLoading] =
-    useState<boolean>(false)
+  const { isLoaded, isSignedIn, user } = useUser()
 
   useEffect(() => {
-    if (!current_email || !courseName) {
-      return;
+    if (
+      searchTerm &&
+      current_email &&
+      courseName &&
+      debouncedSearchTerm &&
+      searchTerm.length >= 2
+    ) {
+      const fetchData = async () => {
+        const conversations = await fetchConversationHistory(
+          current_email,
+          debouncedSearchTerm,
+          courseName,
+          1,
+        )
+        console.log('conversations: ', conversations)
+
+        chatDispatch({
+          field: 'filteredConversations',
+          value: conversations,
+        })
+      }
+
+      fetchData()
+    } else {
+      chatDispatch({
+        field: 'filteredConversations',
+        value: [],
+      })
     }
     setDebouncedSearchTerm(searchTerm)
   }, [searchTerm, current_email, courseName])
 
-  async function updateConversations(conversationHistory: Conversation[]) {
-    if (!current_email || !courseName) {
-      console.warn('Cannot update conversations: missing email or course name');
-      return;
-    }
-    
-    try {
-      await Promise.all(
-        conversationHistory.map(async (conversation: Conversation) => {
-          conversation.userEmail = current_email;
-          conversation.projectName = courseName;
-          try {
-            const response = await saveConversationToServer(conversation);
-            console.log('Response from saveConversationToServer: ', response);
-          } catch (error: any) {
-            if (error?.details?.includes('already exists')) {
-              console.log('Conversation already exists, skipping');
-              return;
-            }
-            throw error;
-          }
-        }),
-      )
-    } catch (error) {
-      console.error('Error updating conversations:', error);
+  const allowDrop = (e: any) => {
+    e.preventDefault()
+  }
+
+  const handleDrop = (e: any) => {
+    if (e.dataTransfer) {
+      const conversation = JSON.parse(e.dataTransfer.getData('conversation'))
+      handleUpdateConversation(conversation, { key: 'folderId', value: 0 })
+      chatDispatch({ field: 'searchTerm', value: '' })
+      e.target.style.background = 'none'
     }
   }
 
-  useEffect(() => {
-    try {
-      if (
-        isConversationHistoryFetched &&
-        !isConversationHistoryLoading &&
-        conversationHistory
-      ) {
-        // console.log('Raw conversation history:', conversationHistory)
-        const allConversations = conversationHistory.pages
-          .flatMap((page) => (Array.isArray(page) ? page : []))
-          .filter((conversation) => conversation !== undefined)
-        homeDispatch({ field: 'conversations', value: allConversations })
-        // console.log('Dispatching conversations: ', allConversations)
+  const handleDragOver = (e: any) => {
+    e.preventDefault()
+    if (e.target.className === 'folder') {
+      e.target.style.background = '#343541'
+    }
+  }
 
-        const convoMigrationComplete = localStorage.getItem(
-          'convoMigrationComplete',
-        )
-        if (convoMigrationComplete === 'true') return
+  const handleDragLeave = (e: any) => {
+    e.preventDefault()
+    e.target.style.background = 'none'
+  }
 
-        if (
-          convoMigrationComplete === null ||
-          convoMigrationComplete === undefined ||
-          convoMigrationComplete === 'false'
-        ) {
-          localStorage.setItem('convoMigrationComplete', 'false')
-          setConvoMigrationLoading(true)
-
-          if (
-            isConversationHistoryFetched &&
-            !isConversationHistoryLoading &&
-            allConversations &&
-            allConversations.length === 0 &&
-            localStorage.getItem('conversationHistory') != null &&
-            localStorage.getItem('conversationHistory') != undefined &&
-            localStorage.getItem('conversationHistory') != '[]'
-          ) {
-            posthog.capture('migration_started', {
-              distinctId: current_email,
-            })
-            console.log(
-              'Migrating conversations from local storage to supabase',
-            )
-            const conversationHistory = JSON.parse(
-              localStorage.getItem('conversationHistory') || '[]',
-            )
-            homeDispatch({ field: 'conversations', value: conversationHistory })
-            updateConversations(conversationHistory)
-            localStorage.setItem('convoMigrationComplete', 'true')
-            setTimeout(() => refetchConversationHistory(), 100)
-          } else {
-            console.log('No need to migrate conversations')
-          }
-        }
+  const handleNewFolder = () => {
+    const name = prompt(`${t('Enter folder name')}`)
+    if (name) {
+      const newFolder = {
+        id: uuidv4(),
+        name,
+        type: 'chat' as FolderType,
       }
-    } catch (error: any) {
-      console.error('Error during conversation migration:', error)
-      posthog.capture('migration_error', {
-        distinctId: current_email,
-        error: error.message,
-      })
-    } finally {
-      setConvoMigrationLoading(false)
-    }
-  }, [
-    conversationHistory,
-    isConversationHistoryFetched,
-    isConversationHistoryLoading,
-    homeDispatch,
-  ])
 
-  const handleLoadMoreConversations = () => {
-    if (
-      hasNextPageConversationHistory &&
-      !isFetchingNextPageConversationHistory
-    ) {
-      fetchNextPageConversationHistory()
-    }
-  }
+      const updatedFolders = [...folders, newFolder]
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const bottom =
-      e.currentTarget.scrollHeight - e.currentTarget.scrollTop <=
-      e.currentTarget.clientHeight + 100
-    if (bottom) {
-      handleLoadMoreConversations()
+      chatDispatch({ field: 'searchTerm', value: '' })
+      // saveLocalStorage('folders', updatedFolders)
+      handleCreateFolder(newFolder.name, newFolder.type)
     }
-  }
-
-  const handleExportData = async () => {
-    if (courseName && current_email) {
-      setIsExporting(true)
-      try {
-        await downloadConversationHistoryUser(current_email, courseName)
-      } finally {
-        setIsExporting(false)
-      }
-    }
-  }
-
-  const handleClearConversations = () => {
-    homeDispatch({ field: 'conversations', value: [] })
-    chatDispatch({ field: 'searchTerm', value: '' })
-    handleNewConversation()
-    deleteAllConversationMutation.mutate()
   }
 
   const handleDeleteConversation = (conversation: Conversation) => {
     const updatedConversations = conversations.filter(
       (c) => c.id !== conversation.id,
     )
-    homeDispatch({ field: 'conversations', value: updatedConversations })
-    chatDispatch({ field: 'searchTerm', value: '' })
 
-    deleteConversationMutation.mutate(conversation)
+    chatDispatch({ field: 'searchTerm', value: '' })
+    // saveLocalStorage('conversations', updatedConversations)
 
     if (updatedConversations.length > 0) {
-      const lastConversation = updatedConversations[0]
-      if (lastConversation) {
-        homeDispatch({ field: 'selectedConversation', value: lastConversation })
-      }
+      homeDispatch({
+        field: 'selectedConversation',
+        value: updatedConversations[updatedConversations.length - 1],
+      })
+
+      // Remove defaultModelId logic as it no longer exists
+      // if (defaultModelId &&
+      //   updatedConversations[updatedConversations.length - 1].messages
+      //     .length === 0) {
+      //   homeDispatch({
+      //     field: 'selectedConversation',
+      //     value: {
+      //       ...updatedConversations[updatedConversations.length - 1],
+      //       model: OpenAIModels[defaultModelId],
+      //     },
+      //   })
+      // }
+
+      // saveLocalStorage('selectedConversation', updatedConversations[updatedConversations.length - 1])
     } else {
-      defaultModelId &&
-        homeDispatch({
-          field: 'selectedConversation',
-          value: {
-            id: uuidv4(),
-            name: t('New Conversation'),
-            messages: [],
-            model: OpenAIModels[defaultModelId],
-            prompt: DEFAULT_SYSTEM_PROMPT,
-            temperature: DEFAULT_TEMPERATURE,
-            folderId: null,
-          },
-        })
-      localStorage.removeItem('selectedConversation')
+      // homeDispatch({
+      //   field: 'selectedConversation',
+      //   value: {
+      //     id: uuidv4(),
+      //     name: 'New conversation',
+      //     messages: [],
+      //     model: OpenAIModels[defaultModelId],
+      //     prompt: DEFAULT_SYSTEM_PROMPT,
+      //     temperature: DEFAULT_TEMPERATURE,
+      //     folderId: null,
+      //   },
+      // })
+
+      // localStorage.removeItem('selectedConversation')
     }
+
+    homeDispatch({ field: 'conversations', value: updatedConversations })
+    // saveLocalStorage('conversations', updatedConversations)
   }
 
   const handleToggleChatbar = () => {
-    homeDispatch({ field: 'showChatbar', value: !showChatbar })
-    localStorage.setItem('showChatbar', JSON.stringify(!showChatbar))
+    homeDispatch({ field: 'showSidebar', value: !showSidebar })
+    localStorage.setItem('showSidebar', JSON.stringify(!showSidebar))
   }
 
-  const handleDrop = (e: any) => {
+  const handleDragStart = (e: any, conversation: Conversation) => {
     if (e.dataTransfer) {
-      const conversation = JSON.parse(e.dataTransfer.getData('conversation'))
-      handleUpdateConversation(conversation, { key: 'folderId', value: null })
-      chatDispatch({ field: 'searchTerm', value: '' })
-      e.target.style.background = 'none'
+      e.dataTransfer.setData('conversation', JSON.stringify(conversation))
     }
   }
 
-  if (!current_email || !courseName) {
-    return (
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full p-4">
-          <div className="text-center text-neutral-300">
-            <LoadingSpinner />
-            <div className="mt-2">Loading...</div>
-          </div>
-        </div>
-      </div>
-    );
+  const handleClearConversations = () => {
+    // defaultModelId &&
+    homeDispatch({
+      field: 'selectedConversation',
+      value: {
+        id: uuidv4(),
+        name: 'New conversation',
+        messages: [],
+        // model: OpenAIModels[defaultModelId], // Remove defaultModelId reference
+        model: null, // Will be set when user selects a model
+        prompt: DEFAULT_SYSTEM_PROMPT,
+        temperature: DEFAULT_TEMPERATURE,
+        folderId: null,
+      },
+    })
+
+    homeDispatch({ field: 'conversations', value: [] })
+
+    localStorage.removeItem('conversationHistory')
+    localStorage.removeItem('selectedConversation')
+
+    const updatedFolders = folders.filter((f) => f.type !== 'chat')
+
+    chatDispatch({ field: 'searchTerm', value: '' })
+    homeDispatch({ field: 'folders', value: updatedFolders })
+    // saveLocalStorage('folders', updatedFolders)
   }
+
+  const doCreateNewConversation = () => {
+    handleNewConversation()
+    chatDispatch({ field: 'searchTerm', value: '' })
+  }
+
+  useEffect(() => {
+    if (searchTerm) {
+      chatDispatch({
+        field: 'filteredConversations',
+        value: conversations.filter((conversation) => {
+          const searchable =
+            conversation.name.toLocaleLowerCase() +
+            ' ' +
+            conversation.messages.map((message) => message.content).join(' ')
+          return searchable.toLowerCase().includes(searchTerm.toLowerCase())
+        }),
+      })
+    } else {
+      chatDispatch({
+        field: 'filteredConversations',
+        value: conversations,
+      })
+    }
+  }, [searchTerm, conversations])
 
   return (
     <ChatbarContext.Provider
       value={{
-        ...chatBarContextValue,
+        ...chatbarContextValue,
         handleDeleteConversation,
         handleClearConversations,
-        handleExportData,
-        handleApiKeyChange,
-        isExporting,
+        handleNewFolder,
+        handleDragStart,
       }}
     >
       <Sidebar<Conversation>
         side={'left'}
-        isOpen={showChatbar}
+        isOpen={showSidebar}
         addItemButtonTitle={t('New chat')}
-        itemComponent={
-          <Suspense
-            fallback={
-              <div>
-                Loading... <LoadingSpinner size="sm" />
-              </div>
-            }
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              {convoMigrationLoading ? (
-                <div className="flex justify-center py-4">
-                  <LoadingSpinner size="sm" />
-                </div>
-              ) : (
-                <>
-                  <Conversations
-                    conversations={conversations}
-                    onLoadMore={handleLoadMoreConversations}
-                  />
-                  <AnimatePresence>
-                    {isFetchingNextPageConversationHistory && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="flex justify-center py-4"
-                      >
-                        <LoadingSpinner size="sm" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </>
-              )}
-            </motion.div>
-          </Suspense>
-        }
-        folderComponent={
-          <ChatFolders
-            searchTerm={searchTerm}
-            currentEmail={current_email}
-            courseName={courseName}
-          />
-        }
-        folders={folders}
-        items={conversations}
+        itemComponent={<Conversation conversation={conversations[0]} />}
+        folderComponent={<Folder searchTerm={searchTerm} />}
+        items={filteredConversations}
         searchTerm={searchTerm}
         handleSearchTerm={(searchTerm: string) =>
           chatDispatch({ field: 'searchTerm', value: searchTerm })
         }
         toggleOpen={handleToggleChatbar}
-        handleCreateItem={handleNewConversation}
-        handleCreateFolder={() => handleCreateFolder(t('New folder'), 'chat')}
+        handleCreateItem={doCreateNewConversation}
+        handleCreateFolder={() => handleNewFolder()}
         handleDrop={handleDrop}
+        handleDragOver={handleDragOver}
+        handleDragLeave={handleDragLeave}
+        allowDrop={allowDrop}
         footerComponent={<ChatbarSettings />}
-        onScroll={handleScroll}
       />
     </ChatbarContext.Provider>
   )

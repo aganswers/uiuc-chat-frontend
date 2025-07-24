@@ -7,8 +7,8 @@ import { Prompt } from './prompt'
 export interface LocalStorage {
   apiKey: string
   conversationHistory: Conversation[]
-  selectedConversation: Conversation
-  theme: 'light' | 'dark'
   folders: FolderInterface[]
-  showChatbar: boolean
+  prompts: Prompt[]
+  selectedConversation: Conversation
+  showSidebar: boolean
 }
