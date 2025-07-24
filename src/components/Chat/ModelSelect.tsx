@@ -7,7 +7,7 @@ import {
   IconAlertTriangleFilled,
   IconInfoCircle,
 } from '@tabler/icons-react'
-import { forwardRef, useContext, useEffect, useState } from 'react'
+import { forwardRef, useContext, useEffect, useState, useRef } from 'react'
 import { useMediaQuery } from '@mantine/hooks'
 import HomeContext from '~/pages/api/home/home.context'
 import { montserrat_heading, montserrat_paragraph } from 'fonts'
@@ -32,6 +32,7 @@ import {
   warningLargeModelIds,
 } from '~/utils/modelProviders/ConfigWebLLM'
 import { LoadingSpinner } from '../UIUC-Components/LoadingSpinner'
+import { useTranslation } from 'react-i18next'
 
 interface ModelDropdownProps {
   title: string
@@ -467,35 +468,72 @@ const ModelDropdown: React.FC<
 export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
   ({ chat_ui, props }, ref) => {
     const {
-      state: { selectedConversation, llmProviders, defaultModelId },
+      state: { selectedConversation, llmProviders },
       handleUpdateConversation,
       dispatch: homeDispatch,
     } = useContext(HomeContext)
     const isSmallScreen = useMediaQuery('(max-width: 960px)')
-    const defaultModel = selectBestModel(llmProviders).id
-    const [loadingModelId, setLoadingModelId] = useState<string | null>(null)
-    const [isAccordionOpen, setIsAccordionOpen] = useState(false)
+    const { t } = useTranslation()
 
-    // console.log('defaultModelId in chat page: ', defaultModelId)
+    const models = Object.values(llmProviders)
+      .flatMap((provider) => provider?.models || [])
+      .filter((model) => model.enabled)
 
-    const handleModelClick = (modelId: string) => {
-      // Get list of models from all providers
-      const allModels = Object.values(llmProviders)
-        .flatMap((provider) => provider?.models || [])
-        .filter((model) => model.enabled)
-
-      const model =
-        Object.keys(allModels).reduce((foundModel: any, key: any) => {
-          return foundModel || allModels!.find((model) => model.id === modelId)
-        }, undefined) || defaultModel
-
-      selectedConversation &&
-        handleUpdateConversation(selectedConversation, {
-          key: 'model',
-          value: model as OpenAIModel,
-        })
-      localStorage.setItem('defaultModel', modelId)
+    const handleModelChange = (model: OpenAIModel) => {
+      if (selectedConversation) {
+        handleUpdateConversation(selectedConversation, { key: 'model', value: model })
+      }
     }
+
+    const [searchValue, setSearchValue] = useState('')
+    const [isOpen, setIsOpen] = useState(false)
+
+    const selectRef = useRef<HTMLInputElement>(null)
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+      const selectableModels = models.filter((model) => {
+        if (model.id === selectedConversation?.model?.id) {
+          return true
+        }
+
+        return !model.id.includes('ft')
+      })
+
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        if (isOpen) {
+          const selectedModel = selectableModels[0]
+          if (selectedModel) {
+            handleModelChange(selectedModel)
+            setIsOpen(false)
+          }
+        } else {
+          setIsOpen(true)
+        }
+      } else if (e.key === 'Escape') {
+        setIsOpen(false)
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        if (!isOpen) {
+          setIsOpen(true)
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        if (isOpen) {
+          setIsOpen(false)
+        }
+      }
+    }
+
+    useEffect(() => {
+      if (isOpen) {
+        selectRef.current?.focus()
+      }
+    }, [isOpen])
+
+    const filteredModels = models.filter((model) => {
+      return model.name.toLowerCase().includes(searchValue.toLowerCase())
+    })
 
     return (
       <div
@@ -506,19 +544,22 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
           <div className="flex flex-col">
             <ModelDropdown
               title="Select Model"
-              value={selectedConversation?.model.id || defaultModelId}
+              value={selectedConversation?.model.id || ''}
               onChange={async (modelId) => {
-                handleModelClick(modelId)
+                const selectedModel = models.find((model) => model.id === modelId)
+                if (selectedModel) {
+                  handleModelChange(selectedModel)
+                }
               }}
               llmProviders={llmProviders}
               isSmallScreen={isSmallScreen}
-              loadingModelId={loadingModelId}
-              setLoadingModelId={setLoadingModelId}
+              loadingModelId={null} // No longer needed
+              setLoadingModelId={() => {}} // No longer needed
               chat_ui={chat_ui}
             />
             <div className="px-5">
               <button
-                onClick={() => setIsAccordionOpen(!isAccordionOpen)}
+                onClick={() => setIsOpen(!isOpen)}
                 className="w-full transition-colors duration-200 hover:bg-white/5"
               >
                 <div className="flex items-center justify-between rounded-md p-2">
@@ -536,13 +577,13 @@ export const ModelSelect = React.forwardRef<HTMLDivElement, any>(
                   </Title>
                   <IconChevronDown
                     className={`text-white/60 transition-transform duration-200 ${
-                      isAccordionOpen ? 'rotate-180' : ''
+                      isOpen ? 'rotate-180' : ''
                     }`}
                   />
                 </div>
               </button>
               <AnimatePresence>
-                {isAccordionOpen && (
+                {isOpen && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}

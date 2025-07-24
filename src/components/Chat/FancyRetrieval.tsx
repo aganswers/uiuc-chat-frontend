@@ -16,12 +16,11 @@ export const FancyRetrieval = () => {
   const {
     state: {
       selectedConversation,
-      defaultModelId,
+      // defaultModelId, // Remove this property as it no longer exists
       // showModelSettings,
       prompts,
     },
-    handleUpdateConversation,
-    // dispatch: homeDispatch,
+    dispatch: homeDispatch,
   } = useContext(HomeContext)
 
   const { t } = useTranslation('chat')
