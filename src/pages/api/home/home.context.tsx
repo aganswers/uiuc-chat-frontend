@@ -24,15 +24,14 @@ export interface HomeContextProps {
     conversation: Conversation,
     data: KeyValuePair,
   ) => void
-  setIsImg2TextLoading: (isImg2TextLoading: boolean) => void
-  setIsRouting: (isRouting: boolean) => void
-  // setRoutingResponse: (routingResponse: RoutingResponse) => void
-  // setRunningTool: (isRunningTool: boolean) => void
-  setIsRetrievalLoading: (isRetrievalLoading: boolean) => void
+  // Remove loading state functions that are no longer needed
+  // setIsImg2TextLoading: (isImg2TextLoading: boolean) => void
+  // setIsRouting: (isRouting: boolean) => void
+  // setIsRetrievalLoading: (isRetrievalLoading: boolean) => void
+  // setIsQueryRewriting: (isQueryRewriting: boolean) => void
+  // setQueryRewriteResult: (queryText: string) => void
   handleUpdateDocumentGroups: (id: string) => void
   handleUpdateTools: (id: string) => void
-  setIsQueryRewriting: (isQueryRewriting: boolean) => void
-  setQueryRewriteResult: (queryText: string) => void
 }
 
 const HomeContext = createContext<HomeContextProps>(undefined!)

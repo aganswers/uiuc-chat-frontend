@@ -405,7 +405,7 @@ export const ChatInput = ({
     try {
       // ... existing image handling code ...
 
-      const response = await fetch('/api/allNewRoutingChat', {
+      const response = await fetch('/api/chat-api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
