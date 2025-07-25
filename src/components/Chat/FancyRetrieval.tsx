@@ -13,15 +13,16 @@ export const FancyRetrieval = () => {
   const [useMQRetrieval, setUseMQRetrieval] = useState(
     localStorage.getItem('UseMQRetrieval') === 'true',
   )
-  const {
-    state: {
-      selectedConversation,
-      // defaultModelId, // Remove this property as it no longer exists
-      // showModelSettings,
-      prompts,
-    },
-    dispatch: homeDispatch,
-  } = useContext(HomeContext)
+  // const {
+  //   state: {
+  //     selectedConversation,
+  //     defaultModelId,
+  //     // showModelSettings,
+  //     prompts,
+  //   },
+  //   handleUpdateConversation,
+  //   // dispatch: homeDispatch,
+  // } = useContext(HomeContext)
 
   const { t } = useTranslation('chat')
   const isSmallScreen = useMediaQuery('(max-width: 960px)')
