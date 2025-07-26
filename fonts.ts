@@ -1,17 +1,26 @@
-import { Montserrat } from 'next/font/google'
+import localFont from 'next/font/local'
 
-// Docs: https://nextjs.org/docs/pages/building-your-application/optimizing/fonts#with-tailwind-css
-
-export const montserrat_heading = Montserrat({
-  weight: '700',
-  subsets: ['latin'],
+// Local font imports to avoid network dependencies during build
+export const montserrat_heading = localFont({
+  src: [
+    {
+      path: './public/fonts/Montserrat-Bold.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
   variable: '--font-montserratHeading',
   display: 'swap',
 })
 
-export const montserrat_paragraph = Montserrat({
-  weight: '500',
-  subsets: ['latin'],
+export const montserrat_paragraph = localFont({
+  src: [
+    {
+      path: './public/fonts/Montserrat-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+  ],
   variable: '--font-montserratParagraph',
   display: 'swap',
 })

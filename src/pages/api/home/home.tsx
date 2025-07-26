@@ -62,14 +62,14 @@ const Home = ({
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   // Make a new conversation if the current one isn't empty
-  // const [hasMadeNewConvoAlready, setHasMadeNewConvoAlready] = useState(false)
+  const [hasMadeNewConvoAlready, setHasMadeNewConvoAlready] = useState(false)
 
-  // Remove unused loading state variables
-  // const [isQueryRewriting, setIsQueryRewriting] = useState<boolean>(false)
-  // const [queryRewriteResult, setQueryRewriteResult] = useState<string>('')
+  // Add these two new state setters
+  const [isQueryRewriting, setIsQueryRewriting] = useState<boolean>(false)
+  const [queryRewriteResult, setQueryRewriteResult] = useState<string>('')
 
   // Hooks
-  // const { t } = useTranslation('chat')
+  const { t } = useTranslation('chat')
   const { getModelsError } = useErrorService()
 
   const queryClient = useQueryClient()
@@ -149,7 +149,7 @@ const Home = ({
       llmProviders,
       documentGroups,
       tools,
-      // searchTerm,
+      searchTerm,
     },
     dispatch,
   } = contextValue
@@ -165,10 +165,10 @@ const Home = ({
     if (Object.keys(llmProviders).length == 0) return
     const model = selectBestModel(llmProviders)
 
-    // dispatch({
-    //   field: 'defaultModelId',
-    //   value: model.id,
-    // })
+    dispatch({
+      field: 'defaultModelId',
+      value: model.id,
+    })
 
     // Ensure current convo has a valid model
     if (selectedConversation) {
@@ -432,6 +432,21 @@ const Home = ({
 
   // Other context actions --------------------------------------------
 
+  // Image to Text
+  const setIsImg2TextLoading = (isImg2TextLoading: boolean) => {
+    dispatch({ field: 'isImg2TextLoading', value: isImg2TextLoading })
+  }
+
+  // Routing
+  const setIsRouting = (isRouting: boolean) => {
+    dispatch({ field: 'isRouting', value: isRouting })
+  }
+
+  // Retrieval
+  const setIsRetrievalLoading = (isRetrievalLoading: boolean) => {
+    dispatch({ field: 'isRetrievalLoading', value: isRetrievalLoading })
+  }
+
   // Update actions for a prompt
   const handleUpdateDocumentGroups = (id: string) => {
     documentGroups.map((documentGroup) =>
@@ -538,7 +553,7 @@ const Home = ({
 
   useEffect(() => {
     if (window.innerWidth < 640) {
-      dispatch({ field: 'showSidebar', value: false })
+      dispatch({ field: 'showChatbar', value: false })
     }
   }, [selectedConversation])
 
@@ -568,12 +583,12 @@ const Home = ({
       }
 
       if (window.innerWidth < 640) {
-        dispatch({ field: 'showSidebar', value: false })
+        dispatch({ field: 'showChatbar', value: false })
       }
 
-      const showSidebar = localStorage.getItem('showSidebar')
-      if (showSidebar) {
-        dispatch({ field: 'showSidebar', value: showSidebar === 'true' })
+      const showChatbar = localStorage.getItem('showChatbar')
+      if (showChatbar) {
+        dispatch({ field: 'showChatbar', value: showChatbar === 'true' })
       }
 
       const selectedConversation = localStorage.getItem('selectedConversation')
@@ -630,8 +645,15 @@ const Home = ({
           handleSelectConversation,
           handleUpdateConversation,
           handleFeedbackUpdate,
+          setIsImg2TextLoading,
+          setIsRouting,
+          // setRoutingResponse,
+          // setIsRunningTool,
+          setIsRetrievalLoading,
           handleUpdateDocumentGroups,
           handleUpdateTools,
+          setIsQueryRewriting,
+          setQueryRewriteResult,
         }}
       >
         <Head>
