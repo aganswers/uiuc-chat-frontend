@@ -49,7 +49,6 @@ import { useUser } from '@clerk/nextjs'
 import { extractEmailsFromClerk } from '../UIUC-Components/clerkHelpers'
 import ChatNavbar from '../UIUC-Components/navbars/ChatNavbar'
 import { notifications } from '@mantine/notifications'
-import { Montserrat } from 'next/font/google'
 import { montserrat_heading, montserrat_paragraph } from 'fonts'
 import {
   State,
@@ -78,10 +77,7 @@ import { useDeleteMessages } from '~/hooks/messageQueries'
 import { AllLLMProviders } from '~/utils/modelProviders/LLMProvider'
 import util from 'util'
 
-const montserrat_med = Montserrat({
-  weight: '500',
-  subsets: ['latin'],
-})
+// Using local montserrat_paragraph font (weight 500) instead of Google Fonts
 
 const DEFAULT_DOCUMENT_GROUP = {
   id: 'DocGroup-all',
@@ -1782,12 +1778,17 @@ export function errorToast({
     onOpen: () => console.log('error mounted'),
     autoClose: 12000,
     title: (
-      <Text size={'lg'} className={`${montserrat_med.className}`}>
+      <Text
+        size={'lg'}
+        className={`${montserrat_paragraph.variable} font-montserratParagraph`}
+      >
         {title}
       </Text>
     ),
     message: (
-      <Text className={`${montserrat_med.className} text-neutral-200`}>
+      <Text
+        className={`${montserrat_paragraph.variable} font-montserratParagraph text-neutral-200`}
+      >
         {message}
       </Text>
     ),

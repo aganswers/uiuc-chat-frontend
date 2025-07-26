@@ -5,7 +5,6 @@ import dayjs from 'dayjs'
 import { notifications } from '@mantine/notifications'
 import { Title, Text, Switch } from '@mantine/core'
 import { montserrat_heading, montserrat_paragraph } from 'fonts'
-import { Montserrat } from 'next/font/google'
 import {
   // IconArrowsSort,
   // IconCaretDown,
@@ -31,10 +30,7 @@ interface N8nWorkflowsTableProps {
   // ) => Promise<WorkflowRecord[]>
 }
 
-const montserrat_med = Montserrat({
-  weight: '500',
-  subsets: ['latin'],
-})
+const montserrat_med = montserrat_paragraph
 
 export const N8nWorkflowsTable = ({
   n8nApiKey,
@@ -247,11 +243,11 @@ export const N8nWorkflowsTable = ({
         loadingText="Loading..."
         // 👇 uncomment the next line to display a custom text when no records were found
         noRecordsText="No records found"
-      // 👇 uncomment the next line to use a custom pagination text
-      // paginationText={({ from, to, totalRecords }) => `Records ${from} - ${to} of ${totalRecords}`}
-      // 👇 uncomment the next lines to use custom pagination colors
-      // paginationActiveBackgroundColor="green"
-      // paginationActiveTextColor="#e6e348"
+        // 👇 uncomment the next line to use a custom pagination text
+        // paginationText={({ from, to, totalRecords }) => `Records ${from} - ${to} of ${totalRecords}`}
+        // 👇 uncomment the next lines to use custom pagination colors
+        // paginationActiveBackgroundColor="green"
+        // paginationActiveTextColor="#e6e348"
       />
     </>
   )
