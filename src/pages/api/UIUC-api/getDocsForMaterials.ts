@@ -152,4 +152,4 @@ export const getCourseDocuments = async (
 //   }
 // }
 
-// export default getCourseMetadata
+export default getCourseDocumentsHandler

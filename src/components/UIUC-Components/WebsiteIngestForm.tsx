@@ -34,13 +34,11 @@ import { motion } from 'framer-motion'
 import { montserrat_heading } from 'fonts'
 import { notifications } from '@mantine/notifications'
 import axios from 'axios'
-import { Montserrat } from 'next/font/google'
 import { type FileUpload } from './UploadNotification'
 import { type QueryClient } from '@tanstack/react-query'
-const montserrat_med = Montserrat({
-  weight: '500',
-  subsets: ['latin'],
-})
+import { montserrat_paragraph } from '../../../fonts'
+
+const montserrat_med = montserrat_paragraph
 export default function WebsiteIngestForm({
   project_name,
   setUploadFiles,

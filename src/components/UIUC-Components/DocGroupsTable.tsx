@@ -130,6 +130,9 @@ export function DocGroupsTable({ course_name }: { course_name: string }) {
           type="always"
           offsetScrollbars
           className="overflow-hidden rounded-xl"
+          placeholder=""
+          onPointerEnterCapture={() => {}}
+          onPointerLeaveCapture={() => {}}
         >
           <Table
             style={{

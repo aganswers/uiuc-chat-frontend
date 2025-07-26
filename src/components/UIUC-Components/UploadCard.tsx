@@ -15,7 +15,6 @@ import SetExampleQuestions from './SetExampleQuestions'
 import { callSetCourseMetadata, uploadToS3 } from '~/utils/apiUtils'
 import { type CourseMetadataOptionalForUpsert } from '~/types/courseMetadata'
 // import { Checkbox } from '@radix-ui/react-checkbox'
-import { Montserrat } from 'next/font/google'
 import CanvasIngestForm from './CanvasIngestForm'
 import LargeDropzone from './LargeDropzone'
 import WebsiteIngestForm from './WebsiteIngestForm'
@@ -28,10 +27,7 @@ import ShareSettingsModal from './ShareSettingsModal'
 import UploadNotification, { type FileUpload } from './UploadNotification'
 import { useQueryClient } from '@tanstack/react-query'
 
-const montserrat_light = Montserrat({
-  weight: '400',
-  subsets: ['latin'],
-})
+const montserrat_light = montserrat_paragraph
 
 const useStyles = createStyles((theme) => ({
   // For Accordion
@@ -402,7 +398,7 @@ export const UploadCard = memo(function UploadCard({
                 </Text>
                 <input
                   type="file"
-                  className={`file-input-bordered file-input w-full border-violet-800 bg-violet-800 text-white  shadow-inner hover:border-violet-600 hover:bg-violet-800 ${montserrat_paragraph.variable} font-montserratParagraph`}
+                  className={`file-input file-input-bordered w-full border-violet-800 bg-violet-800 text-white  shadow-inner hover:border-violet-600 hover:bg-violet-800 ${montserrat_paragraph.variable} font-montserratParagraph`}
                   onChange={async (e) => {
                     // Assuming the file is converted to a URL somewhere else
                     if (e.target.files?.length) {

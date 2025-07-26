@@ -24,9 +24,9 @@ export default async function chatProxy(
   try {
     upstream = await fetch(`${backendURL}/Chat`, {
       method: 'POST',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
-        'Accept-Encoding': 'identity'
+        'Accept-Encoding': 'identity',
       },
       body: JSON.stringify(req.body),
     })
@@ -41,10 +41,15 @@ export default async function chatProxy(
   res.setHeader('Content-Type', 'text/plain; charset=utf-8')
   res.setHeader('Cache-Control', 'no-cache')
   res.setHeader('Connection', 'keep-alive')
-  
+
   // Copy other non-problematic headers
   upstream.headers.forEach((v, k) => {
-    const skipHeaders = ['content-encoding', 'content-length', 'transfer-encoding', 'content-type']
+    const skipHeaders = [
+      'content-encoding',
+      'content-length',
+      'transfer-encoding',
+      'content-type',
+    ]
     if (!skipHeaders.includes(k.toLowerCase())) {
       res.setHeader(k, v)
     }
@@ -55,17 +60,17 @@ export default async function chatProxy(
     try {
       const reader = upstream.body.getReader()
       const decoder = new TextDecoder()
-      
+
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
-        
+
         const chunk = decoder.decode(value)
         res.write(chunk)
-        
+
         // Force flush to ensure immediate streaming
         if ((res as any).flush) {
-          (res as any).flush()
+          ;(res as any).flush()
         }
       }
       res.end()

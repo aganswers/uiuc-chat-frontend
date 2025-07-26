@@ -32,7 +32,6 @@ import { VariableModal } from './VariableModal'
 
 import { notifications } from '@mantine/notifications'
 import { useMantineTheme, Tooltip } from '@mantine/core'
-import { Montserrat } from 'next/font/google'
 
 import React from 'react'
 
@@ -56,10 +55,9 @@ import { IconChevronRight } from '@tabler/icons-react'
 import { findDefaultModel } from '../UIUC-Components/api-inputs/LLMsApiKeyInputForm'
 import { showConfirmationToast } from '../UIUC-Components/api-inputs/LLMsApiKeyInputForm'
 
-const montserrat_med = Montserrat({
-  weight: '500',
-  subsets: ['latin'],
-})
+import { montserrat_paragraph } from '../../../fonts'
+
+const montserrat_med = montserrat_paragraph
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void
@@ -823,7 +821,9 @@ export const ChatInput = ({
           selectedConversation &&
           selectedConversation.messages &&
           selectedConversation.messages.length > 0 &&
-          selectedConversation.messages[selectedConversation.messages.length - 1]?.role === 'user' && (
+          selectedConversation.messages[
+            selectedConversation.messages.length - 1
+          ]?.role === 'user' && (
             <button
               className={`absolute ${isSmallScreen ? '-top-28' : '-top-20'} left-0 right-0 mx-auto mb-12 flex w-fit items-center gap-3 rounded border border-neutral-200 bg-white px-4 py-2 text-black hover:opacity-50 dark:border-neutral-600 dark:bg-[#343541] dark:text-white md:mb-0 md:mt-2`}
               onClick={onRegenerate}
