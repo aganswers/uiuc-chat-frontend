@@ -87,17 +87,6 @@ const Home: NextPage = () => {
             </div>
           </h4>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://github.com/aganswers/uiuc-chat-frontend"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Read the code →</h3>
-              <div className="text-lg">
-                100% free<br></br>100% open source &#40;MIT License&#41;
-                <br></br>100% awesome
-              </div>
-            </Link>
             {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
               href="https://ai.ncsa.illinois.edu/"
