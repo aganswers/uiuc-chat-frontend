@@ -12,7 +12,7 @@ import { PostHogProvider } from 'posthog-js/react'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 // import { SpeedInsights } from '@vercel/speed-insights/next'
 // import { Analytics } from '@vercel/analytics/next'
@@ -102,11 +102,11 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
           <ClerkLoaded>
             <GoogleOneTap />
             <QueryClientProvider client={queryClient}>
-              <ReactQueryDevtools
-                initialIsOpen={false}
-                position="left"
-                buttonPosition="bottom-left"
-              />
+              {/* <ReactQueryDevtools */}
+                {/* initialIsOpen={false} */}
+                {/* position="left" */}
+                {/* buttonPosition="bottom-left" */}
+              {/* /> */}
               <MantineProvider
                 withGlobalStyles
                 withNormalizeCSS

@@ -30,6 +30,7 @@ const Home: NextPage = () => {
     e.preventDefault()
     // Handle form submission here
     console.log('Email submitted:', email)
+    window.open('mailto:aganswersai@gmail.com?subject=Demo Request&body=I would like to schedule a demo of AgAnswers.ai. My email is ' + email, '_blank')
     // You can add your form submission logic here
   }
 
@@ -116,14 +117,10 @@ const Home: NextPage = () => {
                   type="submit"
                   className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors shadow-sm"
                 >
-                  Get Started
+                  Schedule a Demo
                 </button>
               </form>
             </div>
-
-            <button className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700 font-medium">
-              Schedule a Demo
-            </button>
           </div>
         </section>
 
@@ -150,28 +147,7 @@ const Home: NextPage = () => {
                 <div className="relative mb-6">
                   <div className={`bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center border border-gray-600 ${activeCarouselTab === 0 ? 'aspect-video' : ''}`}>
                     {activeCarouselTab === 0 && (
-                      <div className="text-center text-white p-8">
-                        <div className="relative mb-6">
-                          <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
-                            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                          </div>
-                          <div className="flex justify-center space-x-2 mb-4">
-                            <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                            <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                            <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
-                          </div>
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">AI System Deploying</h3>
-                        <p className="text-gray-300 text-sm">Complete deployment in under 60 seconds</p>
-                        <div className="mt-4 bg-gray-700/50 rounded-lg p-3">
-                          <div className="text-xs text-gray-400 mb-1">Progress: 87%</div>
-                          <div className="w-full bg-gray-600 rounded-full h-2">
-                            <div className="bg-gradient-to-r from-orange-500 to-orange-600 h-2 rounded-full w-[87%] transition-all duration-300"></div>
-                          </div>
-                        </div>
-                      </div>
+                      <video src="/media/landing/spinup.mp4" autoPlay muted loop playsInline className="w-full h-full object-cover rounded-lg" />
                     )}
                   {activeCarouselTab === 2 && (
                     <img src="/media/landing/chat.jpeg" className="w-full h-full object-cover rounded-lg" />
@@ -225,7 +201,7 @@ const Home: NextPage = () => {
               <div className="bg-gray-100 rounded-xl p-8 border border-gray-200 sticky top-8">
                 <div className="aspect-video bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mb-6">
                   <video 
-                    src="/media/landing/demo.mp4" 
+                    src="/media/landing/spinup.mp4" 
                     autoPlay 
                     muted 
                     loop 
@@ -370,12 +346,9 @@ const Home: NextPage = () => {
                   type="submit"
                   className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium transition-colors"
                 >
-                  Get Started
+                  Schedule a Demo
                 </button>
               </form>
-              <button className="px-6 py-3 border border-gray-600 rounded-lg hover:bg-gray-800 transition-colors text-white">
-                Schedule a Demo
-              </button>
             </div>
           </div>
         </section>
