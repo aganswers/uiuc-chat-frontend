@@ -119,7 +119,6 @@ export async function addDocumentsToDocGroup(
   }
 }
 
-
 export async function removeDocGroup(
   courseName: string,
   doc: CourseDocument,
@@ -158,35 +157,6 @@ export async function updateDocGroupStatus(
     }
   } catch (error) {
     console.error('Error in updateDocGroupStatus:', error)
-    throw error
-  }
-}
-
-export async function createDocumentGroup(
-  courseName: string,
-  docGroupName: string,
-) {
-  try {
-    const { data, error } = await supabase
-      .from('doc_groups')
-      .insert([
-        {
-          course_name: courseName,
-          name: docGroupName,
-          enabled: true,
-          doc_count: 0,
-        },
-      ])
-      .select()
-
-    if (error) {
-      console.error('Failed to create document group:', error.message)
-      throw new Error(`Failed to create document group: ${error.message}`)
-    }
-
-    return data
-  } catch (error) {
-    console.error('Error in createDocumentGroup:', error)
     throw error
   }
 }

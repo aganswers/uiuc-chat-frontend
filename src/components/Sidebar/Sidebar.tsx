@@ -61,7 +61,7 @@ const Sidebar = <T,>({
         className={`fixed top-0 ${side}-0 z-40 flex h-full w-[260px] flex-none flex-col space-y-2 border-r border-gray-200 bg-white p-4 text-sm transition-all sm:relative sm:top-0`}
       >
         {/* Header with New Chat and New Folder buttons */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <button
             className="flex flex-1 items-center justify-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-colors duration-200 hover:border-gray-400 hover:bg-gray-50"
             onClick={() => {

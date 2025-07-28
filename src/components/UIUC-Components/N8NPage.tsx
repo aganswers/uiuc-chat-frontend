@@ -34,7 +34,6 @@ import { fetchCourseMetadata } from '~/utils/apiUtils'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useAuth, useUser } from '@clerk/nextjs'
-import { Montserrat } from 'next/font/google'
 import { useFetchAllWorkflows } from '~/utils/functionCalling/handleFunctionCalling'
 import { IntermediateStateAccordion } from './IntermediateStateAccordion'
 
@@ -43,10 +42,7 @@ export const GetCurrentPageName = () => {
   return useRouter().asPath.slice(1).split('/')[0] as string
 }
 
-const montserrat_med = Montserrat({
-  weight: '500',
-  subsets: ['latin'],
-})
+const montserrat_med = montserrat_paragraph
 
 const MakeToolsPage = ({ course_name }: { course_name: string }) => {
   // Check auth - https://clerk.com/docs/nextjs/read-session-and-user-data

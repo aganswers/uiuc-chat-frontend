@@ -34,7 +34,7 @@ export default function Header({ isNavbar = false }: { isNavbar?: boolean }) {
   useEffect(() => {
     if (clerk_obj.isLoaded) {
       if (clerk_obj.isSignedIn) {
-        const emails = extractEmailsFromClerk(clerk_obj.user as any)
+        const emails = extractEmailsFromClerk(clerk_obj.user)
         setUserEmail(emails[0] || 'no_email')
 
         // Posthog identify
@@ -112,18 +112,31 @@ export function LandingPageHeader({
   forGeneralPurposeNotLandingpage?: boolean
 }) {
   const { classes, theme } = useStyles()
-  const headerStyle: React.CSSProperties = {
-    position: 'sticky',
-    top: 0,
-    zIndex: 100,
-    width: '100%',
-    padding: '1rem 2rem',
-    backgroundColor: 'white',
-    borderBottom: '1px solid #e5e7eb',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  }
+  const headerStyle: React.CSSProperties = forGeneralPurposeNotLandingpage
+    ? {
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        width: '100%',
+        padding: '2rem 2rem',
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e5e7eb',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }
+    : {
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        width: '100%',
+        padding: '1rem 2rem',
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e5e7eb',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }
 
   const clerk_obj = useUser()
   const [userEmail, setUserEmail] = useState('no_email')
@@ -133,7 +146,7 @@ export function LandingPageHeader({
   useEffect(() => {
     if (clerk_obj.isLoaded) {
       if (clerk_obj.isSignedIn) {
-        const emails = extractEmailsFromClerk(clerk_obj.user as any)
+        const emails = extractEmailsFromClerk(clerk_obj.user)
         setUserEmail(emails[0] || 'no_email')
 
         // Posthog identify
@@ -155,40 +168,14 @@ export function LandingPageHeader({
           AgAnswers.<span className="text-orange-600">ai</span>
         </h1>
 
-        {/* Navigation and user controls on the right */}
-        <div className="flex items-center gap-6">
-          {forGeneralPurposeNotLandingpage === false && (
-            <>
-              <Link
-                href="/new"
-                className="flex items-center gap-2 font-medium text-gray-700 transition-colors hover:text-orange-600"
-              >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                Projects
-              </Link>
-              <Link
-                href="https://docs.uiuc.chat/"
-                className="font-medium text-gray-700 transition-colors hover:text-orange-600"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Docs
-              </Link>
-            </>
-          )}
-          <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200"></div>
+        {/* Skeleton placeholders on the right */}
+        <div className="flex items-center gap-4">
+          <div
+            className="skeleton-box h-8 w-8 animate-pulse rounded-full bg-gray-200"
+          ></div>
+          <div
+            className="skeleton-box h-8 w-8 animate-pulse rounded-full bg-gray-200"
+          ></div>
         </div>
       </header>
     )
@@ -290,10 +277,10 @@ const useStyles = createStyles((theme) => ({
   link: {
     // textTransform: 'uppercase',
     fontSize: rem(13),
-    color: '#374151',
+    color: '#f1f5f9',
     padding: `${theme.spacing.sm} ${theme.spacing.xs}`,
     // margin: '0.35rem',
-    fontWeight: 600,
+    fontWeight: 700,
     transition:
       'border-color 100ms ease, color 100ms ease, background-color 100ms ease',
     borderRadius: theme.radius.sm, // added to make the square edges round

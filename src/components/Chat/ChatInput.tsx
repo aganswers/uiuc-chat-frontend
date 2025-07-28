@@ -32,7 +32,6 @@ import { VariableModal } from './VariableModal'
 
 import { notifications } from '@mantine/notifications'
 import { useMantineTheme, Tooltip } from '@mantine/core'
-import { Montserrat } from 'next/font/google'
 
 import React from 'react'
 
@@ -56,10 +55,9 @@ import { IconChevronRight } from '@tabler/icons-react'
 import { findDefaultModel } from '../UIUC-Components/api-inputs/LLMsApiKeyInputForm'
 import { showConfirmationToast } from '../UIUC-Components/api-inputs/LLMsApiKeyInputForm'
 
-const montserrat_med = Montserrat({
-  weight: '500',
-  subsets: ['latin'],
-})
+import { montserrat_paragraph } from '../../../fonts'
+
+const montserrat_med = montserrat_paragraph
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void
@@ -437,7 +435,7 @@ export const ChatInput = ({
     try {
       // ... existing image handling code ...
 
-      const response = await fetch('/api/allNewRoutingChat', {
+      const response = await fetch('/api/chat-api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1038,10 +1036,6 @@ export const ChatInput = ({
       {isModalOpen && selectedImage && (
         <ImagePreview
           src={selectedImage}
-          onClose={() => {
-            setIsModalOpen(false)
-            setSelectedImage(null)
-          }}
         />
       )}
     </div>

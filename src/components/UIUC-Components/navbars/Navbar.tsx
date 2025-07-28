@@ -1,9 +1,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { montserrat_heading } from 'fonts'
 import GlobalHeader from '~/components/UIUC-Components/navbars/GlobalHeader'
+import HomeContext from '~/pages/api/home/home.context'
+import { UserSettings } from '../../Chat/UserSettings'
 import {
   Flex,
   Indicator,
@@ -446,11 +448,34 @@ export default function Navbar({
   const router = useRouter()
   const [activeLink, setActiveLink] = useState<string>('')
 
+  // Check if HomeContext is available (only on dashboard/chat pages)
+  let homeContext
+  try {
+    homeContext = useContext(HomeContext)
+  } catch (error) {
+    // HomeContext not available on non-dashboard pages
+    homeContext = null
+  }
+
+  const {
+    state: { showModelSettings } = { showModelSettings: false },
+    dispatch: homeDispatch,
+    handleNewConversation,
+  } = homeContext || { state: { showModelSettings: false }, dispatch: () => {}, handleNewConversation: () => {} }
+
   useEffect(() => {
     if (!router.isReady) return
     const path = router.asPath.split('?')[0]
     if (path) setActiveLink(path)
   }, [router.asPath, router.isReady])
+
+  // Check if we're on a dashboard/chat page (where HomeContext should be available)
+  const isDashboardPage = course_name && homeContext && [
+    `/${course_name}/dashboard`,
+    `/${course_name}/chat`, 
+    `/${course_name}/llms`,
+    `/${course_name}/tools`
+  ].some(path => router.asPath.startsWith(path))
 
   const items: NavItem[] = [
     {
@@ -546,21 +571,87 @@ export default function Navbar({
           {/* Right Side Actions */}
           <div className="flex items-center space-x-4">
             <div className="hidden items-center space-x-8 md:flex">
-              <Link
-                href="/new"
-                className="flex items-center space-x-1 text-gray-700 transition-colors hover:text-orange-600"
-              >
-                <FileIcon />
-                <span className="text-sm">New Project</span>
-              </Link>
-              <Link
-                href="https://docs.uiuc.chat/"
-                className="text-sm text-gray-700 transition-colors hover:text-orange-600"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Docs
-              </Link>
+              {isDashboardPage ? (
+                <>
+                  <button
+                    onClick={() => {
+                      handleNewConversation()
+                      setTimeout(() => {
+                        const chatInput = document.querySelector(
+                          'textarea.chat-input',
+                        ) as HTMLTextAreaElement
+                        if (chatInput) {
+                          chatInput.focus()
+                        }
+                      }, 100)
+                    }}
+                    className="flex items-center space-x-1 text-gray-700 transition-colors hover:text-orange-600"
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                    <span className="text-sm">New Chat</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      homeDispatch({
+                        field: 'showModelSettings',
+                        value: !showModelSettings,
+                      })
+                    }}
+                    className="flex items-center space-x-1 text-gray-700 transition-colors hover:text-orange-600"
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    <span className="text-sm">Settings</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/new"
+                    className="flex items-center space-x-1 text-gray-700 transition-colors hover:text-orange-600"
+                  >
+                    <FileIcon />
+                    <span className="text-sm">New Project</span>
+                  </Link>
+                  <Link
+                    href="https://docs.uiuc.chat/"
+                    className="text-sm text-gray-700 transition-colors hover:text-orange-600"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Docs
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -616,27 +707,102 @@ export default function Navbar({
                 </Link>
               ))}
               <div className="mt-2 border-t border-gray-200 pt-2">
-                <Link
-                  href="/new"
-                  className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600"
-                >
-                  <FileIcon />
-                  <span>New Project</span>
-                </Link>
-                <Link
-                  href="https://docs.uiuc.chat/"
-                  className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ClipboardIcon />
-                  <span>Documentation</span>
-                </Link>
+                {isDashboardPage ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        handleNewConversation()
+                        close()
+                        setTimeout(() => {
+                          const chatInput = document.querySelector(
+                            'textarea.chat-input',
+                          ) as HTMLTextAreaElement
+                          if (chatInput) {
+                            chatInput.focus()
+                          }
+                        }, 100)
+                      }}
+                      className="flex w-full items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                    >
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
+                      <span>New Chat</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        homeDispatch({
+                          field: 'showModelSettings',
+                          value: !showModelSettings,
+                        })
+                        close()
+                      }}
+                      className="flex w-full items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                    >
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      <span>Settings</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/new"
+                      className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                    >
+                      <FileIcon />
+                      <span>New Project</span>
+                    </Link>
+                    <Link
+                      href="https://docs.uiuc.chat/"
+                      className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ClipboardIcon />
+                      <span>Documentation</span>
+                    </Link>
+                  </>
+                )}
               </div>
             </nav>
           </div>
         )}
       </div>
+
+      {/* Model Settings Modal */}
+      {isDashboardPage && showModelSettings && (
+        <div className="absolute right-4 top-16 z-50 rounded-lg border border-gray-200 bg-white shadow-lg">
+          <UserSettings />
+        </div>
+      )}
     </header>
   )
 }

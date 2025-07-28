@@ -140,6 +140,10 @@
   li {
     margin-bottom: 5px;
   }
+  
+  button {
+    cursor: pointer;
+  }
 }
 
 /* Utility classes for adaptive theme */

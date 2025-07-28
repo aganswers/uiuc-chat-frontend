@@ -15,7 +15,6 @@ import SetExampleQuestions from './SetExampleQuestions'
 import { callSetCourseMetadata, uploadToS3 } from '~/utils/apiUtils'
 import { type CourseMetadataOptionalForUpsert } from '~/types/courseMetadata'
 // import { Checkbox } from '@radix-ui/react-checkbox'
-import { Montserrat } from 'next/font/google'
 import CanvasIngestForm from './CanvasIngestForm'
 import LargeDropzone from './LargeDropzone'
 import WebsiteIngestForm from './WebsiteIngestForm'
@@ -29,10 +28,7 @@ import UploadNotification, { type FileUpload } from './UploadNotification'
 import { useQueryClient } from '@tanstack/react-query'
 import { LinkGeneratorModal } from '../Modals/LinkGeneratorModal'
 
-const montserrat_light = Montserrat({
-  weight: '400',
-  subsets: ['latin'],
-})
+const montserrat_light = montserrat_paragraph
 
 const useStyles = createStyles((theme) => ({
   // For Accordion
@@ -302,6 +298,124 @@ export const UploadCard = memo(function UploadCard({
               >
                 Update Greeting
               </button>
+            </div>
+
+            <div className="space-y-6">
+              <Title
+                className={`${montserrat_heading.variable} font-montserratHeading`}
+                variant="gradient"
+                gradient={{ from: 'orange', to: 'yellow', deg: 170 }}
+                order={3}
+              >
+                Branding
+              </Title>
+
+              <div className="form-control relative">
+                <label
+                  className={`label ${montserrat_heading.variable} font-montserratHeading`}
+                >
+                  <span className="label-text text-lg text-gray-700">
+                    Set a greeting
+                  </span>
+                </label>
+                <Text
+                  className={`label ${montserrat_light.className} pt-0`}
+                  size={'sm'}
+                >
+                  Shown before users send their first chat.
+                </Text>
+                <Textarea
+                  autosize
+                  minRows={2}
+                  maxRows={4}
+                  placeholder="Enter a greeting to help users get started with your bot"
+                  className={`w-full ${montserrat_paragraph.variable} font-montserratParagraph`}
+                  value={introMessage}
+                  onChange={(e) => {
+                    setIntroMessage(e.target.value)
+                    setIsIntroMessageUpdated(true)
+                  }}
+                />
+                {isIntroMessageUpdated && (
+                  <>
+                    <Button
+                      className="relative m-1 w-[30%] self-end bg-orange-500 text-white hover:bg-orange-600"
+                      type="submit"
+                      onClick={async () => {
+                        setIsIntroMessageUpdated(false)
+                        if (metadata) {
+                          metadata.course_intro_message = introMessage
+                          // Update the courseMetadata object
+
+                          const resp = await callSetCourseMetadata(
+                            projectName,
+                            metadata,
+                          )
+                          if (!resp) {
+                            console.log(
+                              'Error upserting course metadata for course: ',
+                              projectName,
+                            )
+                          }
+                        }
+                      }}
+                    >
+                      Submit
+                    </Button>
+                  </>
+                )}
+              </div>
+              <label
+                className={`label ${montserrat_heading.variable} font-montserratHeading`}
+              >
+                <span className="label-text text-lg text-gray-700">
+                  Set example questions
+                </span>
+              </label>
+              <Text
+                className={`label ${montserrat_light.className} pb-0 pt-0`}
+                mb={-3}
+                size={'sm'}
+              >
+                Users will likely try these first to get a feel for your bot.
+              </Text>
+              <SetExampleQuestions
+                course_name={projectName}
+                course_metadata={metadata as CourseMetadataOptionalForUpsert}
+              />
+              <div className="form-control">
+                <label
+                  className={`label ${montserrat_heading.variable} font-montserratHeading`}
+                >
+                  <span className="label-text text-lg text-gray-700">
+                    Upload your logo
+                  </span>
+                </label>
+                <Text
+                  size={'sm'}
+                  className={`label ${montserrat_light.className}`}
+                >
+                  This logo will appear in the header of the chat page.
+                </Text>
+                <input
+                  type="file"
+                  className={`file-input file-input-bordered w-full border-orange-400 bg-white text-gray-700 shadow-inner hover:border-orange-500 ${montserrat_paragraph.variable} font-montserratParagraph`}
+                  onChange={async (e) => {
+                    // Assuming the file is converted to a URL somewhere else
+                    if (e.target.files?.length) {
+                      console.log('Uploading to s3')
+                      const banner_s3_image = await uploadToS3(
+                        e.target.files?.[0] ?? null,
+                        projectName,
+                      )
+                      if (banner_s3_image && metadata) {
+                        metadata.banner_image_s3 = banner_s3_image
+                        await callSetCourseMetadata(projectName, metadata)
+                      }
+                    }
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

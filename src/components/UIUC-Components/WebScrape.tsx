@@ -30,12 +30,8 @@ import { callSetCourseMetadata } from '~/utils/apiUtils'
 import { montserrat_heading, montserrat_paragraph } from 'fonts'
 import { useRef } from 'react'
 import { LoadingSpinner } from './LoadingSpinner'
-import { Montserrat } from 'next/font/google'
 
-const montserrat_med = Montserrat({
-  weight: '500',
-  subsets: ['latin'],
-})
+// Using local montserrat_paragraph font (weight 500) instead of Google Fonts
 
 interface WebScrapeProps {
   is_new_course: boolean
@@ -349,12 +345,17 @@ export const WebScrape = ({
         onOpen: () => console.log('error mounted'),
         autoClose: 12000,
         title: (
-          <Text size={'lg'} className={`${montserrat_med.className}`}>
+          <Text
+            size={'lg'}
+            className={`${montserrat_paragraph.variable} font-montserratParagraph`}
+          >
             {'Error during web scraping. Please try again.'}
           </Text>
         ),
         message: (
-          <Text className={`${montserrat_med.className} text-neutral-200`}>
+          <Text
+            className={`${montserrat_paragraph.variable} font-montserratParagraph text-neutral-200`}
+          >
             {error.message}
           </Text>
         ),
@@ -516,9 +517,11 @@ export const WebScrape = ({
                 }}
                 size="md"
                 radius={'xl'}
-                className={`rounded-s-md ${isUrlUpdated ? 'bg-orange-800' : 'border-orange-800'
-                  } overflow-ellipsis text-ellipsis p-2 ${isUrlUpdated ? 'text-white' : 'text-gray-500'
-                  } min-w-[5rem] -translate-x-1 transform hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none`}
+                className={`rounded-s-md ${
+                  isUrlUpdated ? 'bg-orange-800' : 'border-orange-800'
+                } overflow-ellipsis text-ellipsis p-2 ${
+                  isUrlUpdated ? 'text-white' : 'text-gray-500'
+                } min-w-[5rem] -translate-x-1 transform hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none`}
                 w={`${isSmallScreen ? 'auto' : 'auto'}`}
                 disabled={isDisabled}
               >
@@ -626,9 +629,11 @@ export const WebScrape = ({
                 }}
                 size="md"
                 radius={'xl'}
-                className={`rounded-s-md ${isUrlUpdated ? 'bg-orange-800' : 'border-orange-800'
-                  } overflow-ellipsis text-ellipsis p-2 ${isUrlUpdated ? 'text-white' : 'text-gray-500'
-                  } min-w-[5rem] -translate-x-1 transform hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none`}
+                className={`rounded-s-md ${
+                  isUrlUpdated ? 'bg-orange-800' : 'border-orange-800'
+                } overflow-ellipsis text-ellipsis p-2 ${
+                  isUrlUpdated ? 'text-white' : 'text-gray-500'
+                } min-w-[5rem] -translate-x-1 transform hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none`}
                 w={`${isSmallScreen ? 'auto' : 'auto'}`}
                 disabled={isDisabled}
               >

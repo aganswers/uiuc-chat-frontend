@@ -1,7 +1,7 @@
 import { type NextPage } from 'next'
 import ProjectsPage from '~/components/UIUC-Components/MakeNewCoursePage'
 import React, { useEffect, useState } from 'react'
-import { Montserrat } from 'next/font/google'
+import { montserrat_heading } from 'fonts'
 import { useRouter } from 'next/router'
 import { useUser } from '@clerk/nextjs'
 import { CannotEditGPT4Page } from '~/components/UIUC-Components/CannotEditGPT4'
@@ -15,10 +15,7 @@ import { extractEmailsFromClerk } from '~/components/UIUC-Components/clerkHelper
 import MakeToolsPage from '~/components/UIUC-Components/N8NPage'
 import posthog from 'posthog-js'
 
-const montserrat = Montserrat({
-  weight: '700',
-  subsets: ['latin'],
-})
+// Using local montserrat_heading font (weight 700) instead of Google Fonts
 
 const ToolsPage: NextPage = () => {
   const router = useRouter()
@@ -89,7 +86,7 @@ const ToolsPage: NextPage = () => {
     return (
       <MainPageBackground>
         <Title
-          className={montserrat.className}
+          className={`${montserrat_heading.variable} font-montserratHeading`}
           variant="gradient"
           gradient={{ from: 'gold', to: 'white', deg: 50 }}
           order={3}

@@ -81,7 +81,7 @@ export function DocGroupsTable({ course_name }: { course_name: string }) {
 
       {/* Table */}
       <div className="overflow-hidden rounded-lg border border-gray-200">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" style={{ maxHeight: 'calc(80vh - 16rem)' }}>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>

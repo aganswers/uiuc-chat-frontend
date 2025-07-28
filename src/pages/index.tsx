@@ -5,14 +5,16 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 
 import {
+  // MantineProvider,
   rem,
   Card,
   Text,
   Title,
-  Container,
-  SimpleGrid,
-  Stack,
+  Badge,
+  Button,
   Group,
+  Flex,
+  Container,
 } from '@mantine/core'
 
 import { LandingPageHeader } from '~/components/UIUC-Components/navbars/GlobalHeader'
@@ -20,70 +22,61 @@ import GlobalFooter from '~/components/UIUC-Components/GlobalFooter'
 import { montserrat_heading, montserrat_paragraph } from 'fonts'
 
 const Home: NextPage = () => {
-  const [openAccordion, setOpenAccordion] = useState(0)
   const [email, setEmail] = useState('')
-  const [isVideoPlaying, setIsVideoPlaying] = useState(true)
   const [activeCarouselTab, setActiveCarouselTab] = useState(0)
-
-  const featureAccordion = [
-    {
-      title: 'Deploy chatbots in minutes',
-      content: 'Upload your research papers, manuals, reports, and datasets. Get a fully functional chatbot that understands your proprietary knowledge with zero coding required.',
-      link: 'Explore document chatbots',
-      features: ['No-code deployment', 'Multi-format document support', 'Instant knowledge retrieval']
-    },
-    {
-      title: 'Connect AI to your infrastructure',
-      content: 'Build custom tools that integrate directly with your existing systems, databases, and workflows. Control equipment and manage operations through natural conversation.',
-      link: 'Discover custom AI tools',
-      features: ['Direct system integration', 'Real-time data access', 'Automated workflows']
-    },
-    {
-      title: 'Autonomous AI agents',
-      content: 'Deploy intelligent agents that analyze satellite imagery, process sensor data, and coordinate complex multi-step agricultural workflows without human intervention.',
-      link: 'Learn about AI agents',
-      features: ['Multimodal analysis', 'Autonomous decision making', 'Multi-agent coordination']
-    },
-    {
-      title: 'Platform or managed service',
-      content: 'Choose between self-service platform access or fully managed custom solutions tailored specifically to your agricultural operations.',
-      link: 'Compare service options',
-      features: ['Self-service platform', 'Custom development', 'Ongoing maintenance']
-    }
-  ]
-
-  const credibilityPartners = [
-    'University of Illinois', 'Nelson Farms', 'AIFARMS', 'NCSA', 'Agricultural Research'
-  ]
-
-  const carouselTabs = ['Instant Spin Up', 'Document Databases', 'Chat Interface']
-  
-  const carouselContent = {
-    'Instant Spin Up': 'Deploy complete AI systems in minutes with zero configuration required.',
-    'Document Databases': 'Upload any document format and create searchable knowledge bases instantly.',
-    'Chat Interface': 'Interact with your agricultural data through natural conversation.'
-  }
+  const [openAccordion, setOpenAccordion] = useState(-1)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    window.location.href = `mailto:aganswersai@gmail.com?subject=AgAnswers.ai Inquiry&body=Email: ${email}`
+    // Handle form submission here
+    console.log('Email submitted:', email)
+    // You can add your form submission logic here
   }
 
-  // Auto-rotate carousel
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveCarouselTab((prev) => (prev + 1) % carouselTabs.length)
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [activeCarouselTab])
+  // Sample data for the landing page
+  const credibilityPartners = [
+    'University of Illinois',
+    'USDA Extension',
+    'AgTech Partners',
+    'Farm Bureau',
+    'Crop Science Society'
+  ]
 
+  const carouselTabs = ['Deploy', 'Dashboard', 'Chat']
+  
+  const carouselContent = {
+    'Deploy': 'Get your AI solution up and running in under 60 seconds with our automated deployment system.',
+    'Dashboard': 'Monitor performance, manage users, and track analytics from your centralized dashboard.',
+    'Chat': 'Engage with intelligent AI assistants trained on your agricultural data and workflows.'
+  }
+
+  const featureAccordion = [
+    {
+      title: 'Intelligent Document Processing',
+      content: 'Upload research papers, farm reports, regulatory documents, and technical manuals. Our AI instantly understands and can answer questions from your entire knowledge base.',
+      features: ['PDF & Document Analysis', 'Research Paper Integration', 'Regulatory Compliance'],
+      link: 'Explore document AI →'
+    },
+    {
+      title: 'Agricultural Data Analysis',
+      content: 'Connect satellite imagery, sensor data, weather information, and crop monitoring systems. Get insights and recommendations powered by comprehensive agricultural intelligence.',
+      features: ['Satellite Integration', 'IoT Sensor Data', 'Weather Analytics'],
+      link: 'See data capabilities →'
+    },
+    {
+      title: 'Custom AI Agents',
+      content: 'Deploy specialized AI agents for crop advisory, equipment maintenance, supply chain optimization, and regulatory compliance tailored to your specific operations.',
+      features: ['Crop Advisory Bots', 'Equipment Monitoring', 'Supply Chain AI'],
+      link: 'Build custom agents →'
+    }
+  ]
   return (
     <>
       <Head>
-        <title>AgAnswers.ai - AI Solutions for Agriculture</title>
+        <title>AgAnswers</title>
         <meta
           name="description"
-          content="Fast, easy AI tools and services for industrial agriculture. Build chatbots, agents, and multimodal analysis solutions tailored to your needs."
+          content="Chat with your documents, with full support for any format and web scraping."
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -398,11 +391,10 @@ const Home: NextPage = () => {
             </Text>
           </div>
         </Container>
-
-        <GlobalFooter />
       </main>
     </>
   )
 }
 
 export default Home
+

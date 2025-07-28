@@ -9,7 +9,6 @@ import {
   fetchEnabledDocGroups,
   removeDocGroup,
   updateDocGroupStatus,
-  createDocumentGroup,
 } from '~/utils/dbUtils'
 
 import { addDocumentsToDocGroupQdrant } from '~/utils/qdrantUtils'
@@ -22,7 +21,6 @@ interface RequestBody {
     | 'getDocumentGroups'
     | 'updateDocGroupStatus'
     | 'fetchEnabledDocGroups'
-    | 'createDocGroup'
   courseName: string
   doc?: CourseDocument
   docGroup?: string
@@ -58,16 +56,25 @@ export default async function handler(
 
         const sqlResponse = await addDocumentsToDocGroup(courseName, doc)
         if (sqlResponse) {
-          const qdrantResponse = await addDocumentsToDocGroupQdrant(courseName, doc)
+          const qdrantResponse = await addDocumentsToDocGroupQdrant(
+            courseName,
+            doc,
+          )
           if (qdrantResponse && qdrantResponse.status === 'completed') {
             res.status(200).json({ success: true })
           } else {
             // rollback the SQL operation
             await removeDocGroup(courseName, doc, docGroup as string)
-            res.status(500).json({ success: false, error: 'An error occurred during Qdrant update' })
+            res.status(500).json({
+              success: false,
+              error: 'An error occurred during Qdrant update',
+            })
           }
         } else {
-          res.status(500).json({ success: false, error: 'An error occurred during database update' })
+          res.status(500).json({
+            success: false,
+            error: 'An error occurred during database update',
+          })
         }
       } else if (action === 'appendDocGroup' && doc && docGroup) {
         console.log('Appending doc group:', docGroup, 'to doc:', doc)
@@ -87,26 +94,36 @@ export default async function handler(
           doc_groups: doc.doc_groups,
           doc_group: docGroup,
         })
-        
+
         if (!doc.doc_groups) {
           doc.doc_groups = []
         }
         if (!doc.doc_groups.includes(docGroup)) {
           doc.doc_groups.push(docGroup)
         }
-        
+
         const sqlResponse = await addDocumentsToDocGroup(courseName, doc)
         if (sqlResponse) {
-          const qdrantResponse = await addDocumentsToDocGroupQdrant(courseName, doc)
+          const qdrantResponse = await addDocumentsToDocGroupQdrant(
+            courseName,
+            doc,
+          )
           if (qdrantResponse && qdrantResponse.status === 'completed') {
             res.status(200).json({ success: true })
           } else {
             // rollback the SQL operation
             await removeDocGroup(courseName, doc, docGroup as string)
-            res.status(500).json({ success: false, error: 'An error occurred during Qdrant update, rolled back SQL changes' })
+            res.status(500).json({
+              success: false,
+              error:
+                'An error occurred during Qdrant update, rolled back SQL changes',
+            })
           }
         } else {
-          res.status(500).json({ success: false, error: 'An error occurred during SQL database update' })
+          res.status(500).json({
+            success: false,
+            error: 'An error occurred during SQL database update',
+          })
         }
       } else if (action === 'removeDocGroup' && doc && docGroup) {
         console.log('Removing doc group: ', docGroup, 'from doc: ', doc)
@@ -151,19 +168,6 @@ export default async function handler(
       } else if (action === 'fetchEnabledDocGroups') {
         const documents = await fetchEnabledDocGroups(courseName)
         res.status(200).json({ success: true, documents })
-      } else if (action === 'createDocGroup' && docGroup) {
-        console.log('Creating document group:', docGroup, 'for course:', courseName)
-        
-        posthog.capture('create_doc_group', {
-          distinct_id:
-            req.headers['x-forwarded-for'] || req.socket.remoteAddress,
-          curr_user_id: await getAuth(req).userId,
-          course_name: courseName,
-          doc_group: docGroup,
-        })
-        
-        const result = await createDocumentGroup(courseName, docGroup)
-        res.status(200).json({ success: true, data: result })
       } else {
         res.status(400).json({ success: false, error: 'Invalid action' })
       }
