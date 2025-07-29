@@ -31,6 +31,7 @@ import { ChatLoader } from './ChatLoader'
 import { ErrorMessageDiv } from './ErrorMessageDiv'
 import { MemoizedChatMessage } from './MemoizedChatMessage'
 import { fetchPresignedUrl } from '~/utils/apiUtils'
+import { OpenSidebarButton } from '../Sidebar/components/OpenCloseButton'
 
 import { type CourseMetadata } from '~/types/courseMetadata'
 
@@ -47,7 +48,6 @@ interface Props {
 import { useRouter } from 'next/router'
 import { useUser } from '@clerk/nextjs'
 import { extractEmailsFromClerk } from '../UIUC-Components/clerkHelpers'
-import ChatNavbar from '../UIUC-Components/navbars/ChatNavbar'
 import { notifications } from '@mantine/notifications'
 import { montserrat_heading, montserrat_paragraph } from 'fonts'
 import {
@@ -64,7 +64,6 @@ import {
 } from '~/utils/functionCalling/handleFunctionCalling'
 import { useFetchEnabledDocGroups } from '~/hooks/docGroupsQueries'
 import { CropwizardLicenseDisclaimer } from '~/pages/cropwizard-licenses'
-import Head from 'next/head'
 import ChatUI, { webLLMModels } from '~/utils/modelProviders/WebLLM'
 import { MLCEngine } from '@mlc-ai/web-llm'
 import * as webllm from '@mlc-ai/web-llm'
@@ -167,6 +166,7 @@ export const Chat = memo(
         tools,
         webLLMModelIdLoading,
         llmProviders,
+        showChatbar,
       },
       handleUpdateConversation,
       handleFeedbackUpdate,
@@ -1333,6 +1333,11 @@ export const Chat = memo(
       homeDispatch({ field: 'showModelSettings', value: !showModelSettings })
     }
 
+    const handleToggleChatbar = () => {
+      homeDispatch({ field: 'showChatbar', value: !showChatbar })
+      localStorage.setItem('showChatbar', JSON.stringify(!showChatbar))
+    }
+
     const onClearAll = () => {
       if (
         confirm(t<string>('Are you sure you want to clear all messages?')) &&
@@ -1409,16 +1414,16 @@ export const Chat = memo(
     const renderIntroductoryStatements = () => {
       return (
         <div className="xs:mx-2 mt-4 max-w-3xl gap-3 px-4 last:mb-2 sm:mx-4 md:mx-auto lg:mx-auto ">
-          <div className="backdrop-filter-[blur(10px)] rounded-lg border-2 border-[rgba(42,42,120,0.55)] bg-[rgba(42,42,64,0.4)] p-6">
+          <div className="backdrop-filter-[blur(10px)] rounded-lg border-2 border-gray-200 bg-white p-6 shadow-lg">
             <Text
-              className={`mb-2 text-lg text-white ${montserrat_heading.variable} font-montserratHeading`}
+              className={`mb-2 text-lg text-gray-900 ${montserrat_heading.variable} font-montserratHeading`}
               style={{ whiteSpace: 'pre-wrap' }}
               dangerouslySetInnerHTML={{
                 __html:
                   courseMetadata?.course_intro_message
                     ?.replace(
                       /(https?:\/\/([^\s]+))/g,
-                      '<a href="https://$1" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">$2</a>',
+                      '<a href="https://$1" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:underline">$2</a>',
                     )
                     ?.replace(
                       /href="https:\/\/(https?:\/\/)/g,
@@ -1428,7 +1433,7 @@ export const Chat = memo(
             />
 
             <h4
-              className={`text-md mb-2 text-white ${montserrat_paragraph.variable} font-montserratParagraph`}
+              className={`text-md mb-2 text-gray-700 ${montserrat_paragraph.variable} font-montserratParagraph`}
             >
               {getCurrentPageName() === 'cropwizard-1.5' && (
                 <CropwizardLicenseDisclaimer />
@@ -1443,7 +1448,7 @@ export const Chat = memo(
                 statements.map((statement, index) => (
                   <div
                     key={index}
-                    className="w-full rounded-lg border-b-2 border-[rgba(42,42,64,0.4)] hover:cursor-pointer hover:bg-[rgba(42,42,64,0.9)]"
+                    className="w-full rounded-lg border-b-2 border-gray-200 hover:cursor-pointer hover:bg-orange-50"
                     onClick={() => {
                       setInputContent('') // First clear the input
                       setTimeout(() => {
@@ -1455,9 +1460,9 @@ export const Chat = memo(
                   >
                     <Button
                       variant="link"
-                      className={`text-md h-auto p-2 font-bold leading-relaxed text-white hover:underline ${montserrat_paragraph.variable} font-montserratParagraph `}
+                      className={`text-md h-auto p-2 font-bold leading-relaxed text-gray-700 hover:text-orange-600 hover:underline ${montserrat_paragraph.variable} font-montserratParagraph `}
                     >
-                      <IconArrowRight size={25} className="mr-2 min-w-[40px]" />
+                      <IconArrowRight size={25} className="mr-2 min-w-[40px] text-orange-500" />
                       <p className="whitespace-break-spaces">{statement}</p>
                     </Button>
                   </div>
@@ -1641,119 +1646,113 @@ export const Chat = memo(
 
     return (
       <>
-        <Head>
-          <title>{getCurrentPageName()} - UIUC.chat</title>
-          <meta
-            name="description"
-            content="The AI teaching assistant built for students at UIUC."
-          />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
         <SourcesSidebarProvider>
-          <div className="overflow-wrap relative flex h-screen w-full flex-col overflow-hidden bg-white dark:bg-[#15162c]">
-            <div className="justify-center" style={{ height: '40px' }}>
-              <ChatNavbar bannerUrl={bannerUrl as string} isgpt4={true} />
-            </div>
-            <div className="mt-10 max-w-full flex-grow overflow-y-auto overflow-x-hidden">
-              {modelError ? (
-                <ErrorMessageDiv error={modelError} />
-              ) : (
-                <>
-                  <motion.div
-                    key={selectedConversation?.id}
-                    className="mt-4 max-h-full"
-                    ref={chatContainerRef}
-                    onScroll={handleScroll}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.25, ease: 'easeInOut' }}
-                  >
-                    {selectedConversation &&
-                    selectedConversation.messages &&
-                    selectedConversation.messages?.length === 0 ? (
-                      <>
-                        <div className="mt-16">
-                          {renderIntroductoryStatements()}
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        {selectedConversation?.messages?.map(
-                          (message, index) => (
-                            <MemoizedChatMessage
-                              key={index}
-                              message={message}
-                              messageIndex={index}
-                              onEdit={(editedMessage) => {
-                                handleSend(
-                                  editedMessage,
-                                  selectedConversation?.messages?.length -
-                                    index,
-                                  null,
-                                  tools,
-                                  enabledDocumentGroups,
-                                  llmProviders,
-                                )
-                              }}
-                              onRegenerate={(message, index) => {
-                                // Find the user message that came before this assistant message
-                                const userMessage =
-                                  selectedConversation?.messages[index - 1]
-                                if (
-                                  userMessage &&
-                                  userMessage.role === 'user'
-                                ) {
-                                  handleSend(
-                                    userMessage,
-                                    selectedConversation?.messages?.length -
-                                      index +
-                                      1,
-                                    null,
-                                    tools,
-                                    enabledDocumentGroups,
-                                    llmProviders,
-                                  )
-                                }
-                              }}
-                              onFeedback={handleFeedback}
-                              onImageUrlsUpdate={onImageUrlsUpdate}
-                              courseName={courseName}
-                            />
-                          ),
+          <div className="flex h-full w-full flex-col bg-white">
+            {!showChatbar && (
+              <OpenSidebarButton onClick={handleToggleChatbar} side="left" />
+            )}
+            <div className="flex flex-1 overflow-hidden">
+              <div className="flex flex-1 flex-col overflow-hidden">
+                {modelError ? (
+                  <ErrorMessageDiv error={modelError} />
+                ) : (
+                  <>
+                    <motion.div
+                      key={selectedConversation?.id}
+                      className="flex-1 overflow-y-auto px-4 py-6"
+                      ref={chatContainerRef}
+                      onScroll={handleScroll}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.25, ease: 'easeInOut' }}
+                    >
+                      <div className="mx-auto w-full max-w-4xl">
+                        {selectedConversation &&
+                        selectedConversation.messages &&
+                        selectedConversation.messages?.length === 0 ? (
+                          <div className="flex min-h-[400px] items-center justify-center">
+                            {renderIntroductoryStatements()}
+                          </div>
+                        ) : (
+                          <>
+                            {selectedConversation?.messages?.map(
+                              (message, index) => (
+                                <MemoizedChatMessage
+                                  key={index}
+                                  message={message}
+                                  messageIndex={index}
+                                  onEdit={(editedMessage) => {
+                                    handleSend(
+                                      editedMessage,
+                                      selectedConversation?.messages?.length -
+                                        index,
+                                      null,
+                                      tools,
+                                      enabledDocumentGroups,
+                                      llmProviders,
+                                    )
+                                  }}
+                                  onRegenerate={(message, index) => {
+                                    // Find the user message that came before this assistant message
+                                    const userMessage =
+                                      selectedConversation?.messages[index - 1]
+                                    if (
+                                      userMessage &&
+                                      userMessage.role === 'user'
+                                    ) {
+                                      handleSend(
+                                        userMessage,
+                                        selectedConversation?.messages?.length -
+                                          index +
+                                          1,
+                                        null,
+                                        tools,
+                                        enabledDocumentGroups,
+                                        llmProviders,
+                                      )
+                                    }
+                                  }}
+                                  onFeedback={handleFeedback}
+                                  onImageUrlsUpdate={onImageUrlsUpdate}
+                                  courseName={courseName}
+                                />
+                              ),
+                            )}
+                            {loading && <ChatLoader />}
+                            <div className="h-32" ref={messagesEndRef} />
+                          </>
                         )}
-                        {loading && <ChatLoader />}
-                        <div
-                          className="h-[162px] bg-gradient-to-t from-transparent to-[rgba(14,14,21,0.4)]"
-                          ref={messagesEndRef}
+                      </div>
+                    </motion.div>
+                    <div className="border-t border-gray-200 bg-white p-4">
+                      <div className="mx-auto max-w-4xl">
+                        <ChatInput
+                          stopConversationRef={stopConversationRef}
+                          textareaRef={textareaRef}
+                          onSend={(message, plugin) => {
+                            handleSend(
+                              message,
+                              0,
+                              plugin,
+                              tools,
+                              enabledDocumentGroups,
+                              llmProviders,
+                            )
+                          }}
+                          onScrollDownClick={handleScrollDown}
+                          showScrollDownButton={showScrollDownButton}
+                          onRegenerate={handleRegenerate}
+                          inputContent={inputContent}
+                          setInputContent={setInputContent}
+                          courseName={getCurrentPageName()}
+                          chat_ui={chat_ui}
                         />
-                      </>
-                    )}
-                  </motion.div>
-                  {/* <div className="w-full max-w-[calc(100% - var(--sidebar-width))] mx-auto flex justify-center"> */}
-                  <ChatInput
-                    stopConversationRef={stopConversationRef}
-                    textareaRef={textareaRef}
-                    onSend={(message, plugin) => {
-                      handleSend(
-                        message,
-                        0,
-                        plugin,
-                        tools,
-                        enabledDocumentGroups,
-                        llmProviders,
-                      )
-                    }}
-                    onScrollDownClick={handleScrollDown}
-                    showScrollDownButton={showScrollDownButton}
-                    onRegenerate={handleRegenerate}
-                    inputContent={inputContent}
-                    setInputContent={setInputContent}
-                    courseName={getCurrentPageName()}
-                    chat_ui={chat_ui}
-                  />
-                </>
-              )}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </SourcesSidebarProvider>

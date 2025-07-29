@@ -305,7 +305,7 @@ axios.post('${baseUrl}/api/chat-api/chat', data, {
             border: 'None',
             color: 'white',
           }}
-          className="min-h-full bg-gradient-to-r from-purple-900 via-indigo-800 to-blue-800"
+          className="min-h-full bg-gradient-to-r from-orange-900 via-orange-800 to-orange-700"
         >
           <div className="w-full border-b border-white/10 bg-black/20 px-4 py-3 sm:px-6 sm:py-4 md:px-8">
             <div className="flex items-center justify-between gap-2">
@@ -381,7 +381,7 @@ axios.post('${baseUrl}/api/chat-api/chat', data, {
                       <IconBook
                         size={24}
                         style={{
-                          color: 'hsl(280,100%,70%)',
+                          color: 'orange-500',
                         }}
                       />
                       <Text
@@ -400,7 +400,7 @@ axios.post('${baseUrl}/api/chat-api/chat', data, {
                         transform: insightsOpen
                           ? 'rotate(180deg)'
                           : 'rotate(0deg)',
-                        color: 'hsl(280,100%,70%)',
+                        color: 'orange-500',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -430,7 +430,7 @@ axios.post('${baseUrl}/api/chat-api/chat', data, {
                                 width: '6px',
                                 height: '6px',
                                 borderRadius: '50%',
-                                backgroundColor: 'hsl(280,100%,70%)',
+                                backgroundColor: 'orange-500',
                                 marginTop: '8px',
                               }}
                             />
@@ -438,8 +438,8 @@ axios.post('${baseUrl}/api/chat-api/chat', data, {
                         >
                           <List.Item>
                             <a
-                              className={`text-sm transition-colors duration-200 hover:text-purple-400 ${montserrat_paragraph.variable} font-montserratParagraph`}
-                              style={{ color: 'hsl(280,100%,70%)' }}
+                              className={`text-sm transition-colors duration-200 hover:text-orange-400 ${montserrat_paragraph.variable} font-montserratParagraph`}
+                              style={{ color: 'orange-500' }}
                               href="https://platform.openai.com/docs/api-reference/chat/create"
                               target="_blank"
                               rel="noopener noreferrer"
@@ -455,8 +455,8 @@ axios.post('${baseUrl}/api/chat-api/chat', data, {
                           </List.Item>
                           <List.Item>
                             <a
-                              className={`text-sm transition-colors duration-200 hover:text-purple-400 ${montserrat_paragraph.variable} font-montserratParagraph`}
-                              style={{ color: 'hsl(280,100%,70%)' }}
+                              className={`text-sm transition-colors duration-200 hover:text-orange-400 ${montserrat_paragraph.variable} font-montserratParagraph`}
+                              style={{ color: 'orange-500' }}
                               href="https://docs.uiuc.chat/api/endpoints"
                               target="_blank"
                               rel="noopener noreferrer"
@@ -561,7 +561,7 @@ axios.post('${baseUrl}/api/chat-api/chat', data, {
                       variant="subtle"
                       size="sm"
                       radius={'xl'}
-                      className="min-w-[5rem] -translate-x-1 transform rounded-s-md bg-purple-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
+                      className="min-w-[5rem] -translate-x-1 transform rounded-s-md bg-orange-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
                     >
                       {copiedApiKey ? <IconCheck /> : <IconCopy />}
                     </Button>
@@ -590,7 +590,7 @@ axios.post('${baseUrl}/api/chat-api/chat', data, {
                 disabled={loading || apiKey !== null}
                 size="lg"
                 radius={'xl'}
-                className="min-w-[5rem] self-center rounded-md bg-purple-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
+                className="min-w-[5rem] self-center rounded-md bg-orange-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
                 // w={'60%'}
               >
                 Generate API Key
@@ -610,7 +610,7 @@ axios.post('${baseUrl}/api/chat-api/chat', data, {
                     disabled={loading || apiKey === null}
                     size="md"
                     radius={'xl'}
-                    className="min-w-[5rem] rounded-md bg-purple-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
+                    className="min-w-[5rem] rounded-md bg-orange-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
                     w={'auto'}
                   >
                     Rotate API Key
@@ -620,7 +620,7 @@ axios.post('${baseUrl}/api/chat-api/chat', data, {
                     disabled={loading || apiKey === null}
                     size="md"
                     radius={'xl'}
-                    className="min-w-[5rem] rounded-md bg-purple-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
+                    className="min-w-[5rem] rounded-md bg-orange-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
                     w={'auto'}
                   >
                     Delete API Key

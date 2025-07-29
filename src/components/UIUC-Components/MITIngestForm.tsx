@@ -109,12 +109,12 @@ export default function MITIngestForm({
       >
         <DialogTrigger asChild>
           <Card
-            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-gradient-to-br from-[#1c1c2e] to-[#2a2a40] p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+            className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white border border-gray-200 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
             style={{ height: '100%' }}
           >
             <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-900/30">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-900/30">
                   <Image
                     src="/media/mitocw_logo.jpg"
                     alt="MIT OCW Logo"
@@ -123,17 +123,17 @@ export default function MITIngestForm({
                     className="rounded-full object-contain"
                   />
                 </div>
-                <Text className="text-xl font-semibold text-gray-100">
+                <Text className="text-xl font-semibold text-gray-900">
                   MIT Course
                 </Text>
               </div>
             </div>
 
-            <Text className="mb-4 text-sm leading-relaxed text-gray-400">
+            <Text className="mb-4 text-sm leading-relaxed text-gray-600">
               Import content from MIT OpenCourseWare, including lecture notes,
               assignments, and course materials.
             </Text>
-            <div className="mt-auto flex items-center text-sm text-purple-400">
+            <div className="mt-auto flex items-center text-sm text-orange-400">
               <span>Configure import</span>
               <IconArrowRight
                 size={16}
@@ -143,23 +143,23 @@ export default function MITIngestForm({
           </Card>
         </DialogTrigger>
 
-        <DialogContent className="mx-auto h-auto w-[95%] max-w-2xl !rounded-2xl border-0 bg-[#1c1c2e] px-4 py-6 text-white sm:px-6">
+        <DialogContent className="mx-auto h-auto w-[95%] max-w-2xl !rounded-2xl border-0 bg-white px-4 py-6 text-gray-900 sm:px-6">
           <DialogHeader>
             <DialogTitle className="mb-4 text-left text-xl font-bold">
               Ingest MIT Course
             </DialogTitle>
           </DialogHeader>
-          <div className="border-t border-gray-800 pt-4">
+          <div className="border-t border-gray-200 pt-4">
             <div className="space-y-4">
               <div>
                 <div className="break-words text-sm sm:text-base">
                   <strong>For MIT Open Course Ware</strong>, just enter a URL
                   like{' '}
-                  <code className="inline-flex items-center rounded-md bg-[#020307] px-2 py-1 font-mono text-xs sm:text-sm">
+                  <code className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 font-mono text-xs sm:text-sm">
                     ocw.mit.edu/courses/ANY_COURSE
                   </code>{' '}
                   , for example:{' '}
-                  <span className="break-all text-purple-600">
+                  <span className="break-all text-orange-600">
                     <NextLink
                       target="_blank"
                       rel="noreferrer"
@@ -187,12 +187,12 @@ export default function MITIngestForm({
                   className="w-full rounded-full"
                   styles={{
                     input: {
-                      backgroundColor: '#1A1B1E',
+                      backgroundColor: '#f9fafb',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       '&:focus': {
-                        borderColor: '#9370DB',
+                        borderColor: '#ea580c',
                       },
                     },
                     wrapper: {
@@ -211,11 +211,11 @@ export default function MITIngestForm({
               </div>
             </div>
           </div>
-          <div className="mt-4 border-t border-gray-800 pt-2">
+          <div className="mt-4 border-t border-gray-200 pt-2">
             <Button
               onClick={handleIngest}
               disabled={!isUrlValid}
-              className="h-11 w-full rounded-xl bg-purple-600 text-white transition-colors hover:bg-purple-700"
+              className="h-11 w-full rounded-xl bg-orange-600 text-gray-900 transition-colors hover:bg-orange-700"
             >
               Ingest MIT Course
             </Button>

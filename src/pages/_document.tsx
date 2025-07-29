@@ -28,7 +28,7 @@ export default function Document(props: Props) {
 
   if (isMaintenanceMode) {
     return (
-      <Html lang={currentLocale}>
+      <Html lang={currentLocale} className="color-scheme-adaptive">
         <Head>
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-title" content="UIUC.chat"></meta>
@@ -44,7 +44,7 @@ export default function Document(props: Props) {
   }
 
   return (
-    <Html lang={currentLocale}>
+    <Html lang={currentLocale} className="color-scheme-adaptive">
       <Head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="UIUC.chat"></meta>

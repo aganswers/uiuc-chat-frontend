@@ -1,7 +1,7 @@
 // src/pages/[course_name]/prompt.tsx
 'use client'
 import { type NextPage } from 'next'
-import MakeNewCoursePage from '~/components/UIUC-Components/MakeNewCoursePage'
+import ProjectsPage from '~/components/UIUC-Components/MakeNewCoursePage'
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 
 import { useRouter } from 'next/router'
@@ -504,7 +504,7 @@ const CourseMain: NextPage = () => {
 
   if (courseExists === false) {
     return (
-      <MakeNewCoursePage
+              <ProjectsPage
         project_name={course_name as string}
         current_user_email={user_emails[0] as string}
       />
@@ -641,7 +641,7 @@ Do not include any commentary or explanations. Output only the optimized system 
                     border: 'None',
                     color: 'white',
                   }}
-                  className="min-h-full bg-gradient-to-r from-purple-900 via-indigo-800 to-blue-800"
+                  className="min-h-full bg-gradient-to-r from-orange-900 via-orange-800 to-orange-700"
                 >
                   <div className="w-full border-b border-white/10 bg-black/20 px-4 py-3 sm:px-6 sm:py-4 md:px-8">
                     <div className="flex items-center justify-between gap-2">
@@ -719,7 +719,7 @@ Do not include any commentary or explanations. Output only the optimized system 
                               <IconBook
                                 size={24}
                                 style={{
-                                  color: 'hsl(280,100%,70%)',
+                                  color: 'orange-500',
                                 }}
                               />
                               <Text
@@ -742,7 +742,7 @@ Do not include any commentary or explanations. Output only the optimized system 
                                 transform: insightsOpen
                                   ? 'rotate(180deg)'
                                   : 'rotate(0deg)',
-                                color: 'hsl(280,100%,70%)',
+                                color: 'orange-500',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -770,7 +770,7 @@ Do not include any commentary or explanations. Output only the optimized system 
                                         width: '6px',
                                         height: '6px',
                                         borderRadius: '50%',
-                                        backgroundColor: 'hsl(280,100%,70%)',
+                                        backgroundColor: 'orange-500',
                                         marginTop: '8px',
                                       }}
                                     />
@@ -778,8 +778,8 @@ Do not include any commentary or explanations. Output only the optimized system 
                                 >
                                   <List.Item>
                                     <a
-                                      className={`text-sm transition-colors duration-200 hover:text-purple-400 ${montserrat_paragraph.variable} font-montserratParagraph`}
-                                      style={{ color: 'hsl(280,100%,70%)' }}
+                                      className={`text-sm hover:text-orange-400 transition-colors duration-200 ${montserrat_paragraph.variable} font-montserratParagraph`}
+                                      style={{ color: 'orange-500' }}
                                       href="https://platform.openai.com/docs/guides/prompt-engineering"
                                       target="_blank"
                                       rel="noopener noreferrer"
@@ -799,8 +799,8 @@ Do not include any commentary or explanations. Output only the optimized system 
                                   </List.Item>
                                   <List.Item>
                                     <a
-                                      className={`text-sm transition-colors duration-200 hover:text-purple-400 ${montserrat_paragraph.variable} font-montserratParagraph`}
-                                      style={{ color: 'hsl(280,100%,70%)' }}
+                                      className={`text-sm hover:text-orange-400 transition-colors duration-200 ${montserrat_paragraph.variable} font-montserratParagraph`}
+                                      style={{ color: 'orange-500' }}
                                       href="https://docs.anthropic.com/claude/prompt-library"
                                       target="_blank"
                                       rel="noopener noreferrer"
@@ -837,7 +837,7 @@ Do not include any commentary or explanations. Output only the optimized system 
                                           width: '6px',
                                           height: '6px',
                                           borderRadius: '50%',
-                                          backgroundColor: 'hsl(280,100%,70%)',
+                                          backgroundColor: 'orange-500',
                                           marginTop: '8px',
                                         }}
                                       />
@@ -1096,7 +1096,7 @@ Do not include any commentary or explanations. Output only the optimized system 
                                   {/* TODO: add the return value if there is no message found
                                     double confirm the handleSystemPromptSubmit */}
                                   <Button
-                                    className="relative m-1 self-end bg-purple-800 text-white hover:border-indigo-600"
+                                    className="relative m-1 self-end bg-orange-800 text-white hover:border-indigo-600"
                                     type="button"
                                     onClick={() => {
                                       const lastMessage =
@@ -1179,7 +1179,7 @@ Do not include any commentary or explanations. Output only the optimized system 
                                   New
                                 </Text>
                               }
-                              color="hsl(280,100%,70%)"
+                              color="orange-500"
                               size={13}
                               styles={{
                                 indicator: {
@@ -1224,7 +1224,7 @@ Do not include any commentary or explanations. Output only the optimized system 
                                   New
                                 </Text>
                               }
-                              color="hsl(280,100%,70%)"
+                              color="orange-500"
                               size={13}
                               // styles={{ indicator: { top: '-10px !important', right: '265px !important' } }}
                               styles={{

@@ -5,20 +5,18 @@ import { appWithTranslation } from 'next-i18next'
 import { ClerkLoaded, ClerkProvider, GoogleOneTap } from '@clerk/nextjs'
 import { dark } from '@clerk/themes'
 
-import '~/styles/globals.css'
-import Maintenance from '~/components/UIUC-Components/Maintenance'
-
 import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 // import { SpeedInsights } from '@vercel/speed-insights/next'
 // import { Analytics } from '@vercel/analytics/next'
 
 // Check that PostHog is client-side (used to handle Next.js SSR)
+
 if (typeof window !== 'undefined') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
@@ -34,9 +32,12 @@ if (typeof window !== 'undefined') {
     },
     loaded: (posthog) => {
       if (process.env.NODE_ENV === 'development') posthog.debug()
-    },
+      },
   })
 }
+
+import '~/styles/globals.css'
+import Maintenance from '~/components/UIUC-Components/Maintenance'
 
 const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
   const router = useRouter()
@@ -100,25 +101,25 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
           <ClerkLoaded>
             <GoogleOneTap />
             <QueryClientProvider client={queryClient}>
-              <ReactQueryDevtools
-                initialIsOpen={false}
-                position="left"
-                buttonPosition="bottom-left"
-              />
+              {/* <ReactQueryDevtools */}
+                {/* initialIsOpen={false} */}
+                {/* position="left" */}
+                {/* buttonPosition="bottom-left" */}
+              {/* /> */}
               <MantineProvider
                 withGlobalStyles
                 withNormalizeCSS
                 theme={{
-                  colorScheme: 'dark',
+                  colorScheme: 'light',
                   colors: {
                     // Add your color
                     deepBlue: ['#E9EDFC', '#C1CCF6', '#99ABF0' /* ... */],
                     lime: ['#a3e635', '#65a30d', '#365314' /* ... */],
-                    aiPurple: ['#C06BF9'],
-                    backgroundColors: ['#2e026d', '#020307'],
-                    nearlyBlack: ['#0E1116'],
+                    aiPurple: ['#ea580c'],
+                    backgroundColors: ['#ffffff', '#f9fafb'],
+                    nearlyBlack: ['#111827'],
                     nearlyWhite: ['#F7F7F7'],
-                    disabled: ['#2A2F36'],
+                    disabled: ['#f3f4f6'],
                     errorBackground: ['#dc2626'],
                     errorBorder: ['#dc2626'],
                   },
@@ -137,8 +138,8 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
                     },
                   },
                   defaultGradient: {
-                    from: '#dc2626',
-                    to: '#431407',
+                    from: '#ea580c',
+                    to: '#c2410c',
                     deg: 80,
                   },
                 }}

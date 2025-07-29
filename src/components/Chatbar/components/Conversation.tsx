@@ -28,8 +28,7 @@ interface Props {
 export const ConversationComponent = ({ conversation }: Props) => {
   const {
     state: { selectedConversation, messageIsStreaming },
-    handleSelectConversation,
-    handleUpdateConversation,
+    dispatch: homeDispatch,
   } = useContext(HomeContext)
 
   const courseName = conversation.projectName
@@ -40,7 +39,7 @@ export const ConversationComponent = ({ conversation }: Props) => {
   const [isRenaming, setIsRenaming] = useState(false)
   const [renameValue, setRenameValue] = useState('')
 
-  const handleEnterDown = (e: KeyboardEvent<HTMLDivElement>) => {
+  const handleEnterDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault()
       selectedConversation && handleRename(selectedConversation)
@@ -58,10 +57,16 @@ export const ConversationComponent = ({ conversation }: Props) => {
 
   const handleRename = (conversation: Conversation) => {
     if (renameValue.trim().length > 0) {
-      handleUpdateConversation(conversation, {
-        key: 'name',
-        value: renameValue,
+      homeDispatch({
+        field: 'selectedConversation',
+        value: {
+          ...conversation,
+          name: renameValue,
+        },
       })
+
+      homeDispatch({ field: 'conversations', value: [] })
+
       setRenameValue('')
       setIsRenaming(false)
     }
@@ -105,10 +110,10 @@ export const ConversationComponent = ({ conversation }: Props) => {
   return (
     <div className="relative flex items-center">
       {isRenaming && selectedConversation?.id === conversation.id ? (
-        <div className="flex w-full items-center gap-3 rounded-lg bg-[#343541]/90 p-3">
-          <IconMessage size={18} />
+        <div className="flex w-full items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
+          <IconMessage size={18} className="text-gray-500" />
           <input
-            className="mr-12 flex-1 overflow-hidden overflow-ellipsis border-neutral-400 bg-transparent text-left text-[12.5px] leading-3 text-white outline-none focus:border-neutral-100"
+            className="mr-12 flex-1 overflow-hidden overflow-ellipsis border-gray-300 bg-transparent text-left text-sm leading-3 text-gray-900 outline-none focus:border-orange-500"
             type="text"
             value={renameValue}
             onChange={(e) => setRenameValue(e.target.value)}
@@ -118,28 +123,25 @@ export const ConversationComponent = ({ conversation }: Props) => {
         </div>
       ) : (
         <button
-          className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-[#343541]/90 ${
+          className={`flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-sm transition-colors duration-200 hover:bg-gray-50 ${
             messageIsStreaming ? 'disabled:cursor-not-allowed' : ''
           } ${
             selectedConversation?.id === conversation.id
-              ? 'bg-[#343541]/90'
-              : ''
+              ? 'bg-gray-100 text-gray-900'
+              : 'text-gray-700'
           }`}
-          onClick={() => handleSelectConversation(conversation)}
+          onClick={() =>
+            homeDispatch({
+              field: 'selectedConversation',
+              value: conversation,
+            })
+          }
           disabled={messageIsStreaming}
           draggable="true"
           onDragStart={(e) => handleDragStart(e, conversation)}
         >
-          <IconMessage size={18} />
-          {/* <div
-            className={`relative max-h-5 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all text-left text-[12.5px] leading-3 ${selectedConversation?.id === conversation.id ? 'pr-12' : 'pr-1'
-              }`}
-          > */}
-          <div
-            className={`relative flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all text-left text-[12.5px] leading-3 ${
-              selectedConversation?.id === conversation.id ? 'pr-12' : 'pr-1'
-            }`}
-          >
+          <IconMessage size={18} className="text-gray-500" />
+          <div className="relative max-h-5 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all text-left text-sm leading-3">
             {conversation.name}
             {/* Add a new div to display the course_name */}
             {courseName && (
@@ -151,12 +153,12 @@ export const ConversationComponent = ({ conversation }: Props) => {
 
       {(isDeleting || isRenaming) &&
         selectedConversation?.id === conversation.id && (
-          <div className="absolute right-1 z-10 flex text-gray-300">
-            <SidebarActionButton handleClick={handleConfirm}>
-              <IconCheck size={18} />
-            </SidebarActionButton>
+          <div className="absolute right-1 z-10 flex text-gray-500">
             <SidebarActionButton handleClick={handleCancel}>
               <IconX size={18} />
+            </SidebarActionButton>
+            <SidebarActionButton handleClick={handleConfirm}>
+              <IconCheck size={18} />
             </SidebarActionButton>
           </div>
         )}
@@ -164,7 +166,7 @@ export const ConversationComponent = ({ conversation }: Props) => {
       {selectedConversation?.id === conversation.id &&
         !isDeleting &&
         !isRenaming && (
-          <div className="absolute right-1 z-10 flex text-gray-300">
+          <div className="absolute right-1 z-10 flex text-gray-400 hover:text-gray-600">
             <SidebarActionButton handleClick={handleOpenRenameModal}>
               <IconPencil size={18} />
             </SidebarActionButton>

@@ -1,4 +1,4 @@
-import { IconX } from '@tabler/icons-react'
+import { IconSearch, IconX } from '@tabler/icons-react'
 import { FC } from 'react'
 
 import { useTranslation } from 'next-i18next'
@@ -8,6 +8,7 @@ interface Props {
   searchTerm: string
   onSearch: (searchTerm: string) => void
 }
+
 const Search: FC<Props> = ({ placeholder, searchTerm, onSearch }) => {
   const { t } = useTranslation('sidebar')
 
@@ -20,9 +21,12 @@ const Search: FC<Props> = ({ placeholder, searchTerm, onSearch }) => {
   }
 
   return (
-    <div className="relative flex items-center">
+    <div className="relative">
+      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <IconSearch className="h-4 w-4 text-gray-400" />
+      </div>
       <input
-        className="w-full flex-1 rounded-md border border-neutral-600 bg-[#2A2A40] px-4 py-3 pr-10 text-[14px] leading-3 text-white"
+        className="w-full rounded-md border border-gray-300 bg-white py-2 pl-10 pr-3 text-sm text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
         type="text"
         placeholder={t(placeholder) || ''}
         value={searchTerm}

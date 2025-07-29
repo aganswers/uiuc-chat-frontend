@@ -13,14 +13,14 @@ import { IconClipboardText, IconFile } from '@tabler/icons-react'
 export default function Header({ isNavbar = false }: { isNavbar?: boolean }) {
   const headerStyle = isNavbar
     ? {
-        backgroundColor: '#15162c',
+        backgroundColor: 'white',
         display: 'flex',
         justifyContent: 'flex-end',
         padding: '0.2em 0.2em',
         paddingRight: '0.3em',
       }
     : {
-        backgroundColor: '#2e026d',
+        backgroundColor: 'white',
         display: 'flex',
         justifyContent: 'flex-end',
         padding: '1em',
@@ -112,18 +112,30 @@ export function LandingPageHeader({
   forGeneralPurposeNotLandingpage?: boolean
 }) {
   const { classes, theme } = useStyles()
-  const headerStyle = forGeneralPurposeNotLandingpage
+  const headerStyle: React.CSSProperties = forGeneralPurposeNotLandingpage
     ? {
-        backgroundColor: '#2e026d',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        width: '100%',
+        padding: '2rem 2rem',
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e5e7eb',
         display: 'flex',
-        justifyContent: 'flex-end',
-        padding: '2em 2em',
+        alignItems: 'center',
+        justifyContent: 'space-between',
       }
     : {
-        backgroundColor: '#2e026d',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        width: '100%',
+        padding: '1rem 2rem',
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e5e7eb',
         display: 'flex',
-        justifyContent: 'flex-end',
-        padding: '1em',
+        alignItems: 'center',
+        justifyContent: 'space-between',
       }
 
   const clerk_obj = useUser()
@@ -150,46 +162,19 @@ export function LandingPageHeader({
 
   if (!isLoaded) {
     return (
-      <header style={headerStyle} className="py-16">
-        {/* Skeleton placeholders for two icons */}
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {forGeneralPurposeNotLandingpage === false && (
-            <>
-              <Link href="/new" className={classes.link}>
-                <span style={{ display: 'flex', alignItems: 'center' }}>
-                  <FileIcon />
-                  <span
-                    className={`${montserrat_heading.variable} font-montserratHeading`}
-                  >
-                    New project
-                  </span>
-                </span>
-              </Link>
-              <Link
-                href="https://docs.uiuc.chat/"
-                className={classes.link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span style={{ display: 'flex', alignItems: 'center' }}>
-                  <IconClipboardTexts />
-                  <span
-                    className={`${montserrat_heading.variable} font-montserratHeading`}
-                  >
-                    Docs
-                  </span>
-                </span>
-              </Link>
-            </>
-          )}
+      <header style={headerStyle}>
+        {/* Logo on the left */}
+        <h1 className="text-2xl font-bold text-gray-900">
+          AgAnswers.<span className="text-orange-600">ai</span>
+        </h1>
+
+        {/* Skeleton placeholders on the right */}
+        <div className="flex items-center gap-4">
           <div
-            className="skeleton-box"
-            style={{ width: '35px', height: '35px', borderRadius: '50%' }}
+            className="skeleton-box h-8 w-8 animate-pulse rounded-full bg-gray-200"
           ></div>
-          <div style={{ paddingLeft: '0px', paddingRight: '10px' }} />
           <div
-            className="skeleton-box"
-            style={{ width: '35px', height: '35px', borderRadius: '50%' }}
+            className="skeleton-box h-8 w-8 animate-pulse rounded-full bg-gray-200"
           ></div>
         </div>
       </header>
@@ -198,72 +183,57 @@ export function LandingPageHeader({
 
   return (
     <header style={headerStyle}>
-      <Group spacing={'xs'}>
+      {/* Logo on the left */}
+      <h1 className="text-2xl font-bold text-gray-900">
+        AgAnswers.<span className="text-orange-600">ai</span>
+      </h1>
+
+      {/* Navigation and user controls on the right */}
+      <div className="flex items-center gap-6">
         {forGeneralPurposeNotLandingpage === false && (
           <>
-            <Link href="/new" className={classes.link}>
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <FileIcon />
-                <span
-                  className={`${montserrat_heading.variable} font-montserratHeading`}
-                >
-                  New project
-                </span>
-              </span>
+            <Link
+              href="/new"
+              className="flex items-center gap-2 font-medium text-gray-700 transition-colors hover:text-orange-600"
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Projects
             </Link>
             <Link
               href="https://docs.uiuc.chat/"
-              className={classes.link}
+              className="font-medium text-gray-700 transition-colors hover:text-orange-600"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <IconClipboardTexts />
-                <span
-                  className={`${montserrat_heading.variable} font-montserratHeading`}
-                >
-                  Docs
-                </span>
-              </span>
+              Docs
             </Link>
           </>
         )}
         <SignedIn>
-          {/* Docs: https://www.magicbell.com/docs/libraries/react#custom-themes */}
-          {/* <MagicBell
-            apiKey={process.env.NEXT_PUBLIC_MAGIC_BELL_API as string}
-            userEmail={userEmail}
-            theme={magicBellTheme}
-            locale="en"
-            images={{
-              emptyInboxUrl:
-                'https://assets.kastan.ai/minified_empty_chat_art.png',
-            }}
-          >
-            {(props) => (
-              <FloatingNotificationInbox width={400} height={500} {...props} />
-            )}
-          </MagicBell> */}
-          {/* Add a bit of spacing with an empty div */}
-          <div />
-          {/* appearance={ } */}
-          <div style={{ all: 'unset' }}>
+          <div className="flex items-center">
             <UserButton />
           </div>
         </SignedIn>
         <SignedOut>
-          {/* Signed out users get sign in button */}
           <SignInButton>
-            <button className={classes.link}>
-              <span
-                className={`${montserrat_heading.variable} font-montserratHeading`}
-              >
-                Sign in / Sign up
-              </span>
+            <button className="font-medium text-gray-700 transition-colors hover:text-orange-600">
+              Sign in
             </button>
           </SignInButton>
         </SignedOut>
-      </Group>
+      </div>
     </header>
   )
 }
@@ -316,17 +286,17 @@ const useStyles = createStyles((theme) => ({
     borderRadius: theme.radius.sm, // added to make the square edges round
 
     '&:hover': {
-      color: 'hsl(280,100%,70%)', // make the hovered color lighter
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      color: '#ea580c', // orange-600
+      backgroundColor: 'rgba(234, 88, 12, 0.1)',
       textDecoration: 'none',
       borderRadius: '10px',
     },
     '&[data-active="true"]': {
-      color: 'hsl(280,100%,70%)',
-      borderBottom: '2px solid hsl(280,100%,70%)', // make the bottom border of the square thicker and same color as "AI"
+      color: '#ea580c', // orange-600
+      borderBottom: '2px solid #ea580c', // orange-600
       textDecoration: 'none', // remove underline
       borderRadius: '10px', // added to make the square edges round when hovered
-      backgroundColor: 'rgba(255, 255, 255, 0.1)', // add a background color when the link is active
+      backgroundColor: '#fef3f2', // orange-50
       textAlign: 'right', // align the text to the right
     },
   },
@@ -336,18 +306,18 @@ const useStyles = createStyles((theme) => ({
 // export const magicBellTheme = {
 //   prose: {
 //     headings: '#ffffff',
-//     links: '#9D4EDD',
+//     links: '#ea580c',
 //     bold: '#ffffff',
-//     hr: '#9D4EDD',
+//     hr: '#ea580c',
 //     quotes: '#ffffff',
-//     quoteBorders: '#9D4EDD',
-//     captions: '#9D4EDD',
+//     quoteBorders: '#ea580c',
+//     captions: '#ea580c',
 //     code: '#ffffff',
-//     preCode: '#9D4EDD',
+//     preCode: '#ea580c',
 //     preBg: '#070711',
-//     thBorders: '#9D4EDD',
-//     tdBorders: '#9D4EDD',
-//     buttonBorders: '#9D4EDD',
+//     thBorders: '#ea580c',
+//     tdBorders: '#ea580c',
+//     buttonBorders: '#ea580c',
 //     buttons: '#ffffff',
 //     fontMono:
 //       'ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace',
@@ -454,7 +424,7 @@ const useStyles = createStyles((theme) => ({
 //         textColor: 'inherit',
 //       },
 //       hover: {
-//         backgroundColor: '#9D4EDD',
+//         backgroundColor: '#ea580c',
 //         backgroundOpacity: 0.16,
 //       },
 //       state: {
@@ -462,17 +432,17 @@ const useStyles = createStyles((theme) => ({
 //       },
 //     },
 //     unread: {
-//       backgroundColor: '#9D4EDD',
+//       backgroundColor: '#ea580c',
 //       backgroundOpacity: 0.3,
 //       state: {
-//         color: '#9D4EDD',
+//         color: '#ea580c',
 //       },
 //     },
 //     unseen: {
-//       backgroundColor: '#9D4EDD',
+//       backgroundColor: '#ea580c',
 //       backgroundOpacity: 0.05,
 //       state: {
-//         color: '#9D4EDD',
+//         color: '#ea580c',
 //       },
 //     },
 //   },

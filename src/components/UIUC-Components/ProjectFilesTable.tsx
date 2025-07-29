@@ -62,7 +62,7 @@ const useStyles = createStyles((theme) => ({}))
 
 const GlobalStyle = createGlobalStyle`
   .mantine-Pagination-control[data-active="true"] {
-    background-color: blueviolet;
+    background-color: #ea580c;
     color: white;
   }
 `
@@ -417,7 +417,7 @@ export function ProjectFilesTable({
             backgroundColor: theme.colors.nearlyWhite,
             borderColor: was_error
               ? theme.colors.errorBorder
-              : theme.colors.aiPurple,
+              : '#ea580c',
           },
           title: {
             color: theme.colors.nearlyBlack,
@@ -456,13 +456,13 @@ export function ProjectFilesTable({
       title: title,
       message: message,
       icon: was_error ? <IconAlertTriangle /> : <IconCheck />,
-      styles: {
-        root: {
-          backgroundColor: theme.colors.nearlyWhite,
-          borderColor: was_error
-            ? theme.colors.errorBorder
-            : theme.colors.aiPurple,
-        },
+              styles: {
+          root: {
+            backgroundColor: theme.colors.nearlyWhite,
+            borderColor: was_error
+              ? theme.colors.errorBorder
+              : '#ea580c',
+          },
         title: {
           color: theme.colors.nearlyBlack,
         },
@@ -517,8 +517,8 @@ export function ProjectFilesTable({
             <button
               onClick={() => onTabChange('success')}
               className={`rounded-t-lg px-4 py-3 font-medium transition-colors duration-200 ${tabValue === 'success'
-                ? 'border-b-2 border-purple-500 bg-purple-600/20 text-white'
-                : 'text-gray-400 hover:bg-purple-600/10 hover:text-white'
+                ? 'border-b-2 border-orange-500 bg-orange-600/20 text-white'
+                : 'text-gray-400 hover:bg-orange-600/10 hover:text-white'
                 } ${montserrat_heading.variable} font-montserratHeading`}
             >
               Success
@@ -534,8 +534,8 @@ export function ProjectFilesTable({
               <button
                 onClick={() => onTabChange('failed')}
                 className={`rounded-t-lg px-4 py-3 font-medium transition-colors duration-200 ${tabValue === 'failed'
-                  ? 'border-b-2 border-purple-500 bg-purple-600/20 text-white'
-                  : 'text-gray-400 hover:bg-purple-600/10 hover:text-white'
+                  ? 'border-b-2 border-orange-500 bg-orange-600/20 text-white'
+                  : 'text-gray-400 hover:bg-orange-600/10 hover:text-white'
                   } ${montserrat_heading.variable} font-montserratHeading`}
               >
                 Failed
@@ -556,7 +556,7 @@ export function ProjectFilesTable({
                       onClick={() => {
                         setShowMultiSelect(true)
                       }}
-                      className={`mb-2 w-full bg-purple-600/50 px-4 py-2 text-sm transition-colors duration-300 hover:bg-purple-600 sm:mb-0 sm:mr-4 sm:w-auto sm:px-6 sm:py-3 sm:text-base ${montserrat_paragraph.variable} border-0 font-montserratParagraph focus:outline-none focus:ring-0`}
+                      className={`mb-2 w-full bg-orange-600/50 px-4 py-2 text-sm transition-colors duration-300 hover:bg-orange-600 sm:mb-0 sm:mr-4 sm:w-auto sm:px-6 sm:py-3 sm:text-base ${montserrat_paragraph.variable} border-0 font-montserratParagraph focus:outline-none focus:ring-0`}
                     >
                       <span className="block sm:hidden">Add to Groups</span>
                       <span className="hidden sm:block">
@@ -715,23 +715,23 @@ export function ProjectFilesTable({
           borderRadius="lg"
           withColumnBorders
           withBorder={false}
-          paginationColor="blueviolet"
+          paginationColor="orange"
           // c={{pagintation: {backgroundColor: '#1e1f3a'}}}
           striped
           highlightOnHover
           rowStyle={(row, index) => {
             if (selectedRecords.includes(row)) {
-              return { backgroundColor: 'hsla(280, 100%, 70%, 0.5)' }
+              return { backgroundColor: 'hsla(25, 95%, 53%, 0.5)' }
             }
             return index % 2 === 0
-              ? { backgroundColor: '#1e1f3a' }
-              : { backgroundColor: '#15162c' }
+              ? { backgroundColor: '#f9fafb' }
+              : { backgroundColor: '#ffffff' }
           }}
-          styles={{
-            pagination: {
-              backgroundColor: '#15162c',
-            },
-          }}
+                      styles={{
+              pagination: {
+                backgroundColor: '#ffffff',
+              },
+            }}
           columns={[
             {
               accessor: 'readable_filename',
@@ -1107,7 +1107,7 @@ export function ProjectFilesTable({
             }}
           >
             <Button
-              className="min-w-[3rem] -translate-x-1 transform rounded-s-md bg-purple-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
+              className="min-w-[3rem] -translate-x-1 transform rounded-s-md bg-orange-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
               onClick={() => {
                 setModalOpened(false)
               }}
@@ -1119,7 +1119,7 @@ export function ProjectFilesTable({
               Cancel
             </Button>
             <Button
-              className="min-w-[3rem] -translate-x-1 transform rounded-s-md bg-purple-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
+              className="min-w-[3rem] -translate-x-1 transform rounded-s-md bg-orange-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
               onClick={async () => {
                 setModalOpened(false)
                 setIsDeletingDocuments(true)
@@ -1220,7 +1220,7 @@ export function ProjectFilesTable({
             }}
           >
             <Button
-              className="min-w-[3rem] -translate-x-1 transform rounded-s-md bg-purple-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
+              className="min-w-[3rem] -translate-x-1 transform rounded-s-md bg-orange-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
               onClick={() => {
                 setExportModalOpened(false)
               }}
@@ -1232,7 +1232,7 @@ export function ProjectFilesTable({
               Cancel
             </Button>
             <Button
-              className="min-w-[3rem] -translate-x-1 transform rounded-s-md bg-purple-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
+              className="min-w-[3rem] -translate-x-1 transform rounded-s-md bg-orange-800 text-white hover:border-indigo-600 hover:bg-indigo-600 hover:text-white focus:shadow-none focus:outline-none"
               onClick={async () => {
                 setExportModalOpened(false)
                 const result = await handleExport(getCurrentPageName())

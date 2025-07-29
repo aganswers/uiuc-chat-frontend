@@ -247,7 +247,7 @@ export default function BedrockProviderInput({
                   <div className="mt-4 flex justify-start">
                     <Button
                       compact
-                      className="bg-purple-800 hover:border-indigo-600 hover:bg-indigo-600"
+                      className="bg-orange-800 hover:border-indigo-600 hover:bg-indigo-600"
                       onClick={handleSaveCredentials}
                       loading={isSaving}
                     >

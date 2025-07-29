@@ -1,15 +1,9 @@
-import { IconFolderPlus, IconMistOff, IconPlus } from '@tabler/icons-react'
+import { IconFolderPlus, IconPlus } from '@tabler/icons-react'
 import { ReactNode } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Switch } from '@mantine/core'
-
-import {
-  CloseSidebarButton,
-  OpenSidebarButton,
-} from './components/OpenCloseButton'
+import { useTranslation } from 'next-i18next'
 
 import Search from '../Search'
-import { FolderWithConversation } from '~/types/folder'
+import { CloseSidebarButton } from './components/OpenCloseButton'
 
 interface Props<T> {
   isOpen: boolean
@@ -18,15 +12,15 @@ interface Props<T> {
   items: T[]
   itemComponent: ReactNode
   folderComponent: ReactNode
-  folders: FolderWithConversation[]
-  footerComponent?: ReactNode
+  footerComponent: ReactNode
   searchTerm: string
   handleSearchTerm: (searchTerm: string) => void
   toggleOpen: () => void
   handleCreateItem: () => void
   handleCreateFolder: () => void
   handleDrop: (e: any) => void
-  onScroll: (e: any) => void
+  folders: any[]
+  onScroll?: (e: React.UIEvent<HTMLDivElement>) => void
 }
 
 const Sidebar = <T,>({
@@ -53,7 +47,7 @@ const Sidebar = <T,>({
   }
 
   const highlightDrop = (e: any) => {
-    e.target.style.background = '#343541'
+    e.target.style.background = '#f3f4f6'
   }
 
   const removeHighlight = (e: any) => {
@@ -62,73 +56,66 @@ const Sidebar = <T,>({
 
   return isOpen ? (
     <div>
+      <CloseSidebarButton onClick={toggleOpen} side={side} />
       <div
-        className={`fixed top-0 ${side}-0 z-40 flex h-full w-[260px] flex-none flex-col space-y-2  bg-[#131426] p-2 text-[14px] transition-all sm:relative sm:top-0`}
+        className={`fixed top-0 ${side}-0 z-40 flex h-full w-[260px] flex-none flex-col space-y-2 border-r border-gray-200 bg-white p-4 text-sm transition-all sm:relative sm:top-0`}
       >
-        <div className="flex items-center">
+        {/* Header with New Chat and New Folder buttons */}
+        <div className="flex items-center gap-2">
           <button
-            className="text-sidebar flex w-[190px] flex-shrink-0 cursor-pointer select-none items-center gap-3 rounded-md border border-white/20 p-3 text-white transition-colors duration-200 hover:bg-gray-500/10"
+            className="flex flex-1 items-center justify-center gap-2 rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-colors duration-200 hover:border-gray-400 hover:bg-gray-50"
             onClick={() => {
               handleCreateItem()
               handleSearchTerm('')
               setTimeout(() => {
-                const chatInput = document.querySelector('textarea.chat-input') as HTMLTextAreaElement;
+                const chatInput = document.querySelector(
+                  'textarea.chat-input',
+                ) as HTMLTextAreaElement
                 if (chatInput) {
-                  chatInput.focus();
+                  chatInput.focus()
                 }
-              }, 100);
+              }, 100)
             }}
           >
             <IconPlus size={16} />
-            {addItemButtonTitle}
+            <span className="text-sm font-medium">{addItemButtonTitle}</span>
           </button>
 
           <button
-            className="ml-2 flex flex-shrink-0 cursor-pointer items-center gap-3 rounded-md border border-white/20 p-3 text-sm text-white transition-colors duration-200 hover:bg-gray-500/10"
+            className="flex items-center justify-center rounded-md border border-gray-300 p-2 text-gray-700 transition-colors duration-200 hover:border-gray-400 hover:bg-gray-50"
             onClick={handleCreateFolder}
           >
             <IconFolderPlus size={16} />
           </button>
         </div>
+
+        {/* Search */}
         <Search
           placeholder={t('Search...') || ''}
           searchTerm={searchTerm}
           onSearch={handleSearchTerm}
         />
-        <div className="flex-grow overflow-auto" onScroll={onScroll}>
-          {folders?.length > 0 && (
-            <div className="flex border-b border-white/20 pb-2">
-              {folderComponent}
-            </div>
-          )}
 
-          {items?.length > 0 ? (
-            <div
-              className="pt-2"
-              onDrop={handleDrop}
-              onDragOver={allowDrop}
-              onDragEnter={highlightDrop}
-              onDragLeave={removeHighlight}
-              // onScroll={onScroll}
-            >
-              {itemComponent}
-            </div>
-          ) : (
-            <div className="mt-8 select-none text-center text-white opacity-50">
-              <IconMistOff className="mx-auto mb-3" />
-              <span className="text-[14px] leading-normal">
-                {t('No data.')}
-              </span>
-            </div>
-          )}
+        {/* Content Area */}
+        <div className="flex-1 overflow-auto" onScroll={onScroll}>
+          <div
+            className="flex flex-col gap-1"
+            onDrop={handleDrop}
+            onDragOver={allowDrop}
+            onDragEnter={highlightDrop}
+            onDragLeave={removeHighlight}
+          >
+            {folders}
+            {itemComponent}
+          </div>
         </div>
-        {footerComponent}
-      </div>
 
-      <CloseSidebarButton onClick={toggleOpen} side={side} />
+        {/* Footer */}
+        <div className="border-t border-gray-200 pt-2">{footerComponent}</div>
+      </div>
     </div>
   ) : (
-    <OpenSidebarButton onClick={toggleOpen} side={side} />
+    <></>
   )
 }
 

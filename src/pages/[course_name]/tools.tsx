@@ -1,5 +1,5 @@
 import { type NextPage } from 'next'
-import MakeNewCoursePage from '~/components/UIUC-Components/MakeNewCoursePage'
+import ProjectsPage from '~/components/UIUC-Components/MakeNewCoursePage'
 import React, { useEffect, useState } from 'react'
 import { montserrat_heading } from 'fonts'
 import { useRouter } from 'next/router'
@@ -105,7 +105,7 @@ const ToolsPage: NextPage = () => {
 
   if (courseData === null) {
     return (
-      <MakeNewCoursePage
+              <ProjectsPage
         project_name={course_name as string}
         current_user_email={user_emails[0] as string}
       />
