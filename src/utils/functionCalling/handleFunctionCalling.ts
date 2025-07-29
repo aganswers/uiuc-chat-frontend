@@ -171,7 +171,7 @@ const callN8nFunction = async (
   base_url?: string,
 ): Promise<ToolOutput> => {
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 30000)
+  const timeoutId = setTimeout(() => controller.abort(), 300000)
 
   // get n8n api key per project
   if (!n8n_api_key) {
@@ -342,32 +342,32 @@ export function getOpenAIToolFromUIUCTool(
         description: tool.description,
         parameters: tool.inputParameters
           ? {
-            type: 'object',
-            properties: Object.keys(tool.inputParameters.properties).reduce(
-              (acc, key) => {
-                const param = tool.inputParameters?.properties[key]
-                acc[key] = {
-                  type:
-                    param?.type === 'number'
-                      ? 'number'
-                      : param?.type === 'Boolean'
-                        ? 'Boolean'
-                        : 'string',
-                  description: param?.description,
-                  enum: param?.enum,
-                }
-                return acc
-              },
-              {} as {
-                [key: string]: {
-                  type: 'string' | 'number' | 'Boolean'
-                  description?: string
-                  enum?: string[]
-                }
-              },
-            ),
-            required: tool.inputParameters.required,
-          }
+              type: 'object',
+              properties: Object.keys(tool.inputParameters.properties).reduce(
+                (acc, key) => {
+                  const param = tool.inputParameters?.properties[key]
+                  acc[key] = {
+                    type:
+                      param?.type === 'number'
+                        ? 'number'
+                        : param?.type === 'Boolean'
+                          ? 'Boolean'
+                          : 'string',
+                    description: param?.description,
+                    enum: param?.enum,
+                  }
+                  return acc
+                },
+                {} as {
+                  [key: string]: {
+                    type: 'string' | 'number' | 'Boolean'
+                    description?: string
+                    enum?: string[]
+                  }
+                },
+              ),
+              required: tool.inputParameters.required,
+            }
           : undefined,
       },
     }
