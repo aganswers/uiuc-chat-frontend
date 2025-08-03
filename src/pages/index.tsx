@@ -93,7 +93,7 @@ const Home: NextPage = () => {
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight text-gray-900">
               Build and deploy AI solutions for{' '}
               <span className="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
-                industrial agriculture
+                production agriculture
               </span>
             </h1>
             
