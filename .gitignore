@@ -51,4 +51,5 @@ yarn-error.log*
 tests_output/
 
 pnpm-lock.yaml
+package-lock.json
 .pnpm-store/
