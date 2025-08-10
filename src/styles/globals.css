@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* CSS-First Theme Configuration */
 @theme {
@@ -7,47 +7,47 @@
   --color-background-dark: rgba(33, 33, 33, 0.9);
   --color-surface-light: oklch(0.99 0 0);
   --color-surface-dark: oklch(0.15 0 0);
-  
+
   /* Text colors */
   --color-text-light: oklch(0.2 0 0);
   --color-text-dark: oklch(0.95 0 0);
   --color-text-muted-light: oklch(0.4 0 0);
   --color-text-muted-dark: oklch(0.7 0 0);
-  
+
   /* Primary accent colors (Orange) */
   --color-primary-light: oklch(0.65 0.2 41.8); /* orange-500 */
   --color-primary-dark: oklch(0.7 0.18 41.8); /* orange-400 */
   --color-primary-hover-light: oklch(0.6 0.2 38.8); /* orange-600 */
   --color-primary-hover-dark: oklch(0.75 0.16 41.8); /* orange-300 */
-  
+
   /* Secondary accent colors (Green) */
   --color-secondary-light: oklch(0.6 0.18 142); /* green-600 */
   --color-secondary-dark: oklch(0.7 0.16 142); /* green-500 */
-  
+
   /* Border colors */
   --color-border-light: oklch(0.9 0 0);
   --color-border-dark: oklch(0.25 0 0);
-  
+
   /* Surface colors for cards, modals, etc */
   --color-card-light: oklch(0.98 0 0);
   --color-card-dark: oklch(0.12 0 0);
-  
+
   /* Error/Warning/Success colors */
   --color-error: oklch(0.55 0.22 27);
   --color-warning: oklch(0.75 0.18 80);
   --color-success: oklch(0.7 0.16 142);
-  
+
   /* Shadows */
   --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-dark: 0 1px 3px rgba(0, 0, 0, 0.3);
-  
+
   /* Spacing scale */
   --spacing: 0.25rem;
-  
+
   /* Font families */
   --font-montserrat-heading: var(--font-montserratHeading);
   --font-montserrat-paragraph: var(--font-montserratParagraph);
-  
+
   /* Breakpoints */
   --breakpoint-3xl: 1920px;
 }
@@ -69,7 +69,7 @@
       --shadow: var(--shadow-dark);
       color-scheme: dark;
     }
-    
+
     @media (prefers-color-scheme: light) {
       --color-background: var(--color-background-light);
       --color-surface: var(--color-surface-light);
@@ -84,7 +84,7 @@
       color-scheme: light;
     }
   }
-  
+
   /* Forced light mode */
   html.color-scheme-light {
     --color-background: var(--color-background-light);
@@ -99,7 +99,7 @@
     --shadow: var(--shadow-light);
     color-scheme: light;
   }
-  
+
   /* Forced dark mode */
   html.color-scheme-dark {
     --color-background: var(--color-background-dark);
@@ -114,18 +114,24 @@
     --shadow: var(--shadow-dark);
     color-scheme: dark;
   }
-  
+
   /* Default to adaptive mode */
-  html:not([class*="color-scheme-"]) {
+  html:not([class*='color-scheme-']) {
     @extend html.color-scheme-adaptive;
   }
-  
+
   /* Base styles */
   html {
     background-color: var(--color-background);
     color: var(--color-text);
+    overflow-x: hidden;
   }
-  
+
+  body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
   /* Standard list properties */
   ul {
     list-style-type: disc;
@@ -140,7 +146,7 @@
   li {
     margin-bottom: 5px;
   }
-  
+
   button {
     cursor: pointer;
   }
@@ -152,71 +158,71 @@
   .bg-adaptive {
     background-color: var(--color-background);
   }
-  
+
   .bg-surface {
     background-color: var(--color-surface);
   }
-  
+
   .bg-card {
     background-color: var(--color-card);
   }
-  
+
   .bg-primary {
     background-color: var(--color-primary);
   }
-  
+
   .bg-primary-hover {
     background-color: var(--color-primary-hover);
   }
-  
+
   .bg-secondary {
     background-color: var(--color-secondary);
   }
-  
+
   /* Text utilities */
   .text-adaptive {
     color: var(--color-text);
   }
-  
+
   .text-muted {
     color: var(--color-text-muted);
   }
-  
+
   .text-primary {
     color: var(--color-primary);
   }
-  
+
   .text-secondary {
     color: var(--color-secondary);
   }
-  
+
   /* Border utilities */
   .border-adaptive {
     border-color: var(--color-border);
   }
-  
+
   .border-primary {
     border-color: var(--color-primary);
   }
-  
+
   /* Shadow utilities */
   .shadow-adaptive {
     box-shadow: var(--shadow);
   }
-  
+
   /* Hover states */
   .hover\:bg-primary-hover:hover {
     background-color: var(--color-primary-hover);
   }
-  
+
   .hover\:text-primary:hover {
     color: var(--color-primary);
   }
-  
+
   .hover\:text-primary-hover:hover {
     color: var(--color-primary-hover);
   }
-  
+
   .hover\:border-primary:hover {
     border-color: var(--color-primary);
   }
@@ -268,18 +274,20 @@
   ::-webkit-scrollbar-corner {
     background-color: transparent;
   }
-  
+
   /* Code blocks */
   @media (max-width: 720px) {
     pre {
-      width: calc(100vw - 110px);
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
     }
   }
 
   pre:has(div.codeblock) {
     padding: 0;
   }
-  
+
   /* Course card styles */
   .courseCardHeroImage {
     object-fit: cover;
@@ -301,7 +309,7 @@
     padding: 10px;
     box-sizing: border-box;
   }
-  
+
   /* Course page background gradient */
   .course-page-main {
     background: linear-gradient(
@@ -311,10 +319,12 @@
       var(--color-surface)
     );
     background-color: var(--color-background);
-    background-size: 100% 45%, 0%;
+    background-size:
+      100% 45%,
+      0%;
     background-repeat: no-repeat;
   }
-  
+
   /* Fade effects */
   .fade-2-lines {
     overflow: hidden;
@@ -337,19 +347,27 @@
     right: 0;
     width: 40%;
     height: 1.2em;
-    background: linear-gradient(to right, transparent, var(--color-background) 90%);
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-background) 90%
+    );
   }
-  
+
   /* Gradient text effect */
   .kas-gradient-text {
-    background-image: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+    background-image: linear-gradient(
+      45deg,
+      var(--color-primary),
+      var(--color-secondary)
+    );
     background-size: 100%;
     -webkit-background-clip: text;
     -moz-background-clip: text;
     -webkit-text-fill-color: transparent;
     -moz-text-fill-color: transparent;
   }
-  
+
   /* Email chips styles */
   .input:focus {
     border-color: var(--color-primary);
@@ -395,21 +413,21 @@
     justify-content: center;
     color: white;
   }
-  
+
   /* Gold underline */
   .goldUnderline {
     text-decoration: underline;
     text-decoration-color: var(--color-warning);
     color: inherit;
   }
-  
+
   /* Nomic iframe */
   .nomic-iframe {
     height: min(75vh, 50vw);
     width: 90%;
     min-height: 50vw;
   }
-  
+
   /* Home header underline */
   .home-header_text-underline {
     background-image: url('/media/hero-header-underline-reflow.svg');
@@ -421,7 +439,7 @@
     display: inline-block;
     overflow: visible;
   }
-  
+
   /* Skeleton loading box */
   .skeleton-box {
     display: inline-block;
@@ -454,7 +472,7 @@
       transform: translateX(100%);
     }
   }
-  
+
   /* Pulsate animation */
   @keyframes pulsate {
     0% {
@@ -468,12 +486,12 @@
   .pulsate {
     animation: pulsate 1s infinite alternate;
   }
-  
+
   /* Hide footnote backrefs */
   a[data-footnote-backref] {
     visibility: hidden;
   }
-  
+
   /* Citation link styles */
   .supMarkDown a {
     display: inline;
@@ -485,7 +503,11 @@
     font-weight: 400;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
-    background-color: color-mix(in oklch, var(--color-primary) 15%, transparent);
+    background-color: color-mix(
+      in oklch,
+      var(--color-primary) 15%,
+      transparent
+    );
     border: 1px solid color-mix(in oklch, var(--color-primary) 30%, transparent);
     border-radius: 4px;
     padding: 0 4px;
@@ -508,18 +530,26 @@
 
   .supMarkDown a:visited {
     color: var(--color-text-muted);
-    background-color: color-mix(in oklch, var(--color-primary) 12%, transparent);
+    background-color: color-mix(
+      in oklch,
+      var(--color-primary) 12%,
+      transparent
+    );
     border-color: color-mix(in oklch, var(--color-primary) 25%, transparent);
   }
 
   .supMarkDown a:hover,
   .supMarkDown a:focus {
-    background-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+    background-color: color-mix(
+      in oklch,
+      var(--color-primary) 30%,
+      transparent
+    );
     color: var(--color-text);
     cursor: pointer;
     border-color: color-mix(in oklch, var(--color-primary) 40%, transparent);
   }
-  
+
   /* Document button styles */
   .linkMarkDown button:not(.codeblock-button) {
     height: 100px;
@@ -554,7 +584,7 @@
   .linkMarkDown button:not(.codeblock-button):visited {
     color: var(--color-primary-hover);
   }
-  
+
   .linkMarkDown ol:has(> li > button) {
     display: flex;
     flex-wrap: nowrap;
@@ -569,7 +599,7 @@
     counter-reset: section;
     list-style-type: none;
   }
-  
+
   .codeBlock code:has(> span) {
     max-width: 100% !important;
     overflow-x: auto !important;
@@ -581,7 +611,7 @@
   .codeBlock pre:has(> code) {
     background-color: var(--color-surface) !important;
   }
-  
+
   .linkMarkDown ol li:has(> button) {
     max-width: 150px;
     flex: 0 0 calc(25% - 10px);
@@ -592,7 +622,7 @@
   .linkMarkDown ol li:last-child:has(> button) {
     margin-right: 0;
   }
-  
+
   /* MagicBell styling */
   body button[class$='EnablePushNotificationsButton'] {
     background-color: var(--color-surface) !important;
@@ -603,12 +633,16 @@
     background: var(--color-surface) !important;
     color: var(--color-text) !important;
   }
-  
+
   /* Think Tag Dropdown Styles */
   .think-tag-dropdown {
     @apply mb-4 w-full rounded-lg border shadow-sm transition-all duration-200;
     border-color: var(--color-border);
-    background-color: color-mix(in oklch, var(--color-surface) 30%, transparent);
+    background-color: color-mix(
+      in oklch,
+      var(--color-surface) 30%,
+      transparent
+    );
     overflow: hidden;
     box-shadow: var(--shadow);
   }
@@ -624,7 +658,11 @@
   }
 
   .think-tag-header:hover {
-    background-color: color-mix(in oklch, var(--color-primary) 10%, transparent);
+    background-color: color-mix(
+      in oklch,
+      var(--color-primary) 10%,
+      transparent
+    );
   }
 
   .think-tag-header .loading-container {
@@ -641,10 +679,14 @@
   .think-tag-header:hover .think-tag-brain-icon {
     transform: scale(1.1);
   }
-  
+
   .think-tag-content {
     @apply max-h-0 overflow-hidden transition-all duration-300 ease-in-out;
-    background-color: color-mix(in oklch, var(--color-surface) 50%, transparent);
+    background-color: color-mix(
+      in oklch,
+      var(--color-surface) 50%,
+      transparent
+    );
     border-top: 1px solid transparent;
   }
 
@@ -673,7 +715,11 @@
   }
 
   .think-tag-content.expanded:hover {
-    background-color: color-mix(in oklch, var(--color-surface) 60%, transparent);
+    background-color: color-mix(
+      in oklch,
+      var(--color-surface) 60%,
+      transparent
+    );
   }
 
   .think-tag-content.expanded:focus {
@@ -700,13 +746,17 @@
     transform: rotate(180deg);
     color: var(--color-primary);
   }
-  
+
   /* Link styles */
   .linkMarkDown a,
   .prose a {
     color: var(--color-primary);
     text-decoration: underline;
-    text-decoration-color: color-mix(in oklch, var(--color-primary) 30%, transparent);
+    text-decoration-color: color-mix(
+      in oklch,
+      var(--color-primary) 30%,
+      transparent
+    );
     text-underline-offset: 2px;
     transition: all 0.2s ease;
   }

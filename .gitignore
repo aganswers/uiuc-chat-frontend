@@ -50,9 +50,6 @@ yarn-error.log*
 
 tests_output/
 
-<<<<<<< HEAD
 pnpm-lock.yaml
-=======
-pnpm-lock.yaml
+package-lock.json
 .pnpm-store/
->>>>>>> aidan-dev

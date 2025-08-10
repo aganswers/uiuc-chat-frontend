@@ -172,9 +172,7 @@ const Home: NextPage = () => {
           <div className="mx-auto max-w-6xl px-4">
             <div className="rounded-xl border border-gray-700 bg-gray-900/90 p-8 backdrop-blur-sm">
               <div className="relative mb-6">
-                <div
-                  className={`flex items-center justify-center rounded-lg border border-gray-600 bg-gradient-to-br from-gray-800 to-gray-900 ${activeCarouselTab === 0 ? 'aspect-video' : ''}`}
-                >
+                <div className="aspect-video overflow-hidden rounded-lg border border-gray-600 bg-gradient-to-br from-gray-800 to-gray-900">
                   {activeCarouselTab === 0 && (
                     <video
                       src="/media/landing/spinup.mp4"
@@ -186,16 +184,26 @@ const Home: NextPage = () => {
                     />
                   )}
                   {activeCarouselTab === 2 && (
-                    <img
-                      src="/media/landing/chat.jpeg"
-                      className="h-full w-full rounded-lg object-cover"
-                    />
+                    <div className="group relative h-full overflow-y-auto">
+                      <img
+                        src="/media/landing/chat.jpeg"
+                        className="w-full rounded-lg object-cover"
+                      />
+                      <div className="absolute right-2 top-2 rounded-full bg-black/50 px-2 py-1 text-xs text-white opacity-50 backdrop-blur-sm transition-opacity duration-200">
+                        Scroll to explore
+                      </div>
+                    </div>
                   )}
                   {activeCarouselTab === 1 && (
-                    <img
-                      src="/media/landing/dashboard.jpeg"
-                      className="h-full w-full rounded-lg object-cover"
-                    />
+                    <div className="group relative h-full overflow-y-auto">
+                      <img
+                        src="/media/landing/dashboard.jpeg"
+                        className="w-full rounded-lg object-cover"
+                      />
+                      <div className="absolute right-2 top-2 rounded-full bg-black/50 px-2 py-1 text-xs text-white opacity-50 backdrop-blur-sm transition-opacity duration-200">
+                        Scroll to explore
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

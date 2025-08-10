@@ -30,6 +30,10 @@ export default function Document(props: Props) {
     return (
       <Html lang={currentLocale} className="color-scheme-adaptive">
         <Head>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-title" content="UIUC.chat"></meta>
           {/* Prevent search engine indexing of Maintenance page: https://github.com/vercel/next.js/discussions/12850#discussioncomment-3335807  */}
@@ -46,6 +50,7 @@ export default function Document(props: Props) {
   return (
     <Html lang={currentLocale} className="color-scheme-adaptive">
       <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="UIUC.chat"></meta>
       </Head>
