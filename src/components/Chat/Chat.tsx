@@ -21,6 +21,7 @@ import {
   type Message,
   Content,
   UIUCTool,
+  ToolExecution,
 } from '@/types/chat'
 import { type Plugin } from '@/types/plugin'
 
@@ -30,6 +31,7 @@ import { ChatInput } from './ChatInput'
 import { ChatLoader } from './ChatLoader'
 import { ErrorMessageDiv } from './ErrorMessageDiv'
 import { MemoizedChatMessage } from './MemoizedChatMessage'
+import { ToolExecutionDisplay } from './ToolExecutionDisplay'
 import { fetchPresignedUrl } from '~/utils/apiUtils'
 import { OpenSidebarButton } from '../Sidebar/components/OpenCloseButton'
 
@@ -57,11 +59,11 @@ import {
   processChunkWithStateMachine,
   routeModelRequest,
 } from '~/utils/streamProcessing'
-import {
-  handleFunctionCall,
-  handleToolCall,
-  useFetchAllWorkflows,
-} from '~/utils/functionCalling/handleFunctionCalling'
+// import {
+//   handleFunctionCall,
+//   handleToolCall,
+//   useFetchAllWorkflows,
+// } from '~/utils/functionCalling/handleFunctionCalling'
 import { useFetchEnabledDocGroups } from '~/hooks/docGroupsQueries'
 import { CropwizardLicenseDisclaimer } from '~/pages/cropwizard-licenses'
 import ChatUI, { webLLMModels } from '~/utils/modelProviders/WebLLM'
@@ -124,14 +126,14 @@ export const Chat = memo(
       // isError: isErrorDocumentGroups,
     } = useFetchEnabledDocGroups(getCurrentPageName())
 
-    const {
-      data: toolsHook,
-      isSuccess: isSuccessTools,
-      isLoading: isLoadingTools,
-      isError: isErrorTools,
-      error: toolLoadingError,
-      // refetch: refetchTools,
-    } = useFetchAllWorkflows(getCurrentPageName())
+    // const {
+    //   data: toolsHook,
+    //   isSuccess: isSuccessTools,
+    //   isLoading: isLoadingTools,
+    //   isError: isErrorTools,
+    //   error: toolLoadingError,
+    //   // refetch: refetchTools,
+    // } = useFetchAllWorkflows(getCurrentPageName())
 
     useEffect(() => {
       if (
@@ -203,6 +205,7 @@ export const Chat = memo(
     // const [showSettings, setShowSettings] = useState<boolean>(false)
     const [showScrollDownButton, setShowScrollDownButton] =
       useState<boolean>(false)
+    const [liveToolExecutions, setLiveToolExecutions] = useState<ToolExecution[]>([])
 
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const chatContainerRef = useRef<HTMLDivElement>(null)
@@ -248,28 +251,28 @@ export const Chat = memo(
       )
     }, [documentGroups])
 
-    // TOOLS
-    useEffect(() => {
-      if (isSuccessTools) {
-        homeDispatch({
-          field: 'tools',
-          value: [...toolsHook],
-        })
-      } else if (isErrorTools) {
-        errorToast({
-          title: 'Error loading tools',
-          message:
-            (toolLoadingError as Error).message +
-            '.\nPlease refresh the page or try again later. Regular chat features may still work.',
-        })
-      }
-    }, [toolsHook, isSuccessTools])
+    // // TOOLS
+    // useEffect(() => {
+    //   if (isSuccessTools) {
+    //     homeDispatch({
+    //       field: 'tools',
+    //       value: [...toolsHook],
+    //     })
+    //   } else if (isErrorTools) {
+    //     errorToast({
+    //       title: 'Error loading tools',
+    //       message:
+    //         (toolLoadingError as Error).message +
+    //         '.\nPlease refresh the page or try again later. Regular chat features may still work.',
+    //     })
+    //   }
+    // }, [toolsHook, isSuccessTools])
 
-    useEffect(() => {
-      setEnabledTools(
-        tools.filter((action) => action.enabled).map((action) => action.name),
-      )
-    }, [tools])
+    // useEffect(() => {
+    //   setEnabledTools(
+    //     tools.filter((action) => action.enabled).map((action) => action.name),
+    //   )
+    // }, [tools])
 
     const onMessageReceived = async (conversation: Conversation) => {
       // Log conversation to Supabase
@@ -314,6 +317,7 @@ export const Chat = memo(
         const startOfHandleSend = performance.now()
         setCurrentMessage(message)
         resetMessageStates()
+        setLiveToolExecutions([]) // Clear any previous tool executions
 
         let searchQuery = Array.isArray(message.content)
           ? message.content.map((content) => content.text).join(' ')
@@ -781,39 +785,39 @@ export const Chat = memo(
           }
 
           // Action 3: Tool Execution
-          if (tools.length > 0) {
-            try {
-              homeDispatch({ field: 'isRouting', value: true })
-              // Check if any tools need to be run
-              const uiucToolsToRun = await handleFunctionCall(
-                message,
-                tools,
-                imageUrls,
-                imgDesc,
-                updatedConversation,
-                getOpenAIKey(courseMetadata, apiKey),
-              )
-              homeDispatch({ field: 'isRouting', value: false })
-              if (uiucToolsToRun.length > 0) {
-                homeDispatch({ field: 'isRunningTool', value: true })
-                // Run the tools
-                await handleToolCall(
-                  uiucToolsToRun,
-                  updatedConversation,
-                  courseName,
-                )
-              }
+          // if (tools.length > 0) {
+          //   try {
+          //     homeDispatch({ field: 'isRouting', value: true })
+          //     // Check if any tools need to be run
+          //     // const uiucToolsToRun = await handleFunctionCall(
+          //     //   message,
+          //     //   tools,
+          //     //   imageUrls,
+          //     //   imgDesc,
+          //     //   updatedConversation,
+          //     //   getOpenAIKey(courseMetadata, apiKey),
+          //     // )
+          //     homeDispatch({ field: 'isRouting', value: false })
+          //     // if (uiucToolsToRun.length > 0) {
+          //     //   homeDispatch({ field: 'isRunningTool', value: true })
+          //     //   // Run the tools
+          //     //   await handleToolCall(
+          //     //     uiucToolsToRun,
+          //     //     updatedConversation,
+          //     //     courseName,
+          //     //   )
+          //     // }
 
-              homeDispatch({ field: 'isRunningTool', value: false })
-            } catch (error) {
-              console.error(
-                'Error in chat.tsx running handleFunctionCall():',
-                error,
-              )
-            } finally {
-              homeDispatch({ field: 'isRunningTool', value: false })
-            }
-          }
+          //     homeDispatch({ field: 'isRunningTool', value: false })
+          //   } catch (error) {
+          //     console.error(
+          //       'Error in chat.tsx running handleFunctionCall():',
+          //       error,
+          //     )
+          //   } finally {
+          //     homeDispatch({ field: 'isRunningTool', value: false })
+          //   }
+          // }
 
           const finalChatBody: ChatBody = {
             conversation: updatedConversation,
@@ -826,6 +830,9 @@ export const Chat = memo(
             skipQueryRewrite: documentCount === 0,
           }
           updatedConversation = finalChatBody.conversation!
+          
+          // Log conversation being sent for debugging
+          console.log(`Sending conversation with ${updatedConversation.messages?.length || 0} messages to backend`)
 
           // Action 4: Build Prompt - Put everything together into a prompt
           // const buildPromptResponse = await fetch('/api/buildPrompt', {
@@ -991,14 +998,15 @@ export const Chat = memo(
               })
             }
 
-            const decoder = new TextDecoder()
             let done = false
             let isFirst = true
-            let text = ''
-            let chunkValue
             let finalAssistantRespose = ''
-            const citationLinkCache = new Map<number, string>()
-            const stateMachineContext = { state: State.Normal, buffer: '' }
+            let isThinking = false
+            let isRunningTool = false
+            let currentToolExecutions: ToolExecution[] = []
+            let processedEventIds = new Set<string>() // Track processed events to avoid duplicates
+            let lastResponseLength = 0 // Track response length to detect if we're getting full content vs deltas
+            
             try {
               // Action 6: Stream the LLM response, based on model provider.
               while (!done) {
@@ -1022,16 +1030,141 @@ export const Chat = memo(
                     // exit early
                     continue
                   }
-                  chunkValue = result.value.choices[0]?.delta.content
-                  text += chunkValue
+                  const chunkValue = result.value.choices[0]?.delta.content
+                  finalAssistantRespose += chunkValue
                 } else {
-                  // OpenAI models & Vercel AI SDK models
+                  // Handle SSE stream from backend
                   try {
                     const { value, done: doneReading } = await reader!.read()
                     done = doneReading
                     if (done) break
-                    chunkValue = decoder.decode(value)
-                    text += chunkValue
+                    
+                    const decoder = new TextDecoder()
+                    const chunk = decoder.decode(value)
+                    
+                    // Parse SSE events
+                    const lines = chunk.split('\n')
+                    for (const line of lines) {
+                      if (line.startsWith('data: ')) {
+                        try {
+                          const jsonStr = line.substring(6)
+                          // Skip if it's just whitespace or empty
+                          if (!jsonStr.trim()) continue
+                          
+                          const eventData = JSON.parse(jsonStr)
+                          
+                          // Skip if we've already processed this event
+                          if (eventData.id && processedEventIds.has(eventData.id)) {
+                            continue
+                          }
+                          if (eventData.id) {
+                            processedEventIds.add(eventData.id)
+                          }
+                          
+                          // Handle different event types
+                          if (eventData.type === 'file_summary') {
+                            // Handle file summary events
+                            finalAssistantRespose += eventData.content
+                          } else if (eventData.content?.parts) {
+                            // Handle ADK events
+                            for (const part of eventData.content.parts) {
+                              
+                              // Check for thinking/reasoning (process first)
+                              if (part.thoughtSignature) {
+                                if (!isThinking) {
+                                  isThinking = true
+                                  homeDispatch({ field: 'isRouting', value: true })
+                                }
+                              }
+                              
+                              // Check for function calls (can be in same part as thoughtSignature)
+                              if (part.functionCall) {
+                                const toolExecution: ToolExecution = {
+                                  id: part.functionCall.id,
+                                  name: part.functionCall.name,
+                                  args: part.functionCall.args,
+                                  status: 'running',
+                                  timestamp: Date.now(),
+                                }
+                                currentToolExecutions.push(toolExecution)
+                                setLiveToolExecutions([...currentToolExecutions])
+                                
+                                if (!isRunningTool) {
+                                  isRunningTool = true
+                                  homeDispatch({ field: 'isRunningTool', value: true })
+                                }
+                                
+                                // Clear thinking state when tool starts
+                                if (isThinking) {
+                                  isThinking = false
+                                  homeDispatch({ field: 'isRouting', value: false })
+                                }
+                              }
+                              
+                              // Check for function responses
+                              if (part.functionResponse) {
+                                const toolIndex = currentToolExecutions.findIndex(
+                                  t => t.id === part.functionResponse.id
+                                )
+                                if (toolIndex >= 0) {
+                                  const existingTool = currentToolExecutions[toolIndex]
+                                  if (existingTool) {
+                                    // Extract result safely
+                                    let result = 'Tool completed'
+                                    try {
+                                      if (part.functionResponse.response?.result) {
+                                        result = part.functionResponse.response.result
+                                      }
+                                    } catch (e) {
+                                      console.warn('Could not extract tool result:', e)
+                                    }
+                                    
+                                    currentToolExecutions[toolIndex] = {
+                                      id: existingTool.id,
+                                      name: existingTool.name,
+                                      args: existingTool.args,
+                                      result: result,
+                                      status: 'completed',
+                                      timestamp: existingTool.timestamp,
+                                    }
+                                    setLiveToolExecutions([...currentToolExecutions])
+                                  }
+                                }
+                                
+                                if (isRunningTool) {
+                                  isRunningTool = false
+                                  homeDispatch({ field: 'isRunningTool', value: false })
+                                }
+                              }
+                              
+                              // Check for regular text content (process last)
+                              if (part.text && !part.thought) {
+                                // Check if this might be full content instead of a delta
+                                const newText = part.text
+                                if (newText.length > lastResponseLength && newText.startsWith(finalAssistantRespose)) {
+                                  // This appears to be full content, extract only the new part
+                                  const deltaText = newText.substring(finalAssistantRespose.length)
+                                  finalAssistantRespose += deltaText
+                                } else if (!finalAssistantRespose.includes(newText)) {
+                                  // This appears to be a true delta, add it
+                                  finalAssistantRespose += newText
+                                }
+                                // Update length tracker
+                                lastResponseLength = finalAssistantRespose.length
+                                
+                                // Clear thinking state when actual response starts
+                                if (isThinking) {
+                                  isThinking = false
+                                  homeDispatch({ field: 'isRouting', value: false })
+                                }
+                              }
+                            }
+                          }
+                        } catch (parseError) {
+                          console.warn('Failed to parse SSE event:', line.substring(0, 100) + '...', parseError)
+                        }
+                      }
+                    }
                   } catch (streamError) {
                     console.error('Stream reading error:', streamError)
                     done = true
@@ -1039,25 +1172,27 @@ export const Chat = memo(
                   }
                 }
 
-                if (isFirst) {
-                  // isFirst refers to the first chunk of data received from the API (happens once for each new message from API)
+                // Update conversation with current state
+                const shouldUpdate = finalAssistantRespose || currentToolExecutions.length > 0
+
+                if (isFirst && shouldUpdate) {
+                  // isFirst refers to the first content received from the API
                   isFirst = false
                   const updatedMessages: Message[] = [
                     ...updatedConversation.messages,
                     {
                       id: uuidv4(),
                       role: 'assistant',
-                      content: chunkValue,
+                      content: finalAssistantRespose,
                       contexts: message.contexts,
                       feedback: message.feedback,
                       wasQueryRewritten: message.wasQueryRewritten,
                       queryRewriteText: message.queryRewriteText,
+                      toolExecutions: [...currentToolExecutions],
+                      isThinking: isThinking,
                     },
                   ]
 
-                  // console.log('updatedMessages with queryRewrite info:', updatedMessages)
-
-                  finalAssistantRespose += chunkValue
                   updatedConversation = {
                     ...updatedConversation,
                     messages: updatedMessages,
@@ -1066,55 +1201,33 @@ export const Chat = memo(
                     field: 'selectedConversation',
                     value: updatedConversation,
                   })
-                } else {
-                  if (updatedConversation.messages?.length > 0) {
-                    const lastMessageIndex =
-                      updatedConversation.messages?.length - 1
-                    const lastMessage =
-                      updatedConversation.messages[lastMessageIndex]
-                    const lastUserMessage =
-                      updatedConversation.messages[lastMessageIndex - 1]
+                } else if (updatedConversation.messages?.length > 0 && shouldUpdate) {
+                  const lastMessageIndex = updatedConversation.messages?.length - 1
+                  
+                  // Always update the last message with the new content
+                  const updatedMessages = updatedConversation.messages?.map(
+                    (msg, index) =>
+                      index === lastMessageIndex
+                        ? { 
+                            ...msg, 
+                            content: finalAssistantRespose,
+                            toolExecutions: [...currentToolExecutions],
+                            isThinking: isThinking,
+                          }
+                        : msg,
+                  )
 
-                    // Always accumulate the chunk
-                    if (
-                      lastMessage &&
-                      lastUserMessage &&
-                      lastUserMessage.contexts
-                    ) {
-                      // Handle citations via state machine
-                      finalAssistantRespose +=
-                        await processChunkWithStateMachine(
-                          chunkValue,
-                          lastUserMessage,
-                          stateMachineContext,
-                          citationLinkCache,
-                          getCurrentPageName(),
-                        )
-                    } else {
-                      // No contexts, just append the chunk
-                      finalAssistantRespose += chunkValue
-                    }
-
-                    // Always update the last message with the new content
-                    const updatedMessages = updatedConversation.messages?.map(
-                      (msg, index) =>
-                        index === lastMessageIndex
-                          ? { ...msg, content: finalAssistantRespose }
-                          : msg,
-                    )
-
-                    // Update the conversation with the new messages
-                    updatedConversation = {
-                      ...updatedConversation,
-                      messages: updatedMessages,
-                    }
-
-                    // Dispatch the updated conversation
-                    homeDispatch({
-                      field: 'selectedConversation',
-                      value: updatedConversation,
-                    })
+                  // Update the conversation with the new messages
+                  updatedConversation = {
+                    ...updatedConversation,
+                    messages: updatedMessages,
                   }
+
+                  // Dispatch the updated conversation
+                  homeDispatch({
+                    field: 'selectedConversation',
+                    value: updatedConversation,
+                  })
                 }
               }
             } catch (error) {
@@ -1149,6 +1262,9 @@ export const Chat = memo(
               )
 
               onMessageReceived(updatedConversation) // kastan here, trying to save message AFTER done streaming. This only saves the user message...
+              
+              // Clear live tool executions when streaming is complete
+              setLiveToolExecutions([])
 
               // } else {
               //   onMessageReceived(updatedConversation)
@@ -1719,6 +1835,18 @@ export const Chat = memo(
                                 />
                               ),
                             )}
+                            
+                            {/* Live Tool Execution Display during streaming */}
+                            {(messageIsStreaming || loading) && (isRouting || isRunningTool || liveToolExecutions.length > 0) && (
+                              <div className="mx-auto w-full max-w-4xl px-4">
+                                <ToolExecutionDisplay 
+                                  toolExecutions={liveToolExecutions}
+                                  isThinking={isRouting}
+                                  isRunningTool={isRunningTool}
+                                />
+                              </div>
+                            )}
+                            
                             {loading && <ChatLoader />}
                             <div className="h-32" ref={messagesEndRef} />
                           </>

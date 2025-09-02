@@ -8,6 +8,7 @@ export interface GeminiModel {
 }
 
 export enum GeminiModelID {
+  Gemini_2_5_Flash = 'gemini-2.5-flash',
   Gemini_2_0_Flash = 'gemini-2.0-flash-001',
   Gemini_2_0_Flash_Thinking_Exp_01_21 = 'gemini-2.0-flash-thinking-exp-01-21',
   Gemini_2_0_Pro_Exp_02_05 = 'gemini-2.0-pro-exp-02-05',
@@ -17,6 +18,7 @@ export enum GeminiModelID {
 
 // Sort models by preference
 export const preferredGeminiModelIds = [
+  GeminiModelID.Gemini_2_5_Flash,
   GeminiModelID.Gemini_2_0_Flash_Thinking_Exp_01_21,
   GeminiModelID.Gemini_2_0_Flash,
   GeminiModelID.Gemini_2_0_Pro_Exp_02_05,
@@ -25,6 +27,12 @@ export const preferredGeminiModelIds = [
 ]
 
 export const GeminiModels: Record<GeminiModelID, GeminiModel> = {
+  [GeminiModelID.Gemini_2_5_Flash]: {
+    id: GeminiModelID.Gemini_2_5_Flash,
+    name: 'Gemini 2.5 Flash',
+    tokenLimit: 1_000_000,
+    enabled: true,
+  },
   [GeminiModelID.Gemini_2_0_Flash]: {
     id: GeminiModelID.Gemini_2_0_Flash,
     name: 'Gemini 2.0 Flash',

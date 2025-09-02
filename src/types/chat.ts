@@ -46,6 +46,17 @@ export interface Message {
   feedback?: MessageFeedback
   wasQueryRewritten?: boolean
   queryRewriteText?: string
+  toolExecutions?: ToolExecution[]
+  isThinking?: boolean
+}
+
+export interface ToolExecution {
+  id: string
+  name: string
+  args: Record<string, any>
+  result?: string
+  status: 'pending' | 'running' | 'completed' | 'error'
+  timestamp?: number
 }
 
 export type MessageFeedback = {
