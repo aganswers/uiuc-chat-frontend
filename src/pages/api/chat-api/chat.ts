@@ -36,11 +36,12 @@ export default async function chatProxy(
     return
   }
 
-  // Set streaming headers
+  // Set SSE streaming headers
   res.status(upstream.status)
-  res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+  res.setHeader('Content-Type', 'text/event-stream')
   res.setHeader('Cache-Control', 'no-cache')
   res.setHeader('Connection', 'keep-alive')
+  res.setHeader('Access-Control-Allow-Origin', '*')
 
   // Copy other non-problematic headers
   upstream.headers.forEach((v, k) => {

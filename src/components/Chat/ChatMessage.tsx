@@ -27,17 +27,19 @@ import {
   IconChevronDown,
   IconBrain,
   IconRepeat,
+  IconTool,
 } from '@tabler/icons-react'
 import { Fragment } from 'react'
 
 import { useTranslation } from 'next-i18next'
-import { Content, ContextWithMetadata, Message } from '@/types/chat'
+import { Content, ContextWithMetadata, Message, ToolExecution } from '@/types/chat'
 import HomeContext from '~/pages/api/home/home.context'
 import { CodeBlock } from '../Markdown/CodeBlock'
 import { MemoizedReactMarkdown } from '../Markdown/MemoizedReactMarkdown'
 import { ImagePreview } from './ImagePreview'
 import { LoadingSpinner } from '../UIUC-Components/LoadingSpinner'
 import { fetchPresignedUrl } from '~/utils/apiUtils'
+import { ToolExecutionDisplay } from './ToolExecutionDisplay'
 
 import rehypeMathjax from 'rehype-mathjax'
 import remarkGfm from 'remark-gfm'
@@ -1294,6 +1296,16 @@ export const ChatMessage: React.FC<Props> = memo(
                 : contentToRender}
             </MemoizedReactMarkdown>
           )}
+          
+          {/* Thinking indicator for assistant messages */}
+          {message.role === 'assistant' && message.isThinking && (
+            <div className="mt-2 flex items-center gap-2 text-orange-500">
+              <IconBrain size={16} className="animate-pulse" />
+              <span className={`text-sm ${montserrat_paragraph.variable} font-montserratParagraph`}>
+                Thinking...
+              </span>
+            </div>
+          )}
         </>
       )
     }
@@ -1569,6 +1581,16 @@ export const ChatMessage: React.FC<Props> = memo(
                   <div className="w-full max-w-full flex-1 overflow-hidden">
                     {renderContent()}
                   </div>
+                  
+                  {/* Tool Execution Display - only show for completed messages, not during live streaming */}
+                  {!(messageIsStreaming && messageIndex === (selectedConversation?.messages.length ?? 0) - 1) && (
+                    <ToolExecutionDisplay 
+                      toolExecutions={message.toolExecutions || []}
+                      isThinking={message.isThinking}
+                      isRunningTool={false}
+                    />
+                  )}
+                  
                   {/* Action Buttons Container */}
                   <div className="flex flex-col gap-2">
                     {/* Sources button */}

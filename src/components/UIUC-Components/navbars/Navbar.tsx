@@ -505,11 +505,11 @@ export default function Navbar({
     //   icon: <ReportIcon />,
     //   link: `/${course_name}/analysis`,
     // },
-    {
-      name: <span>Tools</span>,
-      icon: <ChartDots3Icon />,
-      link: `/${course_name}/tools`,
-    },
+    // {
+    //   name: <span>Tools</span>,
+    //   icon: <ChartDots3Icon />,
+    //   link: `/${course_name}/tools`,
+    // },
     // {
     //   name: <span>API</span>,
     //   icon: <ApiIcon />,
