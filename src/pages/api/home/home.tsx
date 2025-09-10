@@ -143,6 +143,7 @@ const Home = ({
       folders,
       conversations,
       selectedConversation,
+      selectedModel,
       prompts,
       temperature,
       llmProviders,
@@ -162,7 +163,7 @@ const Home = ({
   useEffect(() => {
     // Set model after we fetch available models
     if (Object.keys(llmProviders).length == 0) return
-    const model = selectBestModel(llmProviders)
+    const model = selectedModel || selectBestModel(llmProviders)
 
     dispatch({
       field: 'defaultModelId',
@@ -170,15 +171,15 @@ const Home = ({
     })
 
     // Ensure current convo has a valid model
-    if (selectedConversation) {
+    if (selectedConversation && selectedModel) {
       const convo_with_valid_model = selectedConversation
-      convo_with_valid_model.model = model
+      convo_with_valid_model.model = selectedModel
       dispatch({
         field: 'selectedConversation',
         value: convo_with_valid_model,
       })
     }
-  }, [llmProviders])
+  }, [llmProviders, selectedModel])
 
   // ---- Set OpenAI API Key (either course-wide or from storage) ----
   useEffect(() => {
@@ -334,7 +335,7 @@ const Home = ({
     const lastConversation = conversations[conversations.length - 1]
 
     // Determine the model to use for the new conversation
-    const model = selectBestModel(llmProviders)
+    const model = selectedModel || selectBestModel(llmProviders)
 
     // Ensure link parameters are properly set
     const newLinkParameters = {

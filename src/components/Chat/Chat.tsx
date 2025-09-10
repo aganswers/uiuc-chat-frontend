@@ -95,7 +95,7 @@ export const Chat = memo(
     documentCount,
   }: Props) => {
     const { t } = useTranslation('chat')
-    const clerk_obj = useUser()
+    const { user } = useUser()
     const router = useRouter()
     const queryClient = useQueryClient()
     // const
@@ -104,7 +104,7 @@ export const Chat = memo(
       // /CS-125/dashboard --> CS-125
       return router.asPath.slice(1).split('/')[0] as string
     }
-    const user_email = extractEmailsFromClerk(clerk_obj.user)[0]
+    const user_email = extractEmailsFromClerk(user)[0]
     // const [user_email, setUserEmail] = useState<string | undefined>(undefined)
 
     // const updateConversationMutation = useUpdateConversation(
