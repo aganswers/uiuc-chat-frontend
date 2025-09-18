@@ -1109,7 +1109,7 @@ export const ChatMessage: React.FC<Props> = memo(
           )}
           {contentToRender && (
             <MemoizedReactMarkdown
-              className="dark:prose-invert linkMarkDown supMarkDown codeBlock prose mb-2 flex-1 flex-col items-start space-y-2"
+              className="linkMarkDown supMarkDown codeBlock prose mb-2 flex-1 flex-col items-start space-y-2 text-gray-800"
               remarkPlugins={[remarkGfm, remarkMath]}
               rehypePlugins={[rehypeMathjax]}
               components={{
@@ -1212,21 +1212,21 @@ export const ChatMessage: React.FC<Props> = memo(
                 },
                 table({ children }) {
                   return (
-                    <table className="border-collapse border border-black px-3 py-1 dark:border-white">
+                    <table className="border-collapse border border-gray-300 px-3 py-1">
                       {children}
                     </table>
                   )
                 },
                 th({ children }) {
                   return (
-                    <th className="break-words border border-black bg-gray-500 px-3 py-1 text-white dark:border-white">
+                    <th className="break-words border border-gray-300 bg-gray-500 px-3 py-1 text-white">
                       {children}
                     </th>
                   )
                 },
                 td({ children }) {
                   return (
-                    <td className="break-words border border-black px-3 py-1 dark:border-white">
+                    <td className="break-words border border-gray-300 px-3 py-1">
                       {children}
                     </td>
                   )
@@ -1380,33 +1380,41 @@ export const ChatMessage: React.FC<Props> = memo(
     return (
       <>
         <div
-          className={`group md:px-6 ${
+          className={`group ${
             message.role === 'assistant'
-              ? 'border-b border-black/10 bg-gray-50/50 text-gray-800 dark:border-[rgba(42,42,120,0.50)] bg-adaptive dark:text-gray-100'
-              : 'border-b border-black/10 bg-white/50 text-gray-800 dark:border-[rgba(42,42,120,0.50)] bg-adaptive dark:text-gray-100'
-          } max-w-[100%]`}
+              ? 'md:px-6 bg-gray-50/50 text-gray-800 bg-white'
+              : 'px-4 md:px-6 py-2 bg-transparent'
+          } max-w-[100%] ${
+            message.role === 'user' ? 'flex justify-end' : ''
+          }`}
           style={{ overflowWrap: 'anywhere' }}
         >
-          <div className="relative flex w-full px-2 py-4 text-base md:mx-[5%] md:max-w-[90%] md:gap-6 md:p-6 lg:mx-[10%]">
-            <div className="min-w-[40px] text-left">
-              {message.role === 'assistant' ? (
-                <>
-                  <IconRobot size={30} />
-                  <Timer timerVisible={timerVisible} />
-                </>
-              ) : (
-                <IconUser size={30} />
-              )}
-            </div>
+          <div className={`relative flex text-base ${
+            message.role === 'assistant' 
+              ? 'w-full px-2 py-4 md:mx-[5%] md:max-w-[90%] md:gap-6 md:p-6 lg:mx-[10%]'
+              : 'max-w-[85%] md:max-w-[70%] lg:max-w-[60%]'
+          }`}>
+            {message.role === 'assistant' && (
+              <div className="min-w-[40px] text-left">
+                <IconRobot size={30} />
+                <Timer timerVisible={timerVisible} />
+              </div>
+            )}
 
-            <div className="dark:prose-invert prose mt-[-2px] flex w-full max-w-full flex-wrap lg:w-[90%]">
+            <div className={`prose mt-[-2px] flex w-full max-w-full flex-wrap text-gray-800 ${
+              message.role === 'assistant' ? 'lg:w-[90%]' : 'w-full'
+            } ${
+              message.role === 'user' 
+                ? 'bg-orange-500 text-white rounded-2xl px-4 py-3 shadow-sm max-w-none' 
+                : ''
+            }`}>
               {message.role === 'user' ? (
-                <div className="flex w-[90%] flex-col">
+                <div className="flex w-full flex-col">
                   {isEditing ? (
                     <div className="flex w-full flex-col">
                       <textarea
                         ref={textareaRef}
-                        className="w-full resize-none whitespace-pre-wrap rounded-md border border-gray-300 bg-transparent p-3 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 border-adaptive bg-adaptive dark:focus:border-orange-400"
+                        className="w-full resize-none whitespace-pre-wrap rounded-md border border-gray-300 bg-white p-3 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                         value={messageContent}
                         onChange={handleInputChange}
                         onKeyDown={handlePressEnter}
@@ -1421,7 +1429,7 @@ export const ChatMessage: React.FC<Props> = memo(
                       />
                       <div className="mt-4 flex justify-end space-x-3">
                         <button
-                          className="flex items-center gap-2 rounded-md border border-gray-300 bg-transparent px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 border-adaptive dark:text-gray-300 dark:hover:bg-gray-800"
+                          className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
                           onClick={() => {
                             setMessageContent(messageContent)
                             setIsEditing(false)
@@ -1431,7 +1439,7 @@ export const ChatMessage: React.FC<Props> = memo(
                           {t('Cancel')}
                         </button>
                         <button
-                          className="flex items-center gap-2 rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-orange-500 dark:hover:bg-orange-600"
+                          className="flex items-center gap-2 rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-50"
                           onClick={handleEditMessage}
                           disabled={messageContent.trim().length <= 0}
                         >
@@ -1442,7 +1450,7 @@ export const ChatMessage: React.FC<Props> = memo(
                     </div>
                   ) : (
                     <>
-                      <div className="dark:prose-invert prose w-full flex-1 whitespace-pre-wrap">
+                      <div className="prose w-full flex-1 whitespace-pre-wrap text-gray-800">
                         {Array.isArray(message.content) ? (
                           <>
                             <div className="mb-2 flex w-full flex-col items-start space-y-2">
@@ -1457,7 +1465,7 @@ export const ChatMessage: React.FC<Props> = memo(
                                     return (
                                       <p
                                         key={index}
-                                        className={`self-start text-base font-normal ${montserrat_paragraph.variable} font-montserratParagraph`}
+                                        className={`self-start text-base font-normal ${montserrat_paragraph.variable} font-montserratParagraph text-white`}
                                       >
                                         {content.text}
                                       </p>
@@ -1542,7 +1550,7 @@ export const ChatMessage: React.FC<Props> = memo(
                             </div>
                           </>
                         ) : (
-                          <>{message.content}</>
+                          <span className="text-white">{message.content}</span>
                         )}
                         {/* 25Jul25 this is where the stuff was */}
                       </div>
@@ -1564,8 +1572,12 @@ export const ChatMessage: React.FC<Props> = memo(
                             }}
                           >
                             <button
-                              className={`invisible text-gray-500 hover:text-gray-700 focus:visible group-hover:visible dark:text-gray-400 dark:hover:text-gray-300 
-                                ${Array.isArray(message.content) && message.content.some((content) => content.type === 'image_url') ? 'hidden' : ''}`}
+                              className={`${
+                                messageIndex === (selectedConversation?.messages.length ?? 0) - 2 || messageIndex === (selectedConversation?.messages.length ?? 0) - 1
+                                  ? 'visible text-white/70 hover:text-white'
+                                  : 'visible text-white/70 hover:text-white'
+                                  // : 'invisible text-white/70 hover:text-white focus:visible group-hover:visible' add back in if needed
+                              } ${Array.isArray(message.content) && message.content.some((content) => content.type === 'image_url') ? 'hidden' : ''}`}
                               onClick={toggleEditing}
                             >
                               <IconEdit size={20} />
@@ -1577,7 +1589,7 @@ export const ChatMessage: React.FC<Props> = memo(
                   )}
                 </div>
               ) : (
-                <div className="flex w-[90%] flex-col">
+                <div className="flex w-full flex-col">
                   <div className="w-full max-w-full flex-1 overflow-hidden">
                     {renderContent()}
                   </div>
@@ -1608,24 +1620,24 @@ export const ChatMessage: React.FC<Props> = memo(
                       ) && (
                         <div className="relative z-0 mb-1 flex justify-start">
                           <button
-                            className="group/button relative flex items-center gap-0 rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-all duration-200 hover:border-orange-300 hover:bg-orange-50/50 hover:text-gray-900 border-adaptive dark:bg-gray-800/30 dark:text-gray-300 dark:hover:border-orange-500/40 dark:hover:bg-orange-900/20 dark:hover:text-gray-100"
+                            className="group/button relative flex items-center gap-0 rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-all duration-200 hover:border-orange-300 hover:bg-orange-50/50 hover:text-gray-900"
                             onClick={() => handleSourcesSidebarToggle(true)}
                           >
                             <span className="whitespace-nowrap">
                               Sources
-                              <span className="ml-0.5 rounded-md bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600 group-hover/button:bg-orange-100 group-hover/button:text-orange-600 dark:bg-gray-700/50 dark:text-gray-400 dark:group-hover/button:bg-orange-900/30 dark:group-hover/button:text-orange-300">
+                              <span className="ml-0.5 rounded-md bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600 group-hover/button:bg-orange-100 group-hover/button:text-orange-600">
                                 {message.contexts.length}
                               </span>
                             </span>
 
                             {sourceThumbnails.length > 0 && (
                               <div className="flex items-center">
-                                <div className="ml-0.5 mr-1 h-4 border-l border-gray-300 border-adaptive"></div>
+                                <div className="ml-0.5 mr-1 h-4 border-l border-gray-300"></div>
                                 <div className="relative flex">
                                   {sourceThumbnails.map((thumbnail, index) => (
                                     <div
                                       key={index}
-                                      className="relative h-7 w-7 overflow-hidden rounded-lg border-2 border-gray-200 bg-white shadow-sm transition-transform duration-200 group-hover/button:shadow border-adaptive dark:bg-gray-800"
+                                      className="relative h-7 w-7 overflow-hidden rounded-lg border-2 border-gray-200 bg-white shadow-sm transition-transform duration-200 group-hover/button:shadow"
                                       style={{
                                         marginLeft:
                                           index > 0 ? '-0.75rem' : '0',
@@ -1679,7 +1691,7 @@ export const ChatMessage: React.FC<Props> = memo(
                             }}
                           >
                             <button
-                              className={`text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 ${
+                              className={`text-gray-500 hover:text-gray-700 ${
                                 messageIndex ===
                                 (selectedConversation?.messages.length ?? 0) - 1
                                   ? 'opacity-100'
@@ -1690,7 +1702,7 @@ export const ChatMessage: React.FC<Props> = memo(
                               {messagedCopied ? (
                                 <IconCheck
                                   size={20}
-                                  className="text-green-500 dark:text-green-400"
+                                  className="text-green-500"
                                 />
                               ) : (
                                 <IconCopy size={20} />
@@ -1717,7 +1729,7 @@ export const ChatMessage: React.FC<Props> = memo(
                             }}
                           >
                             <button
-                              className={`text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 ${
+                              className={`text-gray-500 hover:text-gray-700 ${
                                 messageIndex ===
                                 (selectedConversation?.messages.length ?? 0) - 1
                                   ? 'opacity-100'
@@ -1762,7 +1774,7 @@ export const ChatMessage: React.FC<Props> = memo(
                             }}
                           >
                             <button
-                              className={`text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 ${
+                              className={`text-gray-500 hover:text-gray-700 ${
                                 messageIndex ===
                                 (selectedConversation?.messages.length ?? 0) - 1
                                   ? 'opacity-100'
@@ -1793,7 +1805,7 @@ export const ChatMessage: React.FC<Props> = memo(
                             }}
                           >
                             <button
-                              className={`text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 ${
+                              className={`text-gray-500 hover:text-gray-700 ${
                                 messageIndex ===
                                 (selectedConversation?.messages?.length ?? 0) -
                                   1
@@ -1843,318 +1855,3 @@ export const ChatMessage: React.FC<Props> = memo(
   },
 )
 ChatMessage.displayName = 'ChatMessage'
-
-// Removed on 25Jul25
-// <div className="flex w-full flex-col items-start space-y-2">
-//                           {/* Query rewrite loading state - only show for current message */}
-//                           {isQueryRewriting &&
-//                             (messageIndex ===
-//                               (selectedConversation?.messages.length ?? 0) -
-//                                 1 ||
-//                               messageIndex ===
-//                                 (selectedConversation?.messages.length ?? 0) -
-//                                   2) && (
-//                               <IntermediateStateAccordion
-//                                 accordionKey="query-rewrite"
-//                                 title="Optimizing search query"
-//                                 isLoading={isQueryRewriting}
-//                                 error={false}
-//                                 content={<></>}
-//                               />
-//                             )}
-
-//                           {/* Query rewrite result - show for any message that was optimized */}
-//                           {!isQueryRewriting &&
-//                             message.wasQueryRewritten !== undefined &&
-//                             message.wasQueryRewritten !== null && (
-//                               <IntermediateStateAccordion
-//                                 accordionKey="query-rewrite-result"
-//                                 title={
-//                                   message.wasQueryRewritten
-//                                     ? 'Optimized search query'
-//                                     : 'No query optimization necessary'
-//                                 }
-//                                 isLoading={false}
-//                                 error={false}
-//                                 content={
-//                                   message.wasQueryRewritten
-//                                     ? message.queryRewriteText
-//                                     : "The LLM determined no optimization was necessary. We only optimize when it's necessary to turn a single message into a stand-alone search to retrieve the best documents."
-//                                 }
-//                               />
-//                             )}
-
-//                           {/* Retrieval results for all messages */}
-//                           {message.contexts && message.contexts.length > 0 && (
-//                             <IntermediateStateAccordion
-//                               accordionKey="retrieval loading"
-//                               title="Retrieved documents"
-//                               isLoading={false}
-//                               error={false}
-//                               content={`Found ${message.contexts?.length} document chunks.`}
-//                             />
-//                           )}
-
-//                           {/* Retrieval loading state for last message */}
-//                           {isRetrievalLoading &&
-//                             (messageIndex ===
-//                               (selectedConversation?.messages.length ?? 0) -
-//                                 1 ||
-//                               messageIndex ===
-//                                 (selectedConversation?.messages.length ?? 0) -
-//                                   2) && (
-//                               <IntermediateStateAccordion
-//                                 accordionKey="retrieval loading"
-//                                 title="Retrieving documents"
-//                                 isLoading={isRetrievalLoading}
-//                                 error={false}
-//                                 content={`Found ${message.contexts?.length} document chunks.`}
-//                               />
-//                             )}
-
-//                           {/* Tool Routing loading state for last message */}
-//                           {isRouting &&
-//                             (messageIndex ===
-//                               (selectedConversation?.messages.length ?? 0) -
-//                                 1 ||
-//                               messageIndex ===
-//                                 (selectedConversation?.messages.length ?? 0) -
-//                                   2) && (
-//                               <IntermediateStateAccordion
-//                                 accordionKey={`routing tools`}
-//                                 title={'Routing the request to relevant tools'}
-//                                 isLoading={isRouting}
-//                                 error={false}
-//                                 content={<></>}
-//                               />
-//                             )}
-
-//                           {/* Tool input arguments state for last message */}
-//                           {isRouting === false &&
-//                             message.tools &&
-//                             (messageIndex ===
-//                               (selectedConversation?.messages.length ?? 0) -
-//                                 1 ||
-//                               messageIndex ===
-//                                 (selectedConversation?.messages.length ?? 0) -
-//                                   2) && (
-//                               <>
-//                                 {message.tools.map((response, index) => (
-//                                   <IntermediateStateAccordion
-//                                     key={`routing-${index}`}
-//                                     accordionKey={`routing-${index}`}
-//                                     title={
-//                                       <>
-//                                         Routing the request to{' '}
-//                                         <Badge
-//                                           color="grape"
-//                                           radius="md"
-//                                           size="sm"
-//                                         >
-//                                           {response.readableName}
-//                                         </Badge>
-//                                       </>
-//                                     }
-//                                     isLoading={isRouting}
-//                                     error={false}
-//                                     content={
-//                                       <>
-//                                         Arguments :{' '}
-//                                         {response.aiGeneratedArgumentValues
-//                                           ?.image_urls ? (
-//                                           <div>
-//                                             <div className="flex overflow-x-auto">
-//                                               {JSON.parse(
-//                                                 response
-//                                                   .aiGeneratedArgumentValues
-//                                                   .image_urls,
-//                                               ).length > 0 ? (
-//                                                 JSON.parse(
-//                                                   response
-//                                                     .aiGeneratedArgumentValues
-//                                                     .image_urls,
-//                                                 ).map(
-//                                                   (
-//                                                     imageUrl: string,
-//                                                     index: number,
-//                                                   ) => (
-//                                                     <div
-//                                                       key={index}
-//                                                       className={
-//                                                         classes.imageContainerStyle
-//                                                       }
-//                                                     >
-//                                                       <div className="overflow-hidden rounded-lg shadow-lg">
-//                                                         <ImagePreview
-//                                                           src={imageUrl}
-//                                                           alt={`Tool image argument ${index}`}
-//                                                           className={
-//                                                             classes.imageStyle
-//                                                           }
-//                                                         />
-//                                                       </div>
-//                                                     </div>
-//                                                   ),
-//                                                 )
-//                                               ) : (
-//                                                 <p>No arguments provided</p>
-//                                               )}
-//                                             </div>
-//                                           </div>
-//                                         ) : (
-//                                           <pre>
-//                                             {JSON.stringify(
-//                                               response.aiGeneratedArgumentValues,
-//                                               null,
-//                                               2,
-//                                             )}
-//                                           </pre>
-//                                         )}
-//                                       </>
-//                                     }
-//                                   />
-//                                 ))}
-//                               </>
-//                             )}
-
-//                           {/* Tool output states for last message */}
-//                           {(messageIndex ===
-//                             (selectedConversation?.messages.length ?? 0) - 1 ||
-//                             messageIndex ===
-//                               (selectedConversation?.messages.length ?? 0) -
-//                                 2) && (
-//                             <>
-//                               {message.tools?.map((response, index) => (
-//                                 <IntermediateStateAccordion
-//                                   key={`tool-${index}`}
-//                                   accordionKey={`tool-${index}`}
-//                                   title={
-//                                     <>
-//                                       Tool output from{' '}
-//                                       <Badge
-//                                         color={response.error ? 'red' : 'grape'}
-//                                         radius="md"
-//                                         size="sm"
-//                                       >
-//                                         {response.readableName}
-//                                       </Badge>
-//                                     </>
-//                                   }
-//                                   isLoading={
-//                                     response.output === undefined &&
-//                                     response.error === undefined
-//                                   }
-//                                   error={response.error ? true : false}
-//                                   content={
-//                                     <>
-//                                       {response.error ? (
-//                                         <span>{response.error}</span>
-//                                       ) : (
-//                                         <>
-//                                           <div
-//                                             style={{
-//                                               display: 'flex',
-//                                               overflowX: 'auto',
-//                                               gap: '10px',
-//                                             }}
-//                                           >
-//                                             {response.output?.imageUrls &&
-//                                               response.output?.imageUrls.map(
-//                                                 (imageUrl, index) => (
-//                                                   <div
-//                                                     key={index}
-//                                                     className={
-//                                                       classes.imageContainerStyle
-//                                                     }
-//                                                   >
-//                                                     <div className="overflow-hidden rounded-lg shadow-lg">
-//                                                       <ImagePreview
-//                                                         src={imageUrl}
-//                                                         alt={`Tool output image ${index}`}
-//                                                         className={
-//                                                           classes.imageStyle
-//                                                         }
-//                                                       />
-//                                                     </div>
-//                                                   </div>
-//                                                 ),
-//                                               )}
-//                                           </div>
-//                                           <div>
-//                                             {response.output?.text
-//                                               ? response.output.text
-//                                               : JSON.stringify(
-//                                                   response.output?.data,
-//                                                   null,
-//                                                   2,
-//                                                 )}
-//                                           </div>
-//                                         </>
-//                                       )}
-//                                     </>
-//                                   }
-//                                 />
-//                               ))}
-//                             </>
-//                           )}
-//                           {(() => {
-//                             if (
-//                               messageIsStreaming === undefined ||
-//                               !messageIsStreaming
-//                             ) {
-//                               // console.log(
-//                               //   'isRouting: ',
-//                               //   isRouting,
-//                               //   'isRetrievalLoading: ',
-//                               //   isRetrievalLoading,
-//                               //   'isImg2TextLoading: ',
-//                               //   isImg2TextLoading,
-//                               //   'messageIsStreaming: ',
-//                               //   messageIsStreaming,
-//                               //   'loading: ',
-//                               //   loading,
-//                               // )
-//                             }
-//                             return null
-//                           })()}
-//                           {!isRouting &&
-//                             !isRetrievalLoading &&
-//                             !isImg2TextLoading &&
-//                             !isQueryRewriting &&
-//                             loading &&
-//                             (messageIndex ===
-//                               (selectedConversation?.messages.length ?? 0) -
-//                                 1 ||
-//                               messageIndex ===
-//                                 (selectedConversation?.messages.length ?? 0) -
-//                                   2) &&
-//                             (!message.tools ||
-//                               message.tools.every(
-//                                 (tool) =>
-//                                   tool.output !== undefined ||
-//                                   tool.error !== undefined,
-//                               )) && (
-//                               <>
-//                                 <div
-//                                   style={{
-//                                     display: 'flex',
-//                                     alignItems: 'center',
-//                                     marginLeft: '10px',
-//                                     marginTop: '10px',
-//                                   }}
-//                                 >
-//                                   <p
-//                                     style={{
-//                                       marginRight: '10px',
-//                                       fontWeight: 'bold',
-//                                       textShadow: '0 0 10px',
-//                                     }}
-//                                     className={`pulsate text-base ${montserrat_paragraph.variable} font-montserratParagraph`}
-//                                   >
-//                                     Generating final response:
-//                                   </p>
-//                                   <LoadingSpinner size="xs" />
-//                                 </div>
-//                               </>
-//                             )}
-//                         </div>

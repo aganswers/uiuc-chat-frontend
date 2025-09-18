@@ -1492,6 +1492,30 @@ export const Chat = memo(
       }
     }, [selectedConversation, throttledScrollDown])
 
+    // Auto-scroll to bottom on initial load and when conversation changes
+    useEffect(() => {
+      // Use setTimeout to ensure DOM is fully rendered before scrolling
+      const scrollTimer = setTimeout(() => {
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+        }
+      }, 100)
+
+      return () => clearTimeout(scrollTimer)
+    }, [selectedConversation?.id]) // Trigger when conversation ID changes
+
+    // Auto-scroll to bottom on component mount (page refresh)
+    useEffect(() => {
+      // Use setTimeout to ensure DOM is fully rendered before scrolling
+      const scrollTimer = setTimeout(() => {
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+        }
+      }, 200) // Slightly longer delay for initial mount
+
+      return () => clearTimeout(scrollTimer)
+    }, []) // Empty dependency array means this runs only on mount
+
     useEffect(() => {
       const observer = new IntersectionObserver(
         ([entry]) => {
@@ -1558,13 +1582,13 @@ export const Chat = memo(
                 <p>Start a conversation below or try these examples</p>
               )}
             </h4>
-            <div className="mt-4 flex flex-col items-start space-y-2 overflow-hidden">
+            <div className="mt-4 max-h-64 flex flex-col items-start space-y-2 overflow-y-auto">
               {/* if getCurrentPageName is 'chat' then don't show any example questions */}
               {getCurrentPageName() !== 'chat' &&
                 statements.map((statement, index) => (
                   <div
                     key={index}
-                    className="w-full rounded-lg border-b-2 border-gray-200 hover:cursor-pointer hover:bg-orange-50"
+                    className="w-full rounded-lg border-b-2 border-gray-200 hover:cursor-pointer hover:bg-orange-50 transition-colors duration-200"
                     onClick={() => {
                       setInputContent('') // First clear the input
                       setTimeout(() => {
@@ -1574,13 +1598,12 @@ export const Chat = memo(
                       }, 0)
                     }}
                   >
-                    <Button
-                      variant="link"
-                      className={`text-md h-auto p-2 font-bold leading-relaxed text-gray-700 hover:text-orange-600 hover:underline ${montserrat_paragraph.variable} font-montserratParagraph `}
-                    >
-                      <IconArrowRight size={25} className="mr-2 min-w-[40px] text-orange-500" />
-                      <p className="whitespace-break-spaces">{statement}</p>
-                    </Button>
+                    <div className="flex items-start p-3 w-full">
+                      <IconArrowRight size={20} className="mr-3 mt-0.5 flex-shrink-0 text-orange-500" />
+                      <p className={`text-sm sm:text-md font-medium leading-relaxed text-gray-700 hover:text-orange-600 break-words whitespace-normal flex-1 ${montserrat_paragraph.variable} font-montserratParagraph`}>
+                        {statement}
+                      </p>
+                    </div>
                   </div>
                 ))}
             </div>

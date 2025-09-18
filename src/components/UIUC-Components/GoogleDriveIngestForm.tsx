@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Text, Card, Button, Input, Image } from '@mantine/core'
-import { IconArrowRight } from '@tabler/icons-react'
+import { Text, Card, Button, Input } from '@mantine/core'
+import { IconArrowRight, IconBrandGoogle } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
 import {
   Dialog,
@@ -10,10 +10,10 @@ import {
   DialogTrigger,
 } from '../Dialog'
 import NextLink from 'next/link'
-import axios from 'axios'
 import { FileUpload } from './UploadNotification'
 import { QueryClient } from '@tanstack/react-query'
-export default function MITIngestForm({
+
+export default function GoogleDriveIngestForm({
   project_name,
   setUploadFiles,
 }: {
@@ -24,40 +24,17 @@ export default function MITIngestForm({
   const [isUrlUpdated, setIsUrlUpdated] = useState(false)
   const [isUrlValid, setIsUrlValid] = useState(false)
   const [url, setUrl] = useState('')
-  const [maxUrls, setMaxUrls] = useState('50')
   const [open, setOpen] = useState(false)
+
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value
     setUrl(input)
     setIsUrlValid(validateUrl(input))
   }
+
   const validateUrl = (input: string) => {
-    const regex = /^https?:\/\/ocw\.mit\.edu\/.+/
+    const regex = /^https?:\/\/drive\.google\.com\/.*/
     return regex.test(input)
-  }
-  const downloadMITCourse = async (
-    url: string | null,
-    courseName: string | null,
-    localDir: string | null,
-  ) => {
-    try {
-      if (!url || !courseName || !localDir) return null
-      console.log('calling downloadMITCourse')
-      const response = await axios.get(
-        `https://backend.aganswers.ai/mit-download`,
-        {
-          params: {
-            url: url,
-            course_name: courseName,
-            local_dir: localDir,
-          },
-        },
-      )
-      return response.data
-    } catch (error) {
-      console.error('Error during MIT course download:', error)
-      return null
-    }
   }
 
   const handleIngest = () => {
@@ -66,7 +43,7 @@ export default function MITIngestForm({
       const newFile: FileUpload = {
         name: url,
         status: 'uploading',
-        type: 'github',
+        type: 'googledrive',
       }
       setUploadFiles((prevFiles) => [...prevFiles, newFile])
       setUploadFiles((prevFiles) =>
@@ -74,16 +51,12 @@ export default function MITIngestForm({
           file.name === url ? { ...file, status: 'ingesting' } : file,
         ),
       )
-      let data = null
-      data = downloadMITCourse(url, project_name, 'local_dir') // no await -- do in background
+      // TODO: Implement Google Drive integration
+      console.log('Google Drive integration coming soon!')
     } else {
       alert('Invalid URL (please include https://)')
     }
   }
-  const [inputErrors, setInputErrors] = useState({
-    maxUrls: { error: false, message: '' },
-    maxDepth: { error: false, message: '' },
-  })
 
   useEffect(() => {
     if (url && url.length > 0 && validateUrl(url)) {
@@ -103,7 +76,6 @@ export default function MITIngestForm({
             setUrl('')
             setIsUrlValid(false)
             setIsUrlUpdated(false)
-            setMaxUrls('50')
           }
         }}
       >
@@ -115,25 +87,19 @@ export default function MITIngestForm({
             <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-900/30">
-                  <Image
-                    src="/media/mitocw_logo.jpg"
-                    alt="MIT OCW Logo"
-                    width={32}
-                    height={32}
-                    className="rounded-full object-contain"
-                  />
+                  <IconBrandGoogle className="h-8 w-8" />
                 </div>
                 <Text className="text-xl font-semibold text-gray-900">
-                  MIT Course
+                  Google Drive
                 </Text>
               </div>
             </div>
 
             <Text className="mb-4 text-sm leading-relaxed text-gray-600">
-              Import content from MIT OpenCourseWare, including lecture notes,
-              assignments, and course materials.
+              Import content from Google Drive, including documents, sheets,
+              presentations, and shared folders.
             </Text>
-            <div className="mt-auto flex items-center text-sm text-orange-400">
+            <div className="mt-auto flex items-center text-sm text-green-400">
               <span>Configure import</span>
               <IconArrowRight
                 size={16}
@@ -146,29 +112,29 @@ export default function MITIngestForm({
         <DialogContent className="mx-auto h-auto w-[95%] max-w-2xl !rounded-2xl border-0 bg-white px-4 py-6 text-gray-900 sm:px-6">
           <DialogHeader>
             <DialogTitle className="mb-4 text-left text-xl font-bold">
-              Ingest MIT Course
+              Ingest Google Drive Content
             </DialogTitle>
           </DialogHeader>
           <div className="border-t border-gray-200 pt-4">
             <div className="space-y-4">
               <div>
                 <div className="break-words text-sm sm:text-base">
-                  <strong>For MIT Open Course Ware</strong>, just enter a URL
+                  <strong>For Google Drive</strong>, enter a Google Drive URL
                   like{' '}
                   <code className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 font-mono text-xs sm:text-sm">
-                    ocw.mit.edu/courses/ANY_COURSE
+                    drive.google.com/drive/folders/...
                   </code>{' '}
                   , for example:{' '}
-                  <span className="break-all text-orange-600">
+                  <span className="break-all text-green-600">
                     <NextLink
                       target="_blank"
                       rel="noreferrer"
                       href={
-                        'https://ocw.mit.edu/courses/8-321-quantum-theory-i-fall-2017'
+                        'https://drive.google.com/drive/folders/1ABC123DEF456GHI789JKL'
                       }
                       onClick={(e: React.MouseEvent) => e.stopPropagation()}
                     >
-                      https://ocw.mit.edu/courses/8-321-quantum-theory-i-fall-2017
+                      https://drive.google.com/drive/folders/1ABC123DEF456GHI789JKL
                     </NextLink>
                   </span>
                   .
@@ -176,13 +142,7 @@ export default function MITIngestForm({
                 <div className="py-3"></div>
                 <Input
                   icon={
-                    <Image
-                      src="/media/mitocw_logo.jpg"
-                      alt="MIT OCW Logo"
-                      width={24}
-                      height={24}
-                      className="object-contain"
-                    />
+                    <IconBrandGoogle className="h-8 w-8" />
                   }
                   className="w-full rounded-full"
                   styles={{
@@ -192,14 +152,14 @@ export default function MITIngestForm({
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       '&:focus': {
-                        borderColor: '#ea580c',
+                        borderColor: '#16a34a',
                       },
                     },
                     wrapper: {
                       width: '100%',
                     },
                   }}
-                  placeholder="Enter URL..."
+                  placeholder="Enter Google Drive URL..."
                   radius="xl"
                   type="url"
                   value={url}
@@ -209,15 +169,22 @@ export default function MITIngestForm({
                   }}
                 />
               </div>
+              <div className="rounded-lg bg-green-50 p-4">
+                <Text className="text-sm text-green-800">
+                  <strong>Coming Soon:</strong> Google Drive integration is currently in development. 
+                  This feature will allow you to import documents, sheets, presentations, and shared folders 
+                  directly from your Google Drive.
+                </Text>
+              </div>
             </div>
           </div>
           <div className="mt-4 border-t border-gray-200 pt-2">
             <Button
               onClick={handleIngest}
               disabled={!isUrlValid}
-              className="h-11 w-full rounded-xl bg-orange-600 text-gray-900 transition-colors hover:bg-orange-700"
+              className="h-11 w-full rounded-xl bg-green-600 text-white transition-colors hover:bg-green-700"
             >
-              Ingest MIT Course
+              Ingest Google Drive Content
             </Button>
           </div>
         </DialogContent>

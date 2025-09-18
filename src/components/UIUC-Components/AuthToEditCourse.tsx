@@ -26,9 +26,9 @@ export const AuthComponent = ({ course_name }: { course_name: string }) => {
           <Link href="/">
             <h2 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
               {' '}
-              UIUC.
+              AgAnswers.
               <span className="${inter.style.fontFamily} text-orange-500">
-                chat
+                ai
               </span>{' '}
             </h2>
           </Link>

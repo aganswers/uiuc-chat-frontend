@@ -26,7 +26,7 @@ import { useQuery } from '@tanstack/react-query'
 export interface FileUpload {
   name: string
   status: 'uploading' | 'ingesting' | 'complete' | 'error'
-  type: 'document' | 'webscrape' | 'canvas' | 'github' | 'mit'
+  type: 'document' | 'webscrape' | 'github' | 'onedrive' | 'googledrive'
   url?: string
   error?: string
   isBaseUrl?: boolean

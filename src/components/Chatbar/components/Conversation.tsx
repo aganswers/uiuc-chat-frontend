@@ -31,7 +31,6 @@ export const ConversationComponent = ({ conversation }: Props) => {
     dispatch: homeDispatch,
   } = useContext(HomeContext)
 
-  const courseName = conversation.projectName
 
   const { handleDeleteConversation } = useContext(ChatbarContext)
 
@@ -141,12 +140,8 @@ export const ConversationComponent = ({ conversation }: Props) => {
           onDragStart={(e) => handleDragStart(e, conversation)}
         >
           <IconMessage size={18} className="text-gray-500" />
-          <div className="relative max-h-5 flex-1 overflow-hidden text-ellipsis whitespace-nowrap break-all text-left text-sm leading-3">
+          <div className="relative flex-1 overflow-hidden text-left text-sm leading-4 break-words">
             {conversation.name}
-            {/* Add a new div to display the course_name */}
-            {courseName && (
-              <div className="text-xs text-gray-400">{courseName.trim()}</div>
-            )}
           </div>
         </button>
       )}
