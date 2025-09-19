@@ -103,7 +103,7 @@ const MakeOldCoursePage = ({
           </div>
         </div>
 
-        <GlobalFooter />
+        {/* <GlobalFooter /> */}
       </main>
     </>
   )

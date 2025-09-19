@@ -471,10 +471,6 @@ const Home: NextPage = () => {
             <Text color="#9ca3af" size="md" weight={500} className="mb-2">
               Built by agricultural technology experts
             </Text>
-            <Text color="#9ca3af" size="sm">
-              Aidan Andrews, Kastan Day, Rohan Marwaha, Aditya Sengupta, and
-              Vikram Adve
-            </Text>
           </div>
         </Container>
       </main>

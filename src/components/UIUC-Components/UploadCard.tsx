@@ -15,11 +15,11 @@ import SetExampleQuestions from './SetExampleQuestions'
 import { callSetCourseMetadata, uploadToS3 } from '~/utils/apiUtils'
 import { type CourseMetadataOptionalForUpsert } from '~/types/courseMetadata'
 // import { Checkbox } from '@radix-ui/react-checkbox'
-import CanvasIngestForm from './CanvasIngestForm'
+import OneDriveIngestForm from './OneDriveIngestForm'
 import LargeDropzone from './LargeDropzone'
 import WebsiteIngestForm from './WebsiteIngestForm'
 import GitHubIngestForm from './GitHubIngestForm'
-import MITIngestForm from './MITIngestForm'
+import GoogleDriveIngestForm from './GoogleDriveIngestForm'
 import CourseraIngestForm from './CourseraIngestForm'
 import { memo, useState, useEffect } from 'react'
 import { IconShare } from '@tabler/icons-react'
@@ -133,7 +133,7 @@ export const UploadCard = memo(function UploadCard({
     <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 items-start justify-between sm:flex-row sm:items-center">
           <div className="flex items-center space-x-3">
             <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
             <span className="text-gray-400">/</span>
@@ -192,7 +192,7 @@ export const UploadCard = memo(function UploadCard({
               Connect Data Sources
             </h3>
             <div className="grid gap-4 md:grid-cols-2">
-              <CanvasIngestForm
+              <OneDriveIngestForm
                 project_name={projectName}
                 setUploadFiles={handleSetUploadFiles}
                 queryClient={queryClient}
@@ -207,7 +207,7 @@ export const UploadCard = memo(function UploadCard({
                 setUploadFiles={handleSetUploadFiles}
                 queryClient={queryClient}
               />
-              <MITIngestForm
+              <GoogleDriveIngestForm
                 project_name={projectName}
                 setUploadFiles={handleSetUploadFiles}
                 queryClient={queryClient}

@@ -488,11 +488,11 @@ export default function Navbar({
       icon: <MessageChatIcon />,
       link: `/${course_name}/chat`,
     },
-    {
-      name: <span>LLMs</span>,
-      icon: <LLMIcon />,
-      link: `/${course_name}/llms`,
-    },
+    // {
+    //   name: <span>LLMs</span>,
+    //   icon: <LLMIcon />,
+    //   link: `/${course_name}/llms`,
+    // },
     // {
     //   name: (
     //     <div className="relative">
@@ -533,7 +533,7 @@ export default function Navbar({
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
+    <header className={`sticky top-0 border-b border-gray-200 bg-white ${opened ? 'z-[60]' : 'z-50'}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo and Project Name */}
@@ -642,14 +642,14 @@ export default function Navbar({
                     <FileIcon />
                     <span className="text-sm">New Project</span>
                   </Link>
-                  <Link
+                  {/* <Link
                     href="https://docs.uiuc.chat/"
                     className="text-sm text-gray-700 transition-colors hover:text-orange-600"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     Docs
-                  </Link>
+                  </Link> */}
                 </>
               )}
             </div>
@@ -780,7 +780,7 @@ export default function Navbar({
                       <FileIcon />
                       <span>New Project</span>
                     </Link>
-                    <Link
+                    {/* <Link
                       href="https://docs.uiuc.chat/"
                       className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600"
                       target="_blank"
@@ -788,7 +788,7 @@ export default function Navbar({
                     >
                       <ClipboardIcon />
                       <span>Documentation</span>
-                    </Link>
+                    </Link> */}
                   </>
                 )}
               </div>

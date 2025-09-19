@@ -53,6 +53,7 @@ export default function GitHubIngestForm({
 
     codeStyledText: {
       backgroundColor: '#020307',
+      color: '#ffffff',
       borderRadius: '5px',
       padding: '1px 5px',
       fontFamily: 'monospace',

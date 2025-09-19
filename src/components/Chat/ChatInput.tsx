@@ -941,7 +941,7 @@ export const ChatInput = ({
 
       {/* Scroll Down Button */}
       {showScrollDownButton && (
-        <div className="absolute -top-12 right-4">
+        <div className="absolute -top-14 right-4">
           <button
             className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm hover:bg-gray-50 hover:shadow-md"
             onClick={onScrollDownClick}
@@ -953,7 +953,7 @@ export const ChatInput = ({
 
       {/* Regenerate Button */}
       {selectedConversation?.messages && selectedConversation.messages.length > 0 && (
-        <div className="absolute -top-12 right-16">
+        <div className="absolute -top-14 right-16">
           <button
             onClick={() => onRegenerate?.()}
             className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm hover:bg-gray-50 hover:shadow-md"

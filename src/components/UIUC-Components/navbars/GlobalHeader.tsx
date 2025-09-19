@@ -131,33 +131,47 @@ export function LandingPageHeader({
           <div className="hidden items-center gap-8 md:flex">
             {!forGeneralPurposeNotLandingpage && (
               <>
-                <Link
-                  href="/new"
-                  className="flex items-center gap-2 text-sm font-medium text-gray-700 transition-colors hover:text-orange-600"
-                >
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <SignedIn>
+                  <Link
+                    href="/new"
+                    className="flex items-center gap-2 text-sm font-medium text-gray-700 transition-colors hover:text-orange-600"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                  Projects
-                </Link>
-                <Link
-                  href="https://docs.uiuc.chat/"
-                  className="text-sm font-medium text-gray-700 transition-colors hover:text-orange-600"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Docs
-                </Link>
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                    Projects
+                  </Link>
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton mode="modal" fallbackRedirectUrl="/new">
+                    <button className="flex items-center gap-2 text-sm font-medium text-gray-700 transition-colors hover:text-orange-600">
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
+                      Projects
+                    </button>
+                  </SignInButton>
+                </SignedOut>
               </>
             )}
 
@@ -228,35 +242,51 @@ export function LandingPageHeader({
         {!forGeneralPurposeNotLandingpage && isMobileMenuOpen && (
           <div className="border-t border-gray-200 bg-white md:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">
-              <Link
-                href="/new"
-                className="flex items-center gap-2 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-orange-50 hover:text-orange-600"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <SignedIn>
+                <Link
+                  href="/new"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-orange-50 hover:text-orange-600"
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                Projects
-              </Link>
-              <Link
-                href="https://docs.uiuc.chat/"
-                className="block rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-orange-50 hover:text-orange-600"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Docs
-              </Link>
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Projects
+                </Link>
+              </SignedIn>
+              <SignedOut>
+                <SignInButton mode="modal" fallbackRedirectUrl="/new">
+                  <button 
+                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-base font-medium text-gray-700 transition-colors hover:bg-orange-50 hover:text-orange-600"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                    Projects
+                  </button>
+                </SignInButton>
+              </SignedOut>
             </div>
           </div>
         )}
