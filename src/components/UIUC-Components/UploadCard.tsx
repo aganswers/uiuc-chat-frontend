@@ -15,7 +15,7 @@ import SetExampleQuestions from './SetExampleQuestions'
 import { callSetCourseMetadata, uploadToS3 } from '~/utils/apiUtils'
 import { type CourseMetadataOptionalForUpsert } from '~/types/courseMetadata'
 // import { Checkbox } from '@radix-ui/react-checkbox'
-import OneDriveIngestForm from './OneDriveIngestForm'
+// import OneDriveIngestForm from './OneDriveIngestForm'
 import LargeDropzone from './LargeDropzone'
 import WebsiteIngestForm from './WebsiteIngestForm'
 import GitHubIngestForm from './GitHubIngestForm'
@@ -192,11 +192,11 @@ export const UploadCard = memo(function UploadCard({
               Connect Data Sources
             </h3>
             <div className="grid gap-4 md:grid-cols-2">
-              <OneDriveIngestForm
+              {/* <OneDriveIngestForm
                 project_name={projectName}
                 setUploadFiles={handleSetUploadFiles}
                 queryClient={queryClient}
-              />
+              /> */}
               <WebsiteIngestForm
                 project_name={projectName}
                 setUploadFiles={handleSetUploadFiles}
@@ -207,11 +207,7 @@ export const UploadCard = memo(function UploadCard({
                 setUploadFiles={handleSetUploadFiles}
                 queryClient={queryClient}
               />
-              <GoogleDriveIngestForm
-                project_name={projectName}
-                setUploadFiles={handleSetUploadFiles}
-                queryClient={queryClient}
-              />
+              {/* <GoogleDriveIngestForm /> */}
             </div>
           </div>
         </div>
@@ -294,7 +290,7 @@ export const UploadCard = memo(function UploadCard({
                     }
                   }
                 }}
-                className="w-full rounded-lg bg-orange-500 px-4 py-2 font-medium text-white transition-colors hover:bg-orange-600"
+                className="w-full px-4 py-2 rounded-lg bg-orange-500 font-medium text-white transition-colors hover:bg-orange-600"
               >
                 Update Greeting
               </button>
@@ -393,13 +389,13 @@ export const UploadCard = memo(function UploadCard({
                 </label>
                 <Text
                   size={'sm'}
-                  className={`label ${montserrat_light.className}`}
+                  className={`label ${montserrat_light.className} pb-2`}
                 >
                   This logo will appear in the header of the chat page.
                 </Text>
                 <input
                   type="file"
-                  className={`file-input file-input-bordered w-full border-orange-400 bg-white text-gray-700 shadow-inner hover:border-orange-500 ${montserrat_paragraph.variable} font-montserratParagraph`}
+                  className={`cursor-pointer ${montserrat_paragraph.variable} font-montserratParagraph w-full px-4 py-2 rounded-lg bg-orange-500 font-medium text-white transition-colors hover:bg-orange-600`}
                   onChange={async (e) => {
                     // Assuming the file is converted to a URL somewhere else
                     if (e.target.files?.length) {
