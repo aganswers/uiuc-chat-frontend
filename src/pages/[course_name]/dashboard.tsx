@@ -12,13 +12,13 @@ import {
 import { AuthComponent } from '~/components/UIUC-Components/AuthToEditCourse'
 import { extractEmailsFromClerk } from '~/components/UIUC-Components/clerkHelpers'
 import { CourseMetadata } from '~/types/courseMetadata'
-import { fetchCourseMetadata } from '~/utils/apiUtils'
+import { fetchCourseMetadata, fetchProjectGroupEmail } from '~/utils/apiUtils'
 import Navbar from '~/components/UIUC-Components/navbars/Navbar'
 
 const CourseMain: NextPage = () => {
   const router = useRouter()
 
-  const getCurrentPageName = () => {
+  const getCurrentPageName = (): string => {
     return router.query.course_name as string
   }
 
@@ -26,6 +26,7 @@ const CourseMain: NextPage = () => {
   const { user, isLoaded, isSignedIn } = useUser()
   const [currentEmail, setCurrentEmail] = useState('')
   const [metadata, setMetadata] = useState<CourseMetadata | null>()
+  const [groupEmail, setGroupEmail] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -50,6 +51,10 @@ const CourseMain: NextPage = () => {
           )
         }
         setMetadata(local_metadata)
+
+        // Fetch the project's Google Group email
+        const email = await fetchProjectGroupEmail(courseName)
+        setGroupEmail(email)
       } catch (error) {
         console.error(error)
         // alert('An error occurred while fetching course metadata. Please try again later.')
@@ -93,6 +98,7 @@ const CourseMain: NextPage = () => {
         course_name={courseName as string}
         metadata={metadata as CourseMetadata}
         current_email={currentEmail}
+        group_email={groupEmail}
       />
     </>
   )

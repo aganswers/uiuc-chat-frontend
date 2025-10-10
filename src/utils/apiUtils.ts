@@ -168,6 +168,34 @@ export async function fetchCourseMetadata(course_name: string): Promise<any> {
   }
 }
 
+/**
+ * Fetches the Google Group email for a project.
+ * @param {string} project_name - The name of the project.
+ * @returns {Promise<string | null>} - A promise that resolves to the group email or null.
+ */
+export async function fetchProjectGroupEmail(
+  project_name: string,
+): Promise<string | null> {
+  try {
+    const endpoint = `https://backend.aganswers.ai/getProjectGroupEmail?project_name=${encodeURIComponent(project_name)}`
+    const response = await fetch(endpoint)
+
+    if (!response.ok) {
+      console.error('Error fetching project group email', {
+        status: response.status,
+        statusText: response.statusText,
+      })
+      return null
+    }
+
+    const data = await response.json()
+    return data.group_email || null
+  } catch (error) {
+    console.error('Error fetching project group email', { project_name, error })
+    return null
+  }
+}
+
 export function convertConversatonToVercelAISDKv3(
   conversation: Conversation,
 ): CoreMessage[] {
@@ -281,4 +309,5 @@ export default {
   uploadToS3,
   fetchPresignedUrl,
   fetchCourseMetadata,
+  fetchProjectGroupEmail,
 }

@@ -16,10 +16,12 @@ const MakeOldCoursePage = ({
   course_name,
   metadata,
   current_email,
+  group_email,
 }: {
   course_name: string
   metadata: CourseMetadata
   current_email: string
+  group_email: string | null
 }) => {
   const [bannerUrl, setBannerUrl] = useState<string>('')
   const router = useRouter()
@@ -93,6 +95,7 @@ const MakeOldCoursePage = ({
               projectName={course_name}
               current_user_email={current_email}
               metadata={metadata}
+              group_email={group_email}
             />
 
             {/* Document Groups Section */}

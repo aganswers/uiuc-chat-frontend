@@ -10,9 +10,12 @@ import {
   DialogTrigger,
 } from '../Dialog'
 
-export default function GoogleDriveIngestForm(): JSX.Element {
+export default function GoogleDriveIngestForm({
+  group_email,
+}: {
+  group_email: string | null
+}): JSX.Element {
   const [open, setOpen] = useState(false)
-  const projectEmail = 'project@email.com'
 
   return (
     <motion.div layout>
@@ -55,16 +58,26 @@ export default function GoogleDriveIngestForm(): JSX.Element {
             </DialogTitle>
           </DialogHeader>
           <div className="border-t border-gray-200 pt-4">
-            <p className="text-gray-600">
-              To give this project’s agent access to the right Google Drive files,
-              please share them directly with the secret project email below:
-            </p>
+            {group_email ? (
+              <>
+                <p className="text-gray-600">
+                  To give this project's agent access to the right Google Drive files,
+                  please share them directly with the secret project email below:
+                </p>
 
-            <div className="rounded-xl border border-dashed border-indigo-400 bg-indigo-50 p-4 m-4">
-              <p className="text-lg font-mono font-semibold text-indigo-700 break-all text-center">
-                {projectEmail}
-              </p>
-            </div>
+                <div className="rounded-xl border border-dashed border-indigo-400 bg-indigo-50 p-4 m-4">
+                  <p className="text-lg font-mono font-semibold text-indigo-700 break-all text-center">
+                    {group_email}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <div className="rounded-xl border border-yellow-400 bg-yellow-50 p-4 m-4">
+                <p className="text-sm text-yellow-800 text-center">
+                  Loading project email...
+                </p>
+              </div>
+            )}
 
             <ol className="text-left text-gray-700 space-y-2 list-decimal list-inside">
               <li>Open the file or folder in Google Drive.</li>

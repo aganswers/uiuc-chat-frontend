@@ -79,10 +79,12 @@ export const UploadCard = memo(function UploadCard({
   projectName,
   current_user_email,
   metadata: initialMetadata,
+  group_email,
 }: {
   projectName: string
   current_user_email: string
   metadata: CourseMetadata
+  group_email: string | null
 }) {
   const isSmallScreen = useMediaQuery('(max-width: 960px)')
   const [projectDescription, setProjectDescription] = useState(
@@ -207,7 +209,7 @@ export const UploadCard = memo(function UploadCard({
                 setUploadFiles={handleSetUploadFiles}
                 queryClient={queryClient}
               />
-              {/* <GoogleDriveIngestForm /> */}
+              <GoogleDriveIngestForm group_email={group_email} />
             </div>
           </div>
         </div>
