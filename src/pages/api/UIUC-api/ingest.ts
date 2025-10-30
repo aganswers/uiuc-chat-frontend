@@ -38,7 +38,7 @@ const handler = async (
     const s3_filepath = `courses/${courseName}/${uniqueFileName}`
 
     const response = await fetch(
-      'https://aganswers-demo-task-queue-1bf6066.app.beam.cloud', // this is the "latest"
+      process.env.BEAM_API_URL!, // use the env var directly, not as a string literal
       {
         method: 'POST',
         headers: {

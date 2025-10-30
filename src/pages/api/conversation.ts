@@ -7,6 +7,7 @@ import {
   ContextWithMetadata,
   Role,
   UIUCTool,
+  ToolExecution,
 } from '@/types/chat'
 import { Database } from 'database.types'
 import { v4 as uuidv4 } from 'uuid'
@@ -26,6 +27,98 @@ export const config = {
 export type DBConversation =
   Database['public']['Tables']['conversations']['Row']
 export type DBMessage = Database['public']['Tables']['messages']['Row']
+
+/**
+ * Converts raw tool events from the database into ToolExecution format
+ */
+function convertToolEventsToExecutions(toolEvents: any[]): ToolExecution[] {
+  if (!Array.isArray(toolEvents) || toolEvents.length === 0) {
+    return []
+  }
+
+  const toolMap = new Map<string, ToolExecution>()
+  const responseMap = new Map<string, any>()
+
+  // First pass: collect all function responses
+  toolEvents.forEach((event: any) => {
+    if (event?.content?.parts) {
+      event.content.parts.forEach((part: any) => {
+        if (part.functionResponse) {
+          responseMap.set(part.functionResponse.id, part.functionResponse.response)
+        }
+      })
+    }
+  })
+
+  // Second pass: build tool executions from function calls
+  toolEvents.forEach((event: any) => {
+    if (event?.content?.parts) {
+      event.content.parts.forEach((part: any) => {
+        if (part.functionCall) {
+          const call = part.functionCall
+          const response = responseMap.get(call.id)
+          
+          toolMap.set(call.id, {
+            id: call.id,
+            name: call.name,
+            args: call.args || {},
+            status: response ? 'completed' : 'running',
+            result: response?.output || response?.result,
+            timestamp: event.timestamp || Date.now(),
+          })
+        }
+      })
+    }
+  })
+
+  return Array.from(toolMap.values())
+}
+
+/**
+ * Converts ToolExecution[] back to raw tool events for storage
+ */
+function convertExecutionsToToolEvents(executions: ToolExecution[]): any[] {
+  const events: any[] = []
+  
+  executions.forEach((execution) => {
+    // Add function call event
+    events.push({
+      timestamp: execution.timestamp || Date.now(),
+      content: {
+        parts: [
+          {
+            functionCall: {
+              id: execution.id,
+              name: execution.name,
+              args: execution.args,
+            },
+          },
+        ],
+      },
+    })
+
+    // Add function response event if completed
+    if (execution.status === 'completed' && execution.result) {
+      events.push({
+        timestamp: (execution.timestamp || Date.now()) + 100,
+        content: {
+          parts: [
+            {
+              functionResponse: {
+                id: execution.id,
+                response: {
+                  output: execution.result,
+                },
+              },
+            },
+          ],
+        },
+      })
+    }
+  })
+
+  return events
+}
 
 export function convertChatToDBConversation(
   chatConversation: ChatConversation,
@@ -130,6 +223,9 @@ export function convertDBToChatConversation(
           }
         }) || []
 
+      // Convert tool_event_log to ToolExecution[] format
+      const toolExecutions = convertToolEventsToExecutions(msg.tool_event_log || [])
+
       const messageObj = {
         id: msg.id,
         role: msg.role as Role,
@@ -145,6 +241,7 @@ export function convertDBToChatConversation(
         feedback: feedbackObj,
         wasQueryRewritten: msg.was_query_rewritten ?? null,
         queryRewriteText: msg.query_rewrite_text ?? null,
+        toolExecutions: toolExecutions,
       }
 
       return messageObj
@@ -157,7 +254,7 @@ export function convertDBToChatConversation(
 export function convertChatToDBMessage(
   chatMessage: ChatMessage,
   conversationId: string,
-): DBMessage {
+): Database['public']['Tables']['messages']['Insert'] {
   let content_text = ''
   let content_image_urls: string[] = []
   let image_description = ''
@@ -184,6 +281,11 @@ export function convertChatToDBMessage(
       .filter((content) => content.type === 'image_url')
       .map((content) => content.image_url?.url || '')
   }
+
+  // Convert toolExecutions back to tool events for storage
+  const toolEventLog = chatMessage.toolExecutions
+    ? convertExecutionsToToolEvents(chatMessage.toolExecutions)
+    : []
 
   return {
     id: chatMessage.id || uuidv4(),
@@ -246,6 +348,7 @@ export function convertChatToDBMessage(
     query_rewrite_text: chatMessage.queryRewriteText
       ? sanitizeText(chatMessage.queryRewriteText)
       : null,
+    tool_event_log: toolEventLog,
   }
 }
 

@@ -693,6 +693,8 @@ export type Database = {
           updated_at: string | null
           was_query_rewritten: boolean | null
           query_rewrite_text: string | null
+          tool_event_log: Json
+          tool_event_count: number | null
         }
         Insert: {
           content_image_url?: string[] | null
@@ -713,6 +715,7 @@ export type Database = {
           updated_at?: string | null
           was_query_rewritten?: boolean | null
           query_rewrite_text?: string | null
+          tool_event_log?: Json
         }
         Update: {
           content_image_url?: string[] | null
@@ -733,6 +736,7 @@ export type Database = {
           updated_at?: string | null
           was_query_rewritten?: boolean | null
           query_rewrite_text?: string | null
+          tool_event_log?: Json
         }
         Relationships: [
           {

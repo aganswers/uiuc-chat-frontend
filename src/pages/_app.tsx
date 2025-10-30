@@ -38,6 +38,7 @@ if (typeof window !== 'undefined') {
 
 import '~/styles/globals.css'
 import Maintenance from '~/components/UIUC-Components/Maintenance'
+import SpotlightSearch from '~/components/Spotlight/Spotlight'
 
 const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
   const router = useRouter()
@@ -145,6 +146,7 @@ const MyApp: AppType = ({ Component, pageProps: { ...pageProps } }) => {
                 }}
               >
                 <Notifications position="bottom-center" zIndex={2077} />
+                <SpotlightSearch />
                 <Component {...pageProps} />
               </MantineProvider>
             </QueryClientProvider>

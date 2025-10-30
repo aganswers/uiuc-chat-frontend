@@ -149,9 +149,13 @@ const ProjectsPage = ({
                         data-form-type="other"
                         type="text"
                         value={projectName}
-                        onChange={(e) =>
-                          setProjectName(e.target.value.replaceAll(' ', '-'))
-                        }
+                        onChange={(e) => {
+                          // Replace spaces with dashes and allow only letters, numbers, and dashes
+                          const sanitized = e.target.value
+                            .replace(/\s+/g, '-')
+                            .replace(/[^a-zA-Z0-9-]/g, '');
+                          setProjectName(sanitized);
+                        }}
                         placeholder="my-agriculture-project"
                         disabled={!is_new_course}
                         autoFocus
@@ -173,6 +177,7 @@ const ProjectsPage = ({
                         </div>
                       )}
                     </div>
+                    <span className="text-gray-500 font-normal ml-1 text-sm">We only allow letters, numbers, and dashes in the project name.</span>
                     {projectName !== '' && !isCourseAvailable && (
                       <p className="mt-2 text-sm text-red-600">
                         Project name already exists

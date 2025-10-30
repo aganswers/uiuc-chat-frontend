@@ -32,6 +32,7 @@ export const CodeBlock: FC<Props> = memo(({ language, value }) => {
       }, 2000)
     })
   }
+
   const downloadAsFile = () => {
     const fileExtension = programmingLanguages[language] || '.file'
     const suggestedFileName = `file-${generateRandomString(
@@ -44,7 +45,6 @@ export const CodeBlock: FC<Props> = memo(({ language, value }) => {
     )
 
     if (!fileName) {
-      // user pressed cancel on prompt
       return
     }
 
@@ -59,57 +59,57 @@ export const CodeBlock: FC<Props> = memo(({ language, value }) => {
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
   }
+
   return (
-    // <div className="codeblock relative font-sans text-[16px]">
+    <div className="codeblock relative my-4 overflow-hidden rounded-lg border border-gray-700 bg-[#282c34] font-mono text-sm">
+      {/* Header bar */}
+      <div className="flex items-center justify-between border-b border-gray-700 bg-[#21252b] px-4 py-2">
+        <span className="text-xs font-medium uppercase tracking-wide text-gray-400">
+          {language}
+        </span>
 
-    // TODO: Fix this codeblock so that it doesn't overflow. Add horizontal scroll bar.
-    <div
-      className="codeblock relative font-sans text-[16px]"
-      style={{ maxWidth: '100%', overflowX: 'auto' }}
-    >
-      <div className="flex items-center justify-between px-4 py-1.5">
-        <span className="text-xs lowercase text-white">{language}</span>
-
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <button
-            className="codeblock-button flex items-center gap-1.5 rounded bg-none p-1 text-xs text-white"
+            className="flex max-h-8 max-w-fit items-center bg-transparent gap-1.5 rounded px-2 py-1 text-xs font-medium text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
             onClick={copyToClipboard}
+            aria-label={isCopied ? t('Copied!')?.toString() : t('Copy code')?.toString()}
+            type="button"
           >
-            {isCopied ? <IconCheck size={18} /> : <IconClipboard size={18} />}
-            {isCopied ? t('Copied!') : t('Copy code')}
+            {isCopied ? <IconCheck size={16} /> : <IconClipboard size={16} />}
+            <span>{isCopied ? t('Copied!') : t('Copy code')}</span>
           </button>
           <button
-            className="codeblock-button flex items-center rounded bg-none p-1 text-xs text-white"
+            className="flex max-h-8 max-w-fit items-center bg-transparent gap-1.5 rounded px-2 py-1 text-xs font-medium text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
             onClick={downloadAsFile}
+            aria-label={t('Download')?.toString()}
+            type="button"
           >
-            <IconDownload size={18} />
+            <IconDownload size={16} />
           </button>
         </div>
       </div>
 
-      <SyntaxHighlighter
-        language={language}
-        style={{
-          ...oneDark,
-          'pre[class*="language-"]': {
-            ...oneDark['pre[class*="language-"]'],
-            background: 'transparent',
-          },
-          'code[class*="language-"]': {
-            ...oneDark['code[class*="language-"]'],
-            background: 'transparent',
-          },
-        }}
-        customStyle={{
-          margin: 0,
-          whiteSpace: 'pre-wrap',
-          overflowWrap: 'break-word',
-          background: 'transparent',
-        }}
-      >
-        {value}
-      </SyntaxHighlighter>
+      {/* Code content */}
+      <div className="overflow-x-auto">
+        <SyntaxHighlighter
+          language={language}
+          style={oneDark}
+          customStyle={{
+            margin: 0,
+            padding: '1rem',
+            background: '#282c34',
+            fontSize: '0.875rem',
+            lineHeight: '1.5',
+          }}
+          showLineNumbers={false}
+          wrapLines={false}
+          PreTag="div"
+        >
+          {value}
+        </SyntaxHighlighter>
+      </div>
     </div>
   )
 })
+
 CodeBlock.displayName = 'CodeBlock'

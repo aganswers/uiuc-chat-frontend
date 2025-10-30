@@ -1,6 +1,5 @@
 // ChatMessage.tsx
 import React, {
-  FC,
   memo,
   useContext,
   useEffect,
@@ -10,29 +9,24 @@ import React, {
   createContext,
   useContext as useReactContext,
 } from 'react'
-import { Text, createStyles, Badge, Tooltip } from '@mantine/core'
+import { Text, createStyles, Tooltip } from '@mantine/core'
 import {
   IconCheck,
   IconCopy,
   IconEdit,
   IconRobot,
-  IconTrash,
-  IconUser,
   IconThumbUp,
   IconThumbDown,
   IconThumbUpFilled,
   IconThumbDownFilled,
   IconX,
-  IconBook2,
   IconChevronDown,
   IconBrain,
   IconRepeat,
-  IconTool,
 } from '@tabler/icons-react'
 import { Fragment } from 'react'
-
 import { useTranslation } from 'next-i18next'
-import { Content, ContextWithMetadata, Message, ToolExecution } from '@/types/chat'
+import { Content, ContextWithMetadata, Message } from '@/types/chat'
 import HomeContext from '~/pages/api/home/home.context'
 import { CodeBlock } from '../Markdown/CodeBlock'
 import { MemoizedReactMarkdown } from '../Markdown/MemoizedReactMarkdown'
@@ -40,7 +34,6 @@ import { ImagePreview } from './ImagePreview'
 import { LoadingSpinner } from '../UIUC-Components/LoadingSpinner'
 import { fetchPresignedUrl } from '~/utils/apiUtils'
 import { ToolExecutionDisplay } from './ToolExecutionDisplay'
-
 import rehypeMathjax from 'rehype-mathjax'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -50,9 +43,9 @@ import { montserrat_heading, montserrat_paragraph } from 'fonts'
 import { IntermediateStateAccordion } from '../UIUC-Components/IntermediateStateAccordion'
 import { FeedbackModal } from './FeedbackModal'
 import { saveConversationToServer } from '@/utils/app/conversation'
-import { ContextCards } from '../UIUC-Components/ContextCards'
 import SourcesSidebar from '../UIUC-Components/SourcesSidebar'
-import { useRouter } from 'next/router'
+import { fetchToolHistory } from '@/utils/fetchToolHistory'
+import { ToolExecution } from '@/types/chat'
 
 const useStyles = createStyles((theme) => ({
   imageContainerStyle: {
@@ -72,7 +65,6 @@ const useStyles = createStyles((theme) => ({
   },
 }))
 
-// Component that's the Timer for GPT's response duration.
 const Timer: React.FC<{ timerVisible: boolean }> = ({ timerVisible }) => {
   const [timer, setTimer] = useState(0)
 
@@ -100,7 +92,6 @@ const Timer: React.FC<{ timerVisible: boolean }> = ({ timerVisible }) => {
   )
 }
 
-// Add context for managing the active sources sidebar
 const SourcesSidebarContext = createContext<{
   activeSidebarMessageId: string | null
   setActiveSidebarMessageId: (id: string | null) => void
@@ -142,7 +133,6 @@ export interface Props {
   courseName: string
 }
 
-// Add this helper function before the ChatMessage component
 function extractUsedCitationIndexes(content: string | Content[]): number[] {
   const text = Array.isArray(content)
     ? content
@@ -151,7 +141,6 @@ function extractUsedCitationIndexes(content: string | Content[]): number[] {
         .join(' ')
     : content
 
-  // Updated regex to match new citation format: (Document Title | citation_number) or (Document Title, p.page_number | citation_number)
   const citationRegex = /\([^|]+\|\s*(\d+)\)/g
   const found: number[] = []
 
@@ -163,10 +152,9 @@ function extractUsedCitationIndexes(content: string | Content[]): number[] {
     }
   }
 
-  return Array.from(new Set(found)) // Remove duplicates while preserving order
+  return Array.from(new Set(found))
 }
 
-// Add these helper functions before the ChatMessage component
 function getFileType(s3Path?: string, url?: string) {
   if (s3Path) {
     const lowerPath = s3Path.toLowerCase()
@@ -178,14 +166,12 @@ function getFileType(s3Path?: string, url?: string) {
   return 'other'
 }
 
-// Add ThinkTagDropdown component
 const ThinkTagDropdown: React.FC<{
   content: string
   isStreaming?: boolean
 }> = ({ content, isStreaming }) => {
-  const [isExpanded, setIsExpanded] = useState(true) // open by default
+  const [isExpanded, setIsExpanded] = useState(true)
 
-  // Function to process the content and preserve formatting
   const formatContent = (text: string) => {
     return text.split('\n').map((line, index) => (
       <Fragment key={index}>
@@ -262,7 +248,6 @@ const ThinkTagDropdown: React.FC<{
   )
 }
 
-// Add helper function to extract think tag content
 function extractThinkTagContent(content: string): {
   thoughts: string | null
   remainingContent: string
@@ -270,12 +255,10 @@ function extractThinkTagContent(content: string): {
   if (content.startsWith('<think>')) {
     const endTagIndex = content.indexOf('</think>')
     if (endTagIndex !== -1) {
-      // Complete think tag found
       const thoughts = content.slice(7, endTagIndex).trim()
       const remainingContent = content.slice(endTagIndex + 8).trim()
       return { thoughts, remainingContent }
     } else {
-      // Incomplete think tag (streaming) - treat all content as thoughts
       const thoughts = content.slice(7).trim()
       return { thoughts, remainingContent: '' }
     }
@@ -283,7 +266,6 @@ function extractThinkTagContent(content: string): {
   return { thoughts: null, remainingContent: content }
 }
 
-// Add this helper function at the top
 function decodeHtmlEntities(str: string | undefined): string {
   if (!str) return ''
   const doc = new DOMParser().parseFromString(str, 'text/html')
@@ -336,48 +318,41 @@ export const ChatMessage: React.FC<Props> = memo(
     const [isPositiveFeedback, setIsPositiveFeedback] = useState<boolean>(false)
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] =
       useState<boolean>(false)
+    const [loadedToolExecutions, setLoadedToolExecutions] = useState<ToolExecution[]>([])
+    const [isLoadingToolHistory, setIsLoadingToolHistory] = useState<boolean>(false)
 
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-    // SET TIMER for message writing (from gpt-4)
     const [timerVisible, setTimerVisible] = useState(false)
-    const { classes } = useStyles() // for Accordion
+    const { classes } = useStyles()
 
-    // Remove the local state for sources sidebar and use only context
     const isSourcesSidebarOpen = activeSidebarMessageId === message.id
 
     useEffect(() => {
-      // Close Sources sidebar if right sidebar is opened
       if (isRightSideVisible) {
         setActiveSidebarMessageId(null)
       }
     }, [isRightSideVisible, setActiveSidebarMessageId])
 
-    // Function to handle opening/closing the Sources sidebar
     const handleSourcesSidebarToggle = (open: boolean) => {
       if (open) {
-        // If opening this sidebar, set this message's ID as active
         setActiveSidebarMessageId(message.id)
       } else if (isSourcesSidebarOpen) {
-        // Only close if this message's sidebar is currently open
         setActiveSidebarMessageId(null)
       }
       setIsRightSideVisible(false)
     }
 
-    // Function to handle closing the Sources sidebar
     const handleSourcesSidebarClose = () => {
       if (isSourcesSidebarOpen) {
         setActiveSidebarMessageId(null)
       }
     }
 
-    // Function to check if any Sources sidebar is open
     const isAnySidebarOpen = () => {
       return activeSidebarMessageId !== null
     }
 
-    // Cleanup effect for modal
     useEffect(() => {
       return () => {
         setIsFeedbackModalOpen(false)
@@ -393,26 +368,6 @@ export const ChatMessage: React.FC<Props> = memo(
           setTimerVisible(true)
         } else {
           setTimerVisible(false)
-
-          // save time to Message
-          // const updatedMessages: Message[] =
-          //   selectedConversation?.messages.map((message, index) => {
-          //     if (index === messageIndex) {
-          //       return {
-          //         ...message,
-          //         responseTimeSec: Timer.timer as number, // todo: get the timer value out of that component.
-          //       }
-          //     }
-          //     return message
-          //   })
-          // const updatedConversation = {
-          //   ...updatedConversation,
-          //   messages: updatedMessages,
-          // }
-          // homeDispatch({
-          //   field: 'selectedConversation',
-          //   value: updatedConversation,
-          // })
         }
       }
     }, [message.role, messageIsStreaming, messageIndex, selectedConversation])
@@ -454,22 +409,12 @@ export const ChatMessage: React.FC<Props> = memo(
           const updatedContent = await Promise.all(
             message.content.map(async (content) => {
               if (content.type === 'image_url' && content.image_url) {
-                // console.log(
-                // 'Checking if image url is valid: ',
-                // content.image_url.url,
-                // )
                 isValid = await checkIfUrlIsValid(content.image_url.url)
                 if (isValid) {
-                  // console.log('Image url is valid: ', content.image_url.url)
                   setImageUrls(
                     (prevUrls) =>
                       new Set([...prevUrls, content.image_url?.url as string]),
                   )
-                  // setImageUrls((prevUrls) => [
-                  //   ...new Set([...prevUrls],
-                  //   content.image_url?.url as string,
-                  // ])
-                  // console.log('Set the image urls: ', imageUrls)
                   return content
                 } else {
                   const path = extractPathFromUrl(content.image_url.url)
@@ -481,7 +426,6 @@ export const ChatMessage: React.FC<Props> = memo(
                   setImageUrls(
                     (prevUrls) => new Set([...prevUrls, presignedUrl]),
                   )
-                  // console.log('Set the image urls: ', imageUrls)
                   return { ...content, image_url: { url: presignedUrl } }
                 }
               }
@@ -665,7 +609,6 @@ export const ChatMessage: React.FC<Props> = memo(
     )
 
     useEffect(() => {
-      // setMessageContent(message.content)
       if (Array.isArray(message.content)) {
         const textContent = message.content
           .filter((content) => content.type === 'text')
@@ -673,19 +616,40 @@ export const ChatMessage: React.FC<Props> = memo(
           .join(' ')
         setMessageContent(textContent)
       }
-      // RIGHT HERE, run context search.
-      // WARNING! Kastan trying to set message context.
-      // console.log('IN handleSend: ', message)
-      // if (message.role === 'user') {
-      //   buildContexts(message.content)
-      // }
     }, [message.content])
 
     useEffect(() => {
-      // console.log('Resetting image urls because message: ', message, 'selectedConversation: ', selectedConversation)
       setImageUrls(new Set())
-      // console.log('Set the image urls: ', imageUrls)
     }, [message])
+
+    // Check for tool history mismatch and fetch from Supabase if needed
+    useEffect(() => {
+      const checkAndLoadToolHistory = async () => {
+        // Only check for assistant messages that don't have tool executions displayed
+        if (message.role !== 'assistant' || !message.id) return
+        
+        // If we already have tool executions or are currently loading, skip
+        if ((message.toolExecutions && message.toolExecutions.length > 0) || isLoadingToolHistory) return
+        
+        // If this is a streaming message, skip
+        if (messageIsStreaming && messageIndex === (selectedConversation?.messages.length ?? 0) - 1) return
+        
+        try {
+          setIsLoadingToolHistory(true)
+          const toolHistory = await fetchToolHistory(message.id)
+          
+          if (toolHistory.length > 0) {
+            setLoadedToolExecutions(toolHistory)
+          }
+        } catch (error) {
+          console.error('Error loading tool history:', error)
+        } finally {
+          setIsLoadingToolHistory(false)
+        }
+      }
+
+      checkAndLoadToolHistory()
+    }, [message.id, message.role, message.toolExecutions, messageIsStreaming, messageIndex, selectedConversation?.messages.length, isLoadingToolHistory])
 
     useEffect(() => {
       if (textareaRef.current) {
@@ -717,8 +681,6 @@ export const ChatMessage: React.FC<Props> = memo(
     async function checkIfUrlIsValid(url: string): Promise<boolean> {
       try {
         const urlObject = new URL(url)
-
-        // Check if the URL is an S3 presigned URL by looking for specific query parameters
         const isS3Presigned = urlObject.searchParams.has('X-Amz-Signature')
 
         if (isS3Presigned) {
@@ -727,13 +689,11 @@ export const ChatMessage: React.FC<Props> = memo(
             'X-Amz-Date',
           ) as string
 
-          // Manually reformat the creationDateString to standard ISO 8601 format
           creationDateString = creationDateString.replace(
             /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/,
             '$1-$2-$3T$4:$5:$6Z',
           )
 
-          // Adjust the format in the dayjs.utc function if necessary
           const creationDate = dayjs.utc(
             creationDateString,
             'YYYYMMDDTHHmmss[Z]',
@@ -746,15 +706,14 @@ export const ChatMessage: React.FC<Props> = memo(
           const isExpired = expiryDate.toDate() < new Date()
 
           if (isExpired) {
-            console.log('URL is expired') // Keep this log if necessary for debugging
+            console.log('URL is expired')
             return false
           } else {
             return true
           }
         } else {
-          // For non-S3 URLs, perform a simple fetch to check availability
           const response = await fetch(url, { method: 'HEAD', mode: 'no-cors' })
-          return response.type === 'opaque' // true if the fetch was successful, even though the response is opaque
+          return response.type === 'opaque'
         }
       } catch (error) {
         console.error('Failed to validate URL', url, error)
@@ -794,7 +753,6 @@ export const ChatMessage: React.FC<Props> = memo(
                   async (imageUrl: string) => {
                     const isValid = await checkIfUrlIsValid(imageUrl)
                     if (!isValid) {
-                      // This will only work for internal S3 URLs
                       console.log('Image URL is expired')
                       const s3_path = extractPathFromUrl(imageUrl)
                       return getPresignedUrl(s3_path, courseName)
@@ -827,16 +785,13 @@ export const ChatMessage: React.FC<Props> = memo(
       processTools()
     }, [message.tools])
 
-    // Add this useEffect for loading thumbnails
     useEffect(() => {
       let isMounted = true
 
       const loadThumbnails = async () => {
-        // Early return if contexts is undefined, null, or not an array
         if (!Array.isArray(message.contexts) || message.contexts.length === 0)
           return
 
-        // Track unique sources to avoid duplicates
         const seenSources = new Set<string>()
         const uniqueContexts = message.contexts.filter((context) => {
           const sourceKey = context.s3_path || context.url
@@ -847,7 +802,6 @@ export const ChatMessage: React.FC<Props> = memo(
 
         const thumbnails = await Promise.all(
           uniqueContexts.slice(0, 5).map(async (context) => {
-            // Changed from 3 to 5
             const fileType = getFileType(context.s3_path, context.url)
 
             if (fileType === 'pdf' && courseName) {
@@ -892,13 +846,11 @@ export const ChatMessage: React.FC<Props> = memo(
       }
     }, [message.contexts, courseName])
 
-    // Add new function to replace expired links in text
     async function replaceExpiredLinksInText(
       text: string | undefined,
     ): Promise<string> {
       if (!text) return ''
 
-      // Simplified regex to match markdown links first, then we'll check if they're citations
       const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g
       let match
       let finalText = text
@@ -909,10 +861,8 @@ export const ChatMessage: React.FC<Props> = memo(
           const citationText = match[1] || ''
           let linkUrl = match[2]
 
-          // Decode HTML entities in the URL
           linkUrl = decodeHtmlEntities(linkUrl)
 
-          // Only process if it looks like a citation (contains a pipe character)
           if (!citationText.includes('|')) {
             continue
           }
@@ -921,10 +871,8 @@ export const ChatMessage: React.FC<Props> = memo(
             continue
           }
 
-          // Extract page number if present
           const url = new URL(linkUrl)
 
-          // Only process S3 URLs
           if (
             !url.hostname.includes('s3') &&
             !url.hostname.includes('amazonaws')
@@ -932,19 +880,16 @@ export const ChatMessage: React.FC<Props> = memo(
             continue
           }
 
-          const pageNumber = url.hash || '' // Includes #page=X if present
-          url.hash = '' // Remove hash before processing the main URL
+          const pageNumber = url.hash || ''
+          url.hash = ''
 
           const refreshed = await refreshS3LinkIfExpired(
             url.toString(),
             courseName,
           )
 
-          // Only replace if the URL actually changed
           if (refreshed !== url.toString()) {
-            // Reconstruct the link with the page number if it existed
             const newUrl = pageNumber ? `${refreshed}${pageNumber}` : refreshed
-            // Use regex-safe replacement to avoid special characters issues
             const escapedFullMatch = fullMatch.replace(
               /[.*+?^${}()|[\]\\]/g,
               '\\$&',
@@ -963,7 +908,6 @@ export const ChatMessage: React.FC<Props> = memo(
       return finalText
     }
 
-    // Helper function to refresh S3 links if expired
     async function refreshS3LinkIfExpired(
       originalLink: string,
       courseName: string,
@@ -971,24 +915,20 @@ export const ChatMessage: React.FC<Props> = memo(
       try {
         const urlObject = new URL(originalLink)
 
-        // Is it actually an S3 presigned link?
         const isS3Presigned = urlObject.searchParams.has('X-Amz-Signature')
         if (!isS3Presigned) {
           return originalLink
         }
 
-        // Use dayjs-based logic for reading X-Amz-Date and X-Amz-Expires
         dayjs.extend(utc)
         let creationDateString = urlObject.searchParams.get(
           'X-Amz-Date',
         ) as string
 
-        // If missing or malformed, treat it as expired
         if (!creationDateString) {
           return await getNewPresignedUrl(originalLink, courseName)
         }
 
-        // Convert 20250101T010101Z => 2025-01-01T01:01:01Z, etc.
         creationDateString = creationDateString.replace(
           /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/,
           '$1-$2-$3T$4:$5:$6Z',
@@ -1004,7 +944,6 @@ export const ChatMessage: React.FC<Props> = memo(
         const expiryDate = creationDate.add(expiresInSecs, 'second')
         const now = dayjs()
 
-        // If link is expired, fetch a new one
         if (expiryDate.isBefore(now)) {
           return await getNewPresignedUrl(originalLink, courseName)
         }
@@ -1024,7 +963,6 @@ export const ChatMessage: React.FC<Props> = memo(
       return (await fetchPresignedUrl(s3path, courseName)) as string
     }
 
-    // Modify the useEffect for refreshing S3 links
     useEffect(() => {
       async function refreshS3LinksInContent() {
         const contentToProcess = message.content
@@ -1066,12 +1004,10 @@ export const ChatMessage: React.FC<Props> = memo(
       refreshS3LinksInContent()
     }, [message.content, messageIsStreaming])
 
-    // Modify the content rendering logic
     const renderContent = () => {
       let contentToRender = ''
       let thoughtsContent = null
 
-      // Always use localContent for rendering
       if (typeof localContent === 'string') {
         const { thoughts, remainingContent } =
           extractThinkTagContent(localContent)
@@ -1116,10 +1052,8 @@ export const ChatMessage: React.FC<Props> = memo(
                 code({ node, inline, className, children, ...props }) {
                   const text = String(children)
 
-                  // Simple regex to see if there's a [title](url) pattern
                   const linkRegex = /\[[^\]]+\]\([^)]+\)/
 
-                  // If it looks like a link, parse it again as normal Markdown
                   if (linkRegex.test(text)) {
                     return (
                       <MemoizedReactMarkdown
@@ -1131,7 +1065,6 @@ export const ChatMessage: React.FC<Props> = memo(
                     )
                   }
 
-                  // Handle cursor placeholder
                   if (children.length) {
                     if (children[0] == '▍') {
                       return (
@@ -1296,8 +1229,7 @@ export const ChatMessage: React.FC<Props> = memo(
                 : contentToRender}
             </MemoizedReactMarkdown>
           )}
-          
-          {/* Thinking indicator for assistant messages */}
+
           {message.role === 'assistant' && message.isThinking && (
             <div className="mt-2 flex items-center gap-2 text-orange-500">
               <IconBrain size={16} className="animate-pulse" />
@@ -1310,7 +1242,6 @@ export const ChatMessage: React.FC<Props> = memo(
       )
     }
 
-    // Add MarkdownLink component definition
     const MarkdownLink: React.FC<{
       href?: string
       title?: string
@@ -1346,7 +1277,7 @@ export const ChatMessage: React.FC<Props> = memo(
         rel: 'noopener noreferrer',
         title,
         onMouseUp: handleClick,
-        onClick: (e: React.MouseEvent) => e.preventDefault(), // Prevent default click behavior
+        onClick: (e: React.MouseEvent) => e.preventDefault(),
         style: { pointerEvents: 'all' as const },
       }
 
@@ -1365,10 +1296,8 @@ export const ChatMessage: React.FC<Props> = memo(
       }
     }
 
-    // Add this state for regenerate animation
     const [isRegenerating, setIsRegenerating] = useState(false)
 
-    // Add this handler
     const handleRegenerate = () => {
       if (onRegenerate) {
         setIsRegenerating(true)
@@ -1382,32 +1311,31 @@ export const ChatMessage: React.FC<Props> = memo(
         <div
           className={`group ${
             message.role === 'assistant'
-              ? 'md:px-6 bg-gray-50/50 text-gray-800 bg-white'
-              : 'px-4 md:px-6 py-2 bg-transparent'
-          } max-w-[100%] ${
-            message.role === 'user' ? 'flex justify-end' : ''
-          }`}
+              ? 'bg-white'
+              : 'bg-white'
+          } max-w-[100%]`}
           style={{ overflowWrap: 'anywhere' }}
         >
-          <div className={`relative flex text-base ${
+          <div className={`relative flex gap-3 text-base px-4 py-6 md:px-6 ${
             message.role === 'assistant' 
-              ? 'w-full px-2 py-4 md:mx-[5%] md:max-w-[90%] md:gap-6 md:p-6 lg:mx-[10%]'
-              : 'max-w-[85%] md:max-w-[70%] lg:max-w-[60%]'
+              ? 'w-full md:mx-auto md:max-w-4xl'
+              : 'w-full md:mx-auto md:max-w-4xl'
           }`}>
-            {message.role === 'assistant' && (
-              <div className="min-w-[40px] text-left">
-                <IconRobot size={30} />
-                <Timer timerVisible={timerVisible} />
+            {/* User Avatar */}
+            {message.role === 'user' && (
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                <span className="text-sm font-medium text-gray-600">U</span>
               </div>
             )}
 
-            <div className={`prose mt-[-2px] flex w-full max-w-full flex-wrap text-gray-800 ${
-              message.role === 'assistant' ? 'lg:w-[90%]' : 'w-full'
-            } ${
-              message.role === 'user' 
-                ? 'bg-orange-500 text-white rounded-2xl px-4 py-3 shadow-sm max-w-none' 
-                : ''
-            }`}>
+            {/* Assistant Avatar */}
+            {message.role === 'assistant' && (
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                <IconRobot size={18} className="text-blue-600" />
+              </div>
+            )}
+
+            <div className={`flex-1 min-w-0`}>
               {message.role === 'user' ? (
                 <div className="flex w-full flex-col">
                   {isEditing ? (
@@ -1450,7 +1378,7 @@ export const ChatMessage: React.FC<Props> = memo(
                     </div>
                   ) : (
                     <>
-                      <div className="prose w-full flex-1 whitespace-pre-wrap text-gray-800">
+                      <div className="w-full flex-1">
                         {Array.isArray(message.content) ? (
                           <>
                             <div className="mb-2 flex w-full flex-col items-start space-y-2">
@@ -1465,7 +1393,7 @@ export const ChatMessage: React.FC<Props> = memo(
                                     return (
                                       <p
                                         key={index}
-                                        className={`self-start text-base font-normal ${montserrat_paragraph.variable} font-montserratParagraph text-white`}
+                                        className={`text-base font-normal ${montserrat_paragraph.variable} font-montserratParagraph text-gray-800 leading-relaxed`}
                                       >
                                         {content.text}
                                       </p>
@@ -1550,12 +1478,11 @@ export const ChatMessage: React.FC<Props> = memo(
                             </div>
                           </>
                         ) : (
-                          <span className="text-white">{message.content}</span>
+                          <span className={`text-base font-normal ${montserrat_paragraph.variable} font-montserratParagraph text-gray-800 leading-relaxed`}>{message.content}</span>
                         )}
-                        {/* 25Jul25 this is where the stuff was */}
                       </div>
                       {!isEditing && (
-                        <div className="mt-2 flex items-center justify-start gap-4">
+                        <div className="mt-2 flex items-center justify-start gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Tooltip
                             label="Edit Message"
                             position="bottom"
@@ -1572,15 +1499,10 @@ export const ChatMessage: React.FC<Props> = memo(
                             }}
                           >
                             <button
-                              className={`${
-                                messageIndex === (selectedConversation?.messages.length ?? 0) - 2 || messageIndex === (selectedConversation?.messages.length ?? 0) - 1
-                                  ? 'visible text-white/70 hover:text-white'
-                                  : 'visible text-white/70 hover:text-white'
-                                  // : 'invisible text-white/70 hover:text-white focus:visible group-hover:visible' add back in if needed
-                              } ${Array.isArray(message.content) && message.content.some((content) => content.type === 'image_url') ? 'hidden' : ''}`}
+                              className={`text-gray-400 hover:text-gray-600 transition-colors ${Array.isArray(message.content) && message.content.some((content) => content.type === 'image_url') ? 'hidden' : ''}`}
                               onClick={toggleEditing}
                             >
-                              <IconEdit size={20} />
+                              <IconEdit size={18} />
                             </button>
                           </Tooltip>
                         </div>
@@ -1590,22 +1512,24 @@ export const ChatMessage: React.FC<Props> = memo(
                 </div>
               ) : (
                 <div className="flex w-full flex-col">
-                  <div className="w-full max-w-full flex-1 overflow-hidden">
-                    {renderContent()}
-                  </div>
-                  
-                  {/* Tool Execution Display - only show for completed messages, not during live streaming */}
+                  {/* Tool executions at the top */}
                   {!(messageIsStreaming && messageIndex === (selectedConversation?.messages.length ?? 0) - 1) && (
                     <ToolExecutionDisplay 
-                      toolExecutions={message.toolExecutions || []}
+                      toolExecutions={(message.toolExecutions && message.toolExecutions.length > 0) ? message.toolExecutions : loadedToolExecutions}
                       isThinking={message.isThinking}
                       isRunningTool={false}
                     />
                   )}
-                  
-                  {/* Action Buttons Container */}
+
+                  {/* AI response text */}
+                  <div className="w-full max-w-full flex-1 overflow-hidden leading-relaxed">
+                    {renderContent()}
+                    {messageIsStreaming && messageIndex === (selectedConversation?.messages.length ?? 0) - 1 && (
+                      <span className="inline-block w-0.5 h-4 bg-blue-500 ml-1 animate-pulse align-middle" />
+                    )}
+                  </div>
+
                   <div className="flex flex-col gap-2">
-                    {/* Sources button */}
                     {message.contexts &&
                       message.contexts.length > 0 &&
                       !(
@@ -1663,7 +1587,6 @@ export const ChatMessage: React.FC<Props> = memo(
                         </div>
                       )}
 
-                    {/* Other buttons in their container */}
                     {!(
                       messageIsStreaming &&
                       messageIndex ===
@@ -1674,7 +1597,7 @@ export const ChatMessage: React.FC<Props> = memo(
                         messageIndex ===
                           (selectedConversation?.messages.length ?? 0) - 1
                       ) && (
-                        <div className="flex items-center justify-start gap-2">
+                        <div className="flex items-center justify-start gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Tooltip
                             label={messagedCopied ? 'Copied!' : 'Copy'}
                             position="bottom"
@@ -1691,21 +1614,16 @@ export const ChatMessage: React.FC<Props> = memo(
                             }}
                           >
                             <button
-                              className={`text-gray-500 hover:text-gray-700 ${
-                                messageIndex ===
-                                (selectedConversation?.messages.length ?? 0) - 1
-                                  ? 'opacity-100'
-                                  : 'opacity-0 transition-opacity duration-200 focus:opacity-100 group-hover:opacity-100'
-                              }`}
+                              className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded"
                               onClick={copyOnClick}
                             >
                               {messagedCopied ? (
                                 <IconCheck
-                                  size={20}
+                                  size={16}
                                   className="text-green-500"
                                 />
                               ) : (
-                                <IconCopy size={20} />
+                                <IconCopy size={16} />
                               )}
                             </button>
                           </Tooltip>
@@ -1729,29 +1647,16 @@ export const ChatMessage: React.FC<Props> = memo(
                             }}
                           >
                             <button
-                              className={`text-gray-500 hover:text-gray-700 ${
-                                messageIndex ===
-                                (selectedConversation?.messages.length ?? 0) - 1
-                                  ? 'opacity-100'
-                                  : 'opacity-0 transition-opacity duration-200 focus:opacity-100 group-hover:opacity-100'
+                              className={`transition-colors p-1 rounded ${
+                                isThumbsUp ? 'text-green-600' : 'text-gray-400 hover:text-gray-600'
                               }`}
                               onClick={handleThumbsUp}
                             >
-                              <div
-                                className={
-                                  messageIndex ===
-                                  (selectedConversation?.messages.length ?? 0) -
-                                    1
-                                    ? ''
-                                    : 'opacity-0 transition-opacity duration-200 group-hover:opacity-100'
-                                }
-                              >
-                                {isThumbsUp ? (
-                                  <IconThumbUpFilled size={20} />
-                                ) : (
-                                  <IconThumbUp size={20} />
-                                )}
-                              </div>
+                              {isThumbsUp ? (
+                                <IconThumbUpFilled size={16} />
+                              ) : (
+                                <IconThumbUp size={16} />
+                              )}
                             </button>
                           </Tooltip>
                           <Tooltip
@@ -1774,18 +1679,15 @@ export const ChatMessage: React.FC<Props> = memo(
                             }}
                           >
                             <button
-                              className={`text-gray-500 hover:text-gray-700 ${
-                                messageIndex ===
-                                (selectedConversation?.messages.length ?? 0) - 1
-                                  ? 'opacity-100'
-                                  : 'opacity-0 transition-opacity duration-200 focus:opacity-100 group-hover:opacity-100'
+                              className={`transition-colors p-1 rounded ${
+                                isThumbsDown ? 'text-red-600' : 'text-gray-400 hover:text-gray-600'
                               }`}
                               onClick={handleThumbsDown}
                             >
                               {isThumbsDown ? (
-                                <IconThumbDownFilled size={20} />
+                                <IconThumbDownFilled size={16} />
                               ) : (
-                                <IconThumbDown size={20} />
+                                <IconThumbDown size={16} />
                               )}
                             </button>
                           </Tooltip>
@@ -1805,17 +1707,11 @@ export const ChatMessage: React.FC<Props> = memo(
                             }}
                           >
                             <button
-                              className={`text-gray-500 hover:text-gray-700 ${
-                                messageIndex ===
-                                (selectedConversation?.messages?.length ?? 0) -
-                                  1
-                                  ? 'opacity-100'
-                                  : 'opacity-0 transition-opacity duration-200 focus:opacity-100 group-hover:opacity-100'
-                              } ${isRegenerating ? 'animate-spin' : ''}`}
+                              className={`text-gray-400 hover:text-gray-600 transition-colors p-1 rounded ${isRegenerating ? 'animate-spin' : ''}`}
                               onClick={handleRegenerate}
                               disabled={isRegenerating}
                             >
-                              <IconRepeat size={20} />
+                              <IconRepeat size={16} />
                             </button>
                           </Tooltip>
                         </div>
@@ -1827,7 +1723,6 @@ export const ChatMessage: React.FC<Props> = memo(
           </div>
         </div>
 
-        {/* Move SourcesSidebar outside the message div but keep it in the fragment */}
         {isSourcesSidebarOpen && (
           <SourcesSidebar
             isOpen={isSourcesSidebarOpen}

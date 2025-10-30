@@ -476,9 +476,9 @@ const CourseMain: NextPage = () => {
           style={{ marginTop: '4rem' }}
         >
           You&apos;ve encountered a software bug!<br></br>Your account has no
-          email address. Please shoot me an email so I can fix it for you:{' '}
-          <a className="goldUnderline" href="mailto:kvday2@illinois.edu">
-            kvday2@illinois.edu
+          email address. Please shoot us an email so we can fix it for you:{' '}
+          <a className="goldUnderline" href="mailto:aganswers@gmail.com">
+            aganswers@gmail.com
           </a>
         </Title>
       </MainPageBackground>

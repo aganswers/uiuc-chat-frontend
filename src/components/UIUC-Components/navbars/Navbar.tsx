@@ -26,6 +26,7 @@ import {
   MessageCode,
   Code,
   Brain,
+  Search,
 } from 'tabler-icons-react'
 import { IconHome, IconFilePlus, IconClipboardText } from '@tabler/icons-react'
 
@@ -477,6 +478,10 @@ export default function Navbar({
     `/${course_name}/tools`
   ].some(path => router.asPath.startsWith(path))
 
+  const openSpotlight = () => {
+    window.dispatchEvent(new Event('openSpotlight'))
+  }
+
   const items: NavItem[] = [
     {
       name: <span>Dashboard</span>,
@@ -566,6 +571,13 @@ export default function Navbar({
                 {item.name}
               </Link>
             ))}
+            <button
+              onClick={openSpotlight}
+              className="flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-orange-50 hover:text-orange-600"
+            >
+              <Search className="h-4 w-4" />
+              <span>Search</span>
+            </button>
           </div>
 
           {/* Right Side Actions */}
@@ -706,6 +718,16 @@ export default function Navbar({
                   {item.name}
                 </Link>
               ))}
+              <button
+                onClick={() => {
+                  openSpotlight()
+                  close()
+                }}
+                className="flex w-full items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+              >
+                <Search className="h-4 w-4" />
+                <span>Search</span>
+              </button>
               <div className="mt-2 border-t border-gray-200 pt-2">
                 {isDashboardPage ? (
                   <>
