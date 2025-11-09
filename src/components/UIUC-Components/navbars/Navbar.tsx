@@ -462,7 +462,11 @@ export default function Navbar({
     state: { showModelSettings } = { showModelSettings: false },
     dispatch: homeDispatch,
     handleNewConversation,
-  } = homeContext || { state: { showModelSettings: false }, dispatch: () => {}, handleNewConversation: () => {} }
+  } = homeContext || {
+    state: { showModelSettings: false },
+    dispatch: () => {},
+    handleNewConversation: () => {},
+  }
 
   useEffect(() => {
     if (!router.isReady) return
@@ -471,12 +475,15 @@ export default function Navbar({
   }, [router.asPath, router.isReady])
 
   // Check if we're on a dashboard/chat page (where HomeContext should be available)
-  const isDashboardPage = course_name && homeContext && [
-    `/${course_name}/dashboard`,
-    `/${course_name}/chat`, 
-    `/${course_name}/llms`,
-    `/${course_name}/tools`
-  ].some(path => router.asPath.startsWith(path))
+  const isDashboardPage =
+    course_name &&
+    homeContext &&
+    [
+      `/${course_name}/dashboard`,
+      `/${course_name}/chat`,
+      `/${course_name}/llms`,
+      `/${course_name}/tools`,
+    ].some((path) => router.asPath.startsWith(path))
 
   const openSpotlight = () => {
     window.dispatchEvent(new Event('openSpotlight'))
@@ -492,6 +499,11 @@ export default function Navbar({
       name: <span>Chat</span>,
       icon: <MessageChatIcon />,
       link: `/${course_name}/chat`,
+    },
+    {
+      name: <span>DigiDocs</span>,
+      icon: <FileIcon />,
+      link: `/${course_name}/digidocs`,
     },
     // {
     //   name: <span>LLMs</span>,
@@ -538,7 +550,11 @@ export default function Navbar({
   }
 
   return (
-    <header className={`sticky top-0 border-b border-gray-200 bg-white ${opened ? 'z-[60]' : 'z-50'}`}>
+    <header
+      className={`sticky top-0 border-b border-gray-200 bg-white ${
+        opened ? 'z-[60]' : 'z-50'
+      }`}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo and Project Name */}

@@ -24,8 +24,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const s3_filepath = `courses/${courseName}/${uniqueFileName}`
     console.log('s3_filepath', s3_filepath)
 
+    const bucket =
+      process.env.AGANSWERS_S3_BUCKET_NAME || process.env.S3_BUCKET_NAME!
     const command = new PutObjectCommand({
-      Bucket: process.env.S3_BUCKET_NAME!,
+      Bucket: bucket,
       Key: s3_filepath,
     })
 

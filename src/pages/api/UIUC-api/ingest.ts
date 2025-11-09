@@ -2,14 +2,9 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { supabase } from '~/utils/supabaseClient'
 import posthog from 'posthog-js'
 
-type IngestResponse = {
-  task_id?: string
-  error?: string
-}
-
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<IngestResponse>,
+  res: NextApiResponse,
 ) => {
   try {
     if (req.method !== 'POST') {
@@ -37,36 +32,11 @@ const handler = async (
 
     const s3_filepath = `courses/${courseName}/${uniqueFileName}`
 
-    const response = await fetch(
-      process.env.BEAM_API_URL!, // use the env var directly, not as a string literal
-      {
-        method: 'POST',
-        headers: {
-          Accept: '*/*',
-          'Accept-Encoding': 'gzip, deflate',
-          Authorization: `Bearer ${process.env.BEAM_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          course_name: courseName,
-          readable_filename: readableFilename,
-          s3_paths: s3_filepath,
-        }),
-      },
-    )
-
-    const responseBody = await response.json()
-    console.log(
-      `📤 Submitted to ingest queue: ${s3_filepath}. Response status: ${response.status}`,
-      responseBody,
-    )
-
-    // Send to ingest-in-progress table
+    // Track ingest progress immediately
     const { error } = await supabase.from('documents_in_progress').insert({
       s3_path: s3_filepath,
       course_name: courseName,
       readable_filename: readableFilename,
-      beam_task_id: responseBody.task_id,
     })
 
     if (error) {
@@ -79,13 +49,44 @@ const handler = async (
         course_name: courseName,
         readable_filename: readableFilename,
         error: error.message,
-        beam_task_id: responseBody.task_id,
+        beam_task_id: null,
       })
     }
 
+    const backendUrl =
+      process.env.BACKEND_URL ||
+      process.env.NEXT_PUBLIC_BACKEND_URL ||
+      'https://backend.aganswers.ai'
+
+    const response = await fetch(`${backendUrl}/ingest`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        course_name: courseName,
+        readable_filename: readableFilename,
+        s3_path: s3_filepath,
+      }),
+    })
+
+    const responseBody = await response.json().catch(() => ({}))
+    if (!response.ok || responseBody?.success === false) {
+      throw new Error(
+        responseBody?.error ||
+          `Backend ingest failed (${response.status} ${response.statusText})`,
+      )
+    }
+
+    await supabase
+      .from('documents_in_progress')
+      .delete()
+      .eq('course_name', courseName)
+      .eq('s3_path', s3_filepath)
+
     return res.status(200).json(responseBody)
   } catch (error) {
-    const err = `❌❌ -- Bottom of /ingest -- Internal Server Error during ingest submission to Beam: ${error}`
+    const err = `❌❌ -- /ingest failed to submit document: ${error}`
     console.error(err)
     return res.status(500).json({ error: err })
   }

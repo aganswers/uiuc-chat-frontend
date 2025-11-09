@@ -42,7 +42,8 @@ export const fetchContexts = async (
   // ]
   // return dummyContexts
 
-  const url = `https://backend.aganswers.ai/getTopContexts`
+  const backendUrl = process.env.BACKEND_URL || 'https://backend.aganswers.ai'
+  const url = `${backendUrl}/getTopContexts`
 
   try {
     const response = await fetch(url, {

@@ -26,7 +26,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useMediaQuery } from '@mantine/hooks'
-import { callSetCourseMetadata } from '~/utils/apiUtils'
+import { callSetCourseMetadata, getBackendUrl } from '~/utils/apiUtils'
 import { montserrat_heading, montserrat_paragraph } from 'fonts'
 import { useRef } from 'react'
 import { LoadingSpinner } from './LoadingSpinner'
@@ -381,8 +381,9 @@ export const WebScrape = ({
     try {
       if (!url || !courseName || !localDir) return null
       console.log('calling downloadMITCourse')
+      const backendUrl = getBackendUrl()
       const response = await axios.get(
-        `https://backend.aganswers.ai/mit-download`,
+        `${backendUrl}/mit-download`,
         {
           params: {
             url: url,

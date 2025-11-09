@@ -67,7 +67,7 @@ export const ToolExecutionDisplay: React.FC<Props> = ({
           <div className={`overflow-hidden transition-all duration-300 ${
             isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
           }`}>
-            <div className="space-y-6 pt-4 pl-2 pr-6 border-l-2 border-gray-100">
+            <div className="max-h-80 space-y-6 overflow-y-auto pt-4 pl-2 pr-6 border-l-2 border-gray-100">
               {toolExecutions.map((tool) => (
                 <div key={tool.id} className="space-y-2">
                   <div className="flex items-center gap-2 text-sm">

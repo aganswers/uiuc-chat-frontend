@@ -8,8 +8,9 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     const map_type = req.nextUrl.searchParams.get('map_type')
 
     // Example response:  {'map_id': 'iframef4967ad7-ff37-4098-ad06-7e1e1a93dd93', 'map_link': 'https://atlas.nomic.ai/map/ed222613-97d9-46a9-8755-12bbc8a06e3a/f4967ad7-ff37-4098-ad06-7e1e1a93dd93'}
+    const backendUrl = process.env.BACKEND_URL || 'https://backend.aganswers.ai'
     const response = await fetch(
-      `https://backend.aganswers.ai/getNomicMap?course_name=${course_name}&map_type=${map_type}`,
+      `${backendUrl}/getNomicMap?course_name=${course_name}&map_type=${map_type}`,
     )
     const data = await response.json()
 
