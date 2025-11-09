@@ -18,10 +18,10 @@ import {
 const MODEL_IDS = [
   'google/gemini-2.5-flash',
   'google/gemini-2.5-pro',
-  'google/gemini-2.5-flash-lite',
-  'openai/gpt-5-mini-2025-08-07',
-  'openai/gpt-5-nano-2025-08-07',
-  'openai/gpt-5-2025-08-07',
+  // 'google/gemini-2.5-flash-lite',
+  'openai/gpt-5-mini',
+  // 'openai/gpt-5-nano-2025-08-07',
+  'openai/gpt-5',
 //   'openai/gpt-oss-20b',
 //   'openai/gpt-oss-120b'
 ] as const;
@@ -47,14 +47,10 @@ function formatModelName(modelId: string): string {
   
   // Handle special cases first
   const specialCases: Record<string, string> = {
-    'gpt-5-mini-2025-08-07': 'Gpt 5 Mini (2025-08-07)',
-    'gpt-5-nano-2025-08-07': 'Gpt 5 Nano (2025-08-07)',
-    'gpt-5-2025-08-07': 'Gpt 5 (2025-08-07)',
-    'gpt-oss-20b': 'Gpt Oss 20B',
-    'gpt-oss-120b': 'Gpt Oss 120B',
+    'gpt-5-mini': 'Gpt 5 Mini',
+    'gpt-5': 'Gpt 5',
     'gemini-2.5-flash': 'Gemini 2.5 Flash',
-    'gemini-2.5-pro': 'Gemini 2.5 Pro',
-    'gemini-2.5-flash-lite': 'Gemini 2.5 Flash Lite'
+    'gemini-2.5-pro': 'Gemini 2.5 Pro'
   };
   
   if (specialCases[withoutProvider]) {
@@ -100,7 +96,7 @@ const MODELS: ModelConfig[] = MODEL_IDS.map(id => {
   };
 });
 
-const DEFAULT_MODEL_ID: ModelId = 'openai/gpt-5-mini-2025-08-07';
+const DEFAULT_MODEL_ID: ModelId = 'google/gemini-2.5-flash';
 
 export const ModelSelect: React.FC = () => {
   const {

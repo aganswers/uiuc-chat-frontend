@@ -14,6 +14,7 @@ import { Title } from '@mantine/core'
 import { extractEmailsFromClerk } from '~/components/UIUC-Components/clerkHelpers'
 import MakeToolsPage from '~/components/UIUC-Components/N8NPage'
 import posthog from 'posthog-js'
+import { getBackendUrl } from '~/utils/apiUtils'
 
 // Using local montserrat_heading font (weight 700) instead of Google Fonts
 
@@ -43,8 +44,9 @@ const ToolsPage: NextPage = () => {
       const data = await response.json()
       setCourseExists(data)
       if (data) {
+        const backendUrl = getBackendUrl()
         const response = await fetch(
-          `https://backend.aganswers.ai/getAll?course_name=${course_name}`,
+          `${backendUrl}/getAll?course_name=${course_name}`,
         )
         const data = await response.json()
         const courseData = data.distinct_files

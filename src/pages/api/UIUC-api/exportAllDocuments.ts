@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { getBackendUrl } from '~/utils/apiUtils'
+
 interface ExportResult {
   message: string
   s3_path?: string
@@ -8,8 +10,8 @@ export const handleExport = async (
   course_name: string,
 ): Promise<ExportResult> => {
   try {
-    const API_URL =
-      'https://backend.aganswers.ai/exportDocuments'
+    const backendUrl = getBackendUrl()
+    const API_URL = `${backendUrl}/exportDocuments`
     const response = await axios.get(`${API_URL}?course_name=${course_name}`, {
       responseType: 'blob',
     })

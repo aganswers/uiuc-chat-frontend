@@ -506,13 +506,6 @@ export const ChatInput = ({
 
   const handleImageUpload = useCallback(
     async (files: File[]) => {
-      // TODO: FIX IMAGE UPLOADS ASAP
-      // showConfirmationToast({
-      //   title: `😢 We can't handle all these images...`,
-      //   message: `Image uploads are temporarily disabled. I'm really sorry, I'm working on getting them back. Email me if you want to complain: kvday2@illinois.edu`,
-      //   isError: true,
-      //   autoClose: 10000,
-      // })
 
       // Clear any selected files
       if (imageUploadRef.current) {

@@ -16,7 +16,7 @@ export default async function chatProxy(
   }
 
   const backendURL =
-    process.env.BACKEND_BASE_URL?.replace(/\/$/, '') ||
+    process.env.BACKEND_URL?.replace(/\/$/, '') ||
     'https://backend.aganswers.ai'
 
   // Forward the payload exactly as-is

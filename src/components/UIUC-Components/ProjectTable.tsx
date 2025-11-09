@@ -64,8 +64,8 @@ const ProjectTable: React.FC = () => {
           comparison = metadataA.course_owner.toLowerCase().localeCompare(metadataB.course_owner.toLowerCase());
           break;
         case 'admins':
-          const adminsA = metadataA.course_admins.filter((admin: string) => admin !== 'kvday2@illinois.edu').join(', ');
-          const adminsB = metadataB.course_admins.filter((admin: string) => admin !== 'kvday2@illinois.edu').join(', ');
+          const adminsA = metadataA.course_admins.filter((admin: string) => admin !== 'admin@aganswers.ai').join(', ');
+          const adminsB = metadataB.course_admins.filter((admin: string) => admin !== 'admin@aganswers.ai').join(', ');
           comparison = adminsA.toLowerCase().localeCompare(adminsB.toLowerCase());
           break;
       }
@@ -82,7 +82,7 @@ const ProjectTable: React.FC = () => {
         if (!courseMetadata) return null;
 
         const filteredAdmins = courseMetadata.course_admins.filter(
-          (admin: string) => admin !== 'kvday2@illinois.edu'
+          (admin: string) => admin !== 'admin@aganswers.ai'
         );
         
         return (

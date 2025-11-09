@@ -1,5 +1,5 @@
 // src/components/Chat/Chat.tsx
-import { IconArrowRight, IconAlertCircle } from '@tabler/icons-react'
+import { IconAlertCircle, IconRobot } from '@tabler/icons-react'
 import {
   type MutableRefObject,
   memo,
@@ -9,9 +9,8 @@ import {
   useRef,
   useState,
 } from 'react'
-import { Button, Text } from '@mantine/core'
+import { Text } from '@mantine/core'
 import { useTranslation } from 'next-i18next'
-
 import posthog from 'posthog-js'
 import { throttle } from '@/utils/data/throttle'
 import { v4 as uuidv4 } from 'uuid'
@@ -24,20 +23,16 @@ import {
   ToolExecution,
 } from '@/types/chat'
 import { type Plugin } from '@/types/plugin'
-
 import HomeContext from '~/pages/api/home/home.context'
-
-import { ChatInput } from './ChatInput'
 import { ChatLoader } from './ChatLoader'
 import { ErrorMessageDiv } from './ErrorMessageDiv'
 import { MemoizedChatMessage } from './MemoizedChatMessage'
 import { ToolExecutionDisplay } from './ToolExecutionDisplay'
 import { fetchPresignedUrl } from '~/utils/apiUtils'
 import { OpenSidebarButton } from '../Sidebar/components/OpenCloseButton'
-
 import { type CourseMetadata } from '~/types/courseMetadata'
-
 import { SourcesSidebarProvider } from './ChatMessage'
+import { AgentChatbar } from './AgentChatbar'
 
 interface Props {
   stopConversationRef: MutableRefObject<boolean>
@@ -52,20 +47,8 @@ import { useUser } from '@clerk/nextjs'
 import { extractEmailsFromClerk } from '../UIUC-Components/clerkHelpers'
 import { notifications } from '@mantine/notifications'
 import { montserrat_heading, montserrat_paragraph } from 'fonts'
-import {
-  State,
-  getOpenAIKey,
-  handleContextSearch,
-  processChunkWithStateMachine,
-  routeModelRequest,
-} from '~/utils/streamProcessing'
-// import {
-//   handleFunctionCall,
-//   handleToolCall,
-//   useFetchAllWorkflows,
-// } from '~/utils/functionCalling/handleFunctionCalling'
+import { getOpenAIKey } from '~/utils/streamProcessing'
 import { useFetchEnabledDocGroups } from '~/hooks/docGroupsQueries'
-import { CropwizardLicenseDisclaimer } from '~/pages/cropwizard-licenses'
 import ChatUI, { webLLMModels } from '~/utils/modelProviders/WebLLM'
 import { MLCEngine } from '@mlc-ai/web-llm'
 import * as webllm from '@mlc-ai/web-llm'
@@ -76,9 +59,6 @@ import { useUpdateConversation } from '~/hooks/conversationQueries'
 import { motion } from 'framer-motion'
 import { useDeleteMessages } from '~/hooks/messageQueries'
 import { AllLLMProviders } from '~/utils/modelProviders/LLMProvider'
-import util from 'util'
-
-// Using local montserrat_paragraph font (weight 500) instead of Google Fonts
 
 const DEFAULT_DOCUMENT_GROUP = {
   id: 'DocGroup-all',
@@ -98,19 +78,11 @@ export const Chat = memo(
     const { user } = useUser()
     const router = useRouter()
     const queryClient = useQueryClient()
-    // const
     const [bannerUrl, setBannerUrl] = useState<string | null>(null)
     const getCurrentPageName = () => {
-      // /CS-125/dashboard --> CS-125
       return router.asPath.slice(1).split('/')[0] as string
     }
     const user_email = extractEmailsFromClerk(user)[0]
-    // const [user_email, setUserEmail] = useState<string | undefined>(undefined)
-
-    // const updateConversationMutation = useUpdateConversation(
-    //   user_email as string,
-    //   queryClient,
-    // )
     const [chat_ui] = useState(new ChatUI(new MLCEngine()))
 
     const [inputContent, setInputContent] = useState<string>('')
@@ -118,22 +90,11 @@ export const Chat = memo(
     const [enabledDocumentGroups, setEnabledDocumentGroups] = useState<
       string[]
     >([])
-    const [enabledTools, setEnabledTools] = useState<string[]>([])
 
     const {
       data: documentGroupsHook,
       isSuccess: isSuccessDocumentGroups,
-      // isError: isErrorDocumentGroups,
     } = useFetchEnabledDocGroups(getCurrentPageName())
-
-    // const {
-    //   data: toolsHook,
-    //   isSuccess: isSuccessTools,
-    //   isLoading: isLoadingTools,
-    //   isError: isErrorTools,
-    //   error: toolLoadingError,
-    //   // refetch: refetchTools,
-    // } = useFetchAllWorkflows(getCurrentPageName())
 
     useEffect(() => {
       if (
@@ -251,47 +212,18 @@ export const Chat = memo(
       )
     }, [documentGroups])
 
-    // // TOOLS
-    // useEffect(() => {
-    //   if (isSuccessTools) {
-    //     homeDispatch({
-    //       field: 'tools',
-    //       value: [...toolsHook],
-    //     })
-    //   } else if (isErrorTools) {
-    //     errorToast({
-    //       title: 'Error loading tools',
-    //       message:
-    //         (toolLoadingError as Error).message +
-    //         '.\nPlease refresh the page or try again later. Regular chat features may still work.',
-    //     })
-    //   }
-    // }, [toolsHook, isSuccessTools])
-
-    // useEffect(() => {
-    //   setEnabledTools(
-    //     tools.filter((action) => action.enabled).map((action) => action.name),
-    //   )
-    // }, [tools])
-
     const onMessageReceived = async (conversation: Conversation) => {
-      // Log conversation to Supabase
       try {
-        const response = await fetch(
-          `/api/UIUC-api/logConversationToSupabase`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              course_name: getCurrentPageName(),
-              conversation: conversation,
-            }),
+        await fetch(`/api/UIUC-api/logConversationToSupabase`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        )
-        // const data = await response.json()
-        // return data.success
+          body: JSON.stringify({
+            course_name: getCurrentPageName(),
+            conversation: conversation,
+          }),
+        })
       } catch (error) {
         console.error('Error setting course data:', error)
       }
@@ -441,384 +373,6 @@ export const Chat = memo(
             }
           }
 
-          // Skip vector search entirely if there are no documents
-          if (documentCount === 0) {
-            console.log('Vector search skipped: no documents available')
-            homeDispatch({ field: 'wasQueryRewritten', value: false })
-            homeDispatch({ field: 'queryRewriteText', value: null })
-            message.wasQueryRewritten = undefined
-            message.queryRewriteText = undefined
-            message.contexts = []
-          } else {
-            // Action 2: Context Retrieval: Vector Search
-            let rewrittenQuery = searchQuery // Default to original query
-
-            // QUERY REWRITE DISABLED - All processing now happens in backend
-            // Skip query rewrite if disabled in course metadata, if it's the first message, or if there are no documents
-            // if (
-            //   courseMetadata?.vector_search_rewrite_disabled ||
-            //   updatedConversation.messages.length <= 1 ||
-            //   documentCount === 0
-            // ) {
-            //   console.log(
-            //     'Query rewrite skipped: disabled for course, first message, or no documents',
-            //   )
-            //   rewrittenQuery = searchQuery
-            //   homeDispatch({ field: 'wasQueryRewritten', value: false })
-            //   homeDispatch({ field: 'queryRewriteText', value: null })
-            //   message.wasQueryRewritten = undefined
-            //   message.queryRewriteText = undefined
-            // } else {
-            //   homeDispatch({ field: 'isQueryRewriting', value: true })
-            //   try {
-            //     // TODO: add toggle to turn queryRewrite on and off on materials page
-            //     const QUERY_REWRITE_PROMPT = `You are a vector database query optimizer that improves search queries for semantic vector retrieval.
-
-            //       INPUT:
-            //       The input will include:
-            //       1. Previous conversation messages (if any)
-            //       2. Current search query
-
-            //       OUTPUT FORMAT:
-            //       You must respond in ONE of these two formats ONLY:
-            //       1. The exact string "NO_REWRITE_REQUIRED" or
-            //       2. An XML tag containing the vector query: <vector_query>your optimized query here</vector_query>
-
-            //       WHEN TO OUTPUT "NO_REWRITE_REQUIRED":
-            //       Return "NO_REWRITE_REQUIRED" if ALL of these conditions are met:
-            //       - Query contains specific, unique terms that would match relevant documents
-            //       - Query includes all necessary context without requiring conversation history
-            //       - Query has no ambiguous references (like "it", "this", "that example", "option one")
-            //       - Query would yield effective vector embeddings without modification
-
-            //       WHEN TO REWRITE THE QUERY:
-            //       Rewrite the query if ANY of these conditions are met:
-            //       - Query contains references to items from previous messages
-            //       - Query uses pronouns or demonstratives without clear referents
-            //       - Query lacks technical terms or context needed for effective matching
-            //       - Query requires conversation history to be fully understood
-
-            //       REWRITING RULES:
-            //       When rewriting, follow these rules:
-            //       1. Replace references to previous items with their specific content
-            //         Example: "explain the first option" →
-            //         <vector_query>explain the gradient descent optimization algorithm</vector_query>
-
-            //       2. Add essential context from conversation history
-            //         Example: "what are the steps" →
-            //         <vector_query>what are the steps for implementing backpropagation in neural networks</vector_query>
-
-            //       3. Resolve all pronouns and demonstratives
-            //         Example: "how does it work" →
-            //         <vector_query>how does the transformer attention mechanism work</vector_query>
-
-            //       4. Include key technical terms and synonyms
-            //         Example: "what causes this" →
-            //         <vector_query>root causes and mechanisms of gradient vanishing in deep neural networks</vector_query>
-
-            //       IMPORTANT OUTPUT RULES:
-            //       - Do not include ANY explanatory text
-            //       - Do not include multiple options
-            //       - Do not include reasoning or notes
-            //       - Output ONLY "NO_REWRITE_REQUIRED" or a <vector_query> tag
-            //       - Never include both formats in one response
-            //       - Never nest tags or use other XML tags
-            //       - Never add punctuation or text outside the tags
-
-            //       The final rewritten query must:
-            //       - Be self-contained and understandable without conversation context
-            //       - Maintain the original search intent
-            //       - Include specific details that enable accurate vector matching
-            //       - Be concise while containing all necessary context
-            //       - Contain ONLY the search terms inside the XML tags
-
-            //       Remember: This query optimization is for vector database retrieval only, not for the final LLM prompt.`
-
-            //     // Get conversation context (last 6 messages or fewer)
-            //     const contextMessages =
-            //       selectedConversation?.messages?.slice(-6) || []
-
-            //     const queryRewriteConversation: Conversation = {
-            //       id: uuidv4(),
-            //       name: 'Query Rewrite',
-            //       messages: [
-            //         {
-            //           id: uuidv4(),
-            //           role: 'user',
-            //           content: `Previous conversation:\n${contextMessages
-            //             .map((msg) => {
-            //               const contentText = Array.isArray(msg.content)
-            //                 ? msg.content
-            //                     .filter(
-            //                       (content) =>
-            //                         content.type === 'text' && content.text,
-            //                     )
-            //                     .map((content) => content.text!)
-            //                     .join(' ')
-            //                 : typeof msg.content === 'string'
-            //                   ? msg.content
-            //                   : ''
-            //               return `${msg.role}: ${contentText.trim()}`
-            //             })
-            //             .filter((text) => text.length > 0)
-            //             .join(
-            //               '\n',
-            //             )}\n\nCurrent query: "${searchQuery}"\n\nEnhanced query:`,
-            //           latestSystemMessage: QUERY_REWRITE_PROMPT,
-            //           finalPromtEngineeredMessage: `\n<User Query>\nPrevious conversation:\n${contextMessages
-            //             .map((msg) => {
-            //               const contentText = Array.isArray(msg.content)
-            //                 ? msg.content
-            //                     .filter(
-            //                       (content) =>
-            //                         content.type === 'text' && content.text,
-            //                     )
-            //                     .map((content) => content.text!)
-            //                     .join(' ')
-            //                 : typeof msg.content === 'string'
-            //                   ? msg.content
-            //                   : ''
-            //               return `${msg.role}: ${contentText.trim()}`
-            //             })
-            //             .filter((text) => text.length > 0)
-            //             .join(
-            //               '\n',
-            //             )}\n\nCurrent query: "${searchQuery}"\n\nEnhanced query:\n</User Query>`,
-            //         },
-            //       ],
-            //       model: selectedConversation.model,
-            //       prompt: QUERY_REWRITE_PROMPT,
-            //       temperature: 0.2,
-            //       folderId: null,
-            //       userEmail: currentEmail,
-            //       projectName: courseName,
-            //       createdAt: new Date().toISOString(),
-            //       updatedAt: new Date().toISOString(),
-            //     }
-
-            //     const queryRewriteBody: ChatBody = {
-            //       conversation: {
-            //         ...queryRewriteConversation,
-            //         messages: queryRewriteConversation.messages.map((msg) => ({
-            //           ...msg,
-            //           content:
-            //             typeof msg.content === 'string'
-            //               ? msg.content.trim()
-            //               : Array.isArray(msg.content)
-            //                 ? msg.content
-            //                     .map((c) => c.text)
-            //                     .join(' ')
-            //                     .trim()
-            //                 : '',
-            //         })),
-            //       },
-            //       key: getOpenAIKey(courseMetadata, apiKey),
-            //       course_name: courseName,
-            //       stream: false,
-            //       courseMetadata: courseMetadata,
-            //       llmProviders: llmProviders,
-            //       model: selectedConversation.model,
-            //     }
-
-            //     if (!queryRewriteBody.model || !queryRewriteBody.model.id) {
-            //       queryRewriteBody.model = selectedConversation.model
-            //     }
-
-            //     let rewriteResponse:
-            //       | Response
-            //       | AsyncIterable<webllm.ChatCompletionChunk>
-            //       | undefined
-
-            //     if (
-            //       selectedConversation.model &&
-            //       webLLMModels.some(
-            //         (model) => model.name === selectedConversation.model.name,
-            //       )
-            //     ) {
-            //       // WebLLM model handling remains the same
-            //       while (chat_ui.isModelLoading() === true) {
-            //         await new Promise((resolve) => setTimeout(resolve, 10))
-            //       }
-            //       try {
-            //         rewriteResponse = await chat_ui.runChatCompletion(
-            //           queryRewriteBody,
-            //           getCurrentPageName(),
-            //           courseMetadata,
-            //         )
-            //       } catch (error) {
-            //         errorToast({
-            //           title: 'Error running query rewrite',
-            //           message:
-            //             (error as Error).message ||
-            //             'An unexpected error occurred',
-            //         })
-            //       }
-            //     } else {
-            //       // Direct call to routeModelRequest instead of going through the API route
-            //       try {
-            //         rewriteResponse = await fetch('/api/queryRewrite', {
-            //           method: 'POST',
-            //           headers: {
-            //             'Content-Type': 'application/json',
-            //           },
-            //           body: JSON.stringify(queryRewriteBody),
-            //         })
-            //       } catch (error) {
-            //         console.error(
-            //           'Error calling query rewrite endpoint:',
-            //           error,
-            //         )
-            //         throw error
-            //       }
-            //     }
-
-            //     // console.log('query rewriteResponse:', rewriteResponse)
-
-            //     // After processing the query rewrite response
-            //     if (rewriteResponse instanceof Response) {
-            //       try {
-            //         const responseData = await rewriteResponse.json()
-            //         let choices = responseData.choices
-
-            //         if (Array.isArray(choices)) {
-            //           // 'choices' is already an array, do nothing
-            //         } else if (
-            //           typeof choices === 'object' &&
-            //           choices !== null
-            //         ) {
-            //           // Convert 'choices' object to array
-            //           choices = Object.values(choices)
-            //         } else {
-            //           throw new Error(
-            //             'Invalid format for choices in response data.',
-            //           )
-            //         }
-
-            //         rewrittenQuery =
-            //           choices?.[0]?.message?.content?.choices?.[0]?.message
-            //             ?.content ||
-            //           choices?.[0]?.message?.content ||
-            //           searchQuery
-            //       } catch (error) {
-            //         console.error(
-            //           'Error parsing non-streaming response:',
-            //           error,
-            //         )
-            //         message.wasQueryRewritten = false
-            //       }
-            //     }
-
-            //     console.log('rewrittenQuery after parsing:', rewrittenQuery)
-
-            //     if (typeof rewrittenQuery !== 'string') {
-            //       rewrittenQuery = searchQuery
-            //       homeDispatch({ field: 'wasQueryRewritten', value: false })
-            //       homeDispatch({ field: 'queryRewriteText', value: null })
-            //       message.wasQueryRewritten = false
-            //       message.queryRewriteText = undefined
-            //     } else {
-            //       // Extract vector query from XML tags if present
-            //       const vectorQueryMatch =
-            //         rewrittenQuery.match(
-            //           /<\s*vector_query\s*>(.*?)<\s*\/\s*vector_query\s*>/,
-            //         ) || null
-            //       const extractedQuery = vectorQueryMatch?.[1]?.trim()
-
-            //       // Check if the response is NO_REWRITE_REQUIRED or if we couldn't extract a valid query
-            //       if (
-            //         rewrittenQuery.trim().toUpperCase() ===
-            //           'NO_REWRITE_REQUIRED' ||
-            //         !extractedQuery
-            //       ) {
-            //         console.log(
-            //           'Query rewrite not required or invalid format, using original query',
-            //         )
-            //         rewrittenQuery = searchQuery
-            //         homeDispatch({ field: 'wasQueryRewritten', value: false })
-            //         homeDispatch({ field: 'queryRewriteText', value: null })
-            //         message.wasQueryRewritten = false
-            //         message.queryRewriteText = undefined
-            //       } else {
-            //         // Use the extracted query
-            //         rewrittenQuery = extractedQuery
-            //         // console.log('Using rewritten query:', rewrittenQuery)
-            //         homeDispatch({ field: 'wasQueryRewritten', value: true })
-            //         homeDispatch({
-            //           field: 'queryRewriteText',
-            //           value: rewrittenQuery,
-            //         })
-            //         message.wasQueryRewritten = true
-            //         message.queryRewriteText = rewrittenQuery
-            //       }
-            //     }
-            //   } catch (error) {
-            //     console.error('Error in query rewriting:', error)
-            //     homeDispatch({ field: 'wasQueryRewritten', value: false })
-            //     homeDispatch({ field: 'queryRewriteText', value: null })
-            //     message.wasQueryRewritten = false
-            //     message.queryRewriteText = undefined
-            //   } finally {
-            //     homeDispatch({ field: 'isQueryRewriting', value: false })
-            //   }
-            // }
-
-            // Set default values since query rewrite is disabled
-            rewrittenQuery = searchQuery
-            homeDispatch({ field: 'wasQueryRewritten', value: false })
-            homeDispatch({ field: 'queryRewriteText', value: null })
-            message.wasQueryRewritten = false
-            message.queryRewriteText = undefined
-
-            // CONTEXT SEARCH DISABLED - All processing now happens in backend
-            // homeDispatch({ field: 'isRetrievalLoading', value: true })
-
-            // // Use enhanced query for context search
-            // await handleContextSearch(
-            //   message,
-            //   courseName,
-            //   selectedConversation,
-            //   rewrittenQuery,
-            //   enabledDocumentGroups,
-            // )
-
-            // homeDispatch({ field: 'isRetrievalLoading', value: false })
-          }
-
-          // Action 3: Tool Execution
-          // if (tools.length > 0) {
-          //   try {
-          //     homeDispatch({ field: 'isRouting', value: true })
-          //     // Check if any tools need to be run
-          //     // const uiucToolsToRun = await handleFunctionCall(
-          //     //   message,
-          //     //   tools,
-          //     //   imageUrls,
-          //     //   imgDesc,
-          //     //   updatedConversation,
-          //     //   getOpenAIKey(courseMetadata, apiKey),
-          //     // )
-          //     homeDispatch({ field: 'isRouting', value: false })
-          //     // if (uiucToolsToRun.length > 0) {
-          //     //   homeDispatch({ field: 'isRunningTool', value: true })
-          //     //   // Run the tools
-          //     //   await handleToolCall(
-          //     //     uiucToolsToRun,
-          //     //     updatedConversation,
-          //     //     courseName,
-          //     //   )
-          //     // }
-
-          //     homeDispatch({ field: 'isRunningTool', value: false })
-          //   } catch (error) {
-          //     console.error(
-          //       'Error in chat.tsx running handleFunctionCall():',
-          //       error,
-          //     )
-          //   } finally {
-          //     homeDispatch({ field: 'isRunningTool', value: false })
-          //   }
-          // }
-
           const finalChatBody: ChatBody = {
             conversation: updatedConversation,
             key: getOpenAIKey(courseMetadata, apiKey),
@@ -830,21 +384,8 @@ export const Chat = memo(
             skipQueryRewrite: documentCount === 0,
           }
           updatedConversation = finalChatBody.conversation!
-          
-          // Log conversation being sent for debugging
           console.log(`Sending conversation with ${updatedConversation.messages?.length || 0} messages to backend`)
 
-          // Action 4: Build Prompt - Put everything together into a prompt
-          // const buildPromptResponse = await fetch('/api/buildPrompt', {
-          //   method: 'POST',
-          //   headers: {
-          //     'Content-Type': 'application/json',
-          //   },
-          //   body: JSON.stringify(chatBody),
-          // })
-          // const builtConversation = await buildPromptResponse.json()
-
-          // Update the selected conversation
           homeDispatch({
             field: 'selectedConversation',
             value: updatedConversation,
@@ -1261,43 +802,9 @@ export const Chat = memo(
                 updatedConversation,
               )
 
-              onMessageReceived(updatedConversation) // kastan here, trying to save message AFTER done streaming. This only saves the user message...
-              
-              // Clear live tool executions when streaming is complete
+              onMessageReceived(updatedConversation)
               setLiveToolExecutions([])
 
-              // } else {
-              //   onMessageReceived(updatedConversation)
-              // }
-
-              // Save the conversation to the server
-
-              // await saveConversationToServer(updatedConversation).catch(
-              //   (error) => {
-              //     console.error(
-              //       'Error saving updated conversation to server:',
-              //       error,
-              //     )
-              //   },
-              // )
-
-              // const updatedConversations: Conversation[] = conversations.map(
-              //   (conversation) => {
-              //     if (conversation.id === selectedConversation.id) {
-              //       return updatedConversation
-              //     }
-              //     return conversation
-              //   },
-              // )
-              // if (updatedConversations.length === 0) {
-              //   updatedConversations.push(updatedConversation)
-              // }
-              // homeDispatch({
-              //   field: 'conversations',
-              //   value: updatedConversations,
-              // })
-              // console.log('updatedConversations: ', updatedConversations)
-              // saveConversations(updatedConversations)
               homeDispatch({ field: 'messageIsStreaming', value: false })
             } catch (error) {
               console.error('An error occurred: ', error)
@@ -1326,23 +833,6 @@ export const Chat = memo(
                 field: 'selectedConversation',
                 value: updatedConversation,
               })
-              // This is after the response is done streaming for plugins
-
-              // handleUpdateConversation(updatedConversation, {
-              //   key: 'messages',
-              //   value: updatedMessages,
-              // })
-
-              // await saveConversationToServer(updatedConversation).catch(
-              //   (error) => {
-              //     console.error(
-              //       'Error saving updated conversation to server:',
-              //       error,
-              //     )
-              //   },
-              // )
-              // Do we need this?
-              // saveConversation(updatedConversation)
               const updatedConversations: Conversation[] = conversations.map(
                 (conversation) =>
                   conversation.id === selectedConversation.id
@@ -1356,7 +846,6 @@ export const Chat = memo(
                 field: 'conversations',
                 value: updatedConversations,
               })
-              // saveConversations(updatedConversations)
               homeDispatch({ field: 'loading', value: false })
               homeDispatch({ field: 'messageIsStreaming', value: false })
             }
@@ -1391,7 +880,6 @@ export const Chat = memo(
             selectedConversation?.messages?.length - 1
           ]?.role === 'user'
         ) {
-          // console.log('user')
           handleSend(
             currentMessage,
             1,
@@ -1401,7 +889,6 @@ export const Chat = memo(
             llmProviders,
           )
         } else {
-          // console.log('assistant')
           handleSend(
             currentMessage,
             2,
@@ -1431,10 +918,6 @@ export const Chat = memo(
           setAutoScrollEnabled(false)
           setShowScrollDownButton(true)
         }
-        // else {
-        //   setAutoScrollEnabled(true)
-        //   setShowScrollDownButton(false)
-        // }
       }
     }
 
@@ -1459,7 +942,6 @@ export const Chat = memo(
         confirm(t<string>('Are you sure you want to clear all messages?')) &&
         selectedConversation
       ) {
-        // Clear all messages, not used
         handleUpdateConversation(selectedConversation, {
           key: 'messages',
           value: [],
@@ -1492,9 +974,7 @@ export const Chat = memo(
       }
     }, [selectedConversation, throttledScrollDown])
 
-    // Auto-scroll to bottom on initial load and when conversation changes
     useEffect(() => {
-      // Use setTimeout to ensure DOM is fully rendered before scrolling
       const scrollTimer = setTimeout(() => {
         if (messagesEndRef.current) {
           messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
@@ -1502,19 +982,17 @@ export const Chat = memo(
       }, 100)
 
       return () => clearTimeout(scrollTimer)
-    }, [selectedConversation?.id]) // Trigger when conversation ID changes
+    }, [selectedConversation?.id])
 
-    // Auto-scroll to bottom on component mount (page refresh)
     useEffect(() => {
-      // Use setTimeout to ensure DOM is fully rendered before scrolling
       const scrollTimer = setTimeout(() => {
         if (messagesEndRef.current) {
           messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
         }
-      }, 200) // Slightly longer delay for initial mount
+      }, 200)
 
       return () => clearTimeout(scrollTimer)
-    }, []) // Empty dependency array means this runs only on mount
+    }, [])
 
     useEffect(() => {
       const observer = new IntersectionObserver(
@@ -1544,103 +1022,7 @@ export const Chat = memo(
       courseMetadata?.example_questions &&
       courseMetadata.example_questions.length > 0
         ? courseMetadata.example_questions
-        : [
-            'Make a bullet point list of key takeaways from this project.',
-            'What are the best practices for [Activity or Process] in [Context or Field]?',
-            'Can you explain the concept of [Specific Concept] in simple terms?',
-          ]
-
-    // Add this function to create dividers with statements
-    const renderIntroductoryStatements = () => {
-      return (
-        <div className="xs:mx-2 mt-4 max-w-3xl gap-3 px-4 last:mb-2 sm:mx-4 md:mx-auto lg:mx-auto ">
-          <div className="backdrop-filter-[blur(10px)] rounded-lg border-2 border-gray-200 bg-white p-6 shadow-lg">
-            <Text
-              className={`mb-2 text-lg text-gray-900 ${montserrat_heading.variable} font-montserratHeading`}
-              style={{ whiteSpace: 'pre-wrap' }}
-              dangerouslySetInnerHTML={{
-                __html:
-                  courseMetadata?.course_intro_message
-                    ?.replace(
-                      /(https?:\/\/([^\s]+))/g,
-                      '<a href="https://$1" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:underline">$2</a>',
-                    )
-                    ?.replace(
-                      /href="https:\/\/(https?:\/\/)/g,
-                      'href="https://',
-                    ) || '',
-              }}
-            />
-
-            <h4
-              className={`text-md mb-2 text-gray-700 ${montserrat_paragraph.variable} font-montserratParagraph`}
-            >
-              {getCurrentPageName() === 'cropwizard-1.5' && (
-                <CropwizardLicenseDisclaimer />
-              )}
-              {getCurrentPageName() !== 'chat' && (
-                <p>Start a conversation below or try these examples</p>
-              )}
-            </h4>
-            <div className="mt-4 max-h-64 flex flex-col items-start space-y-2 overflow-y-auto">
-              {/* if getCurrentPageName is 'chat' then don't show any example questions */}
-              {getCurrentPageName() !== 'chat' &&
-                statements.map((statement, index) => (
-                  <div
-                    key={index}
-                    className="w-full rounded-lg border-b-2 border-gray-200 hover:cursor-pointer hover:bg-orange-50 transition-colors duration-200"
-                    onClick={() => {
-                      setInputContent('') // First clear the input
-                      setTimeout(() => {
-                        // Then set it with a small delay
-                        setInputContent(statement)
-                        textareaRef.current?.focus()
-                      }, 0)
-                    }}
-                  >
-                    <div className="flex items-start p-3 w-full">
-                      <IconArrowRight size={20} className="mr-3 mt-0.5 flex-shrink-0 text-orange-500" />
-                      <p className={`text-sm sm:text-md font-medium leading-relaxed text-gray-700 hover:text-orange-600 break-words whitespace-normal flex-1 ${montserrat_paragraph.variable} font-montserratParagraph`}>
-                        {statement}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-          <div
-            // This is critical to keep the scrolling proper. We need padding below the messages for the chat bar to sit.
-            // className="h-[162px] bg-gradient-to-b from-[#1a1a2e] via-[#2A2A40] to-[#15162c]"
-            // className="h-[162px] bg-gradient-to-t from-transparent to-[rgba(14,14,21,0.4)]"
-            // className="h-[162px] bg-gradient-to-b dark:from-[#2e026d] dark:via-[#15162c] dark:to-[#15162c]"
-            className="h-[162px]"
-            ref={messagesEndRef}
-          />
-        </div>
-      )
-    }
-    // Inside Chat function before the return statement
-    const renderMessageContent = (message: Message) => {
-      if (Array.isArray(message.content)) {
-        return (
-          <>
-            {message.content.map((content, index) => {
-              if (content.type === 'image_url' && content.image_url) {
-                return (
-                  <img
-                    key={index}
-                    src={content.image_url.url}
-                    alt="Uploaded content"
-                  />
-                )
-              }
-              return <span key={index}>{content.text}</span>
-            })}
-          </>
-        )
-      }
-      return <span>{message.content}</span>
-    }
+        : []
 
     const updateMessages = (updatedMessage: Message, messageIndex: number) => {
       return selectedConversation?.messages?.map((message, index) => {
@@ -1683,7 +1065,6 @@ export const Chat = memo(
         }
 
         homeDispatch({ field: 'conversations', value: updatedConversations })
-        // saveConversations(updatedConversations)
       },
       [selectedConversation, conversations],
     )
@@ -1798,7 +1179,7 @@ export const Chat = memo(
                   <>
                     <motion.div
                       key={selectedConversation?.id}
-                      className="flex-1 overflow-y-auto px-4 py-6"
+                      className="flex-1 overflow-y-auto bg-white"
                       ref={chatContainerRef}
                       onScroll={handleScroll}
                       initial={{ opacity: 0, scale: 0.95 }}
@@ -1806,13 +1187,31 @@ export const Chat = memo(
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.25, ease: 'easeInOut' }}
                     >
-                      <div className="mx-auto w-full max-w-4xl">
+                      <div className="mx-auto w-full">
                         {selectedConversation &&
                         selectedConversation.messages &&
                         selectedConversation.messages?.length === 0 ? (
-                          <div className="flex min-h-[400px] items-center justify-center">
-                            {renderIntroductoryStatements()}
-                          </div>
+                          <>
+                            <AgentChatbar
+                              inputContent={inputContent}
+                              setInputContent={setInputContent}
+                              onSend={(message, plugin) => {
+                                handleSend(
+                                  message,
+                                  0,
+                                  plugin,
+                                  tools,
+                                  enabledDocumentGroups,
+                                  llmProviders,
+                                )
+                              }}
+                              hasMessages={false}
+                              exampleQuestions={statements}
+                              courseName={getCurrentPageName()}
+                              stopConversationRef={stopConversationRef}
+                            />
+                            <div className="h-32" ref={messagesEndRef} />
+                          </>
                         ) : (
                           <>
                             {selectedConversation?.messages?.map(
@@ -1861,12 +1260,17 @@ export const Chat = memo(
                             
                             {/* Live Tool Execution Display during streaming */}
                             {(messageIsStreaming || loading) && (isRouting || isRunningTool || liveToolExecutions.length > 0) && (
-                              <div className="mx-auto w-full max-w-4xl px-4">
-                                <ToolExecutionDisplay 
-                                  toolExecutions={liveToolExecutions}
-                                  isThinking={isRouting}
-                                  isRunningTool={isRunningTool}
-                                />
+                              <div className="flex gap-3 px-4 py-6 md:px-6 md:mx-auto md:max-w-4xl">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                  <IconRobot size={18} className="text-blue-600" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <ToolExecutionDisplay 
+                                    toolExecutions={liveToolExecutions}
+                                    isThinking={isRouting}
+                                    isRunningTool={isRunningTool}
+                                  />
+                                </div>
                               </div>
                             )}
                             
@@ -1876,31 +1280,31 @@ export const Chat = memo(
                         )}
                       </div>
                     </motion.div>
-                    <div className="border-t border-gray-200 bg-white p-4">
-                      <div className="mx-auto max-w-4xl">
-                        <ChatInput
-                          stopConversationRef={stopConversationRef}
-                          textareaRef={textareaRef}
-                          onSend={(message, plugin) => {
-                            handleSend(
-                              message,
-                              0,
-                              plugin,
-                              tools,
-                              enabledDocumentGroups,
-                              llmProviders,
-                            )
-                          }}
-                          onScrollDownClick={handleScrollDown}
-                          showScrollDownButton={showScrollDownButton}
-                          onRegenerate={handleRegenerate}
-                          inputContent={inputContent}
-                          setInputContent={setInputContent}
-                          courseName={getCurrentPageName()}
-                          chat_ui={chat_ui}
-                        />
-                      </div>
-                    </div>
+                    {/* Bottom Chat Input - Only show when there are messages */}
+                    {selectedConversation &&
+                    selectedConversation.messages &&
+                    selectedConversation.messages?.length > 0 && (
+                      <AgentChatbar
+                        inputContent={inputContent}
+                        setInputContent={setInputContent}
+                        onSend={(message, plugin) => {
+                          handleSend(
+                            message,
+                            0,
+                            plugin,
+                            tools,
+                            enabledDocumentGroups,
+                            llmProviders,
+                          )
+                        }}
+                        hasMessages={true}
+                        exampleQuestions={statements}
+                        courseName={getCurrentPageName()}
+                        stopConversationRef={stopConversationRef}
+                        showScrollDownButton={showScrollDownButton}
+                        onScrollDownClick={handleScrollDown}
+                      />
+                    )}
                   </>
                 )}
               </div>

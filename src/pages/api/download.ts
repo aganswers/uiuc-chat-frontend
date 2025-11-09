@@ -3,13 +3,17 @@ import { GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-const region = process.env.AWS_REGION
+// AWS_REGION not required for R2; using explicit endpoint and auto region
 
 // S3 Client configuration
 let s3Client: S3Client | null = null
-if (region && process.env.AWS_KEY && process.env.AWS_SECRET) {
+if (
+  process.env.AWS_KEY &&
+  process.env.AWS_SECRET &&
+  process.env.CLOUDFLARE_R2_ENDPOINT
+) {
   s3Client = new S3Client({
-    region: "auto",
+    region: 'auto',
     credentials: {
       accessKeyId: process.env.AWS_KEY,
       secretAccessKey: process.env.AWS_SECRET,
@@ -51,7 +55,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (filePath.endsWith('.png')) {
-      ResponseContentType = 'application/png'
+      ResponseContentType = 'image/png'
+    }
+
+    if (filePath.endsWith('.html') || filePath.endsWith('.htm')) {
+      ResponseContentType = 'text/html; charset=utf-8'
     }
 
     let presignedUrl
@@ -79,8 +87,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         )
       }
 
+      const bucket =
+        process.env.AGANSWERS_S3_BUCKET_NAME || process.env.S3_BUCKET_NAME!
       const command = new GetObjectCommand({
-        Bucket: process.env.S3_BUCKET_NAME!,
+        Bucket: bucket,
         Key: filePath,
         ResponseContentDisposition: 'inline',
         ResponseContentType: ResponseContentType,

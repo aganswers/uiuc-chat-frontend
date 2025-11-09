@@ -13,8 +13,9 @@ export default async function handler(req: NextRequest) {
   }
 
   try {
+    const backendUrl = process.env.BACKEND_URL || 'https://backend.aganswers.ai'
     const response = await fetch(
-      `https://backend.aganswers.ai/getWeeklyTrends?project_name=${project_name}`,
+      `${backendUrl}/getWeeklyTrends?project_name=${project_name}`,
     )
 
     if (!response.ok) {

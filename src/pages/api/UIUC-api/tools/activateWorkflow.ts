@@ -15,8 +15,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       activate.charAt(0).toUpperCase() + activate.slice(1)
     console.log('activate', activateCapitalized)
 
+    const backendUrl = process.env.BACKEND_URL || 'https://backend.aganswers.ai'
     const response = await fetch(
-      `https://backend.aganswers.ai/switch_workflow?id=${id}&api_key=${api_key}&activate=${activateCapitalized}`,
+      `${backendUrl}/switch_workflow?id=${id}&api_key=${api_key}&activate=${activateCapitalized}`,
     )
     if (!response.ok) {
       console.log('response not ok', response.text)

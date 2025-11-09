@@ -39,8 +39,9 @@ const logConversationToSupabase = async (req: any, res: any) => {
 
   // Send to our custom monitor
   try {
+    const backendUrl = process.env.BACKEND_URL || 'https://backend.aganswers.ai'
     const response = await fetch(
-      'https://backend.aganswers.ai' + '/llm-monitor-message',
+      `${backendUrl}/llm-monitor-message`,
       {
         method: 'POST',
         headers: {

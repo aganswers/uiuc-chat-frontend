@@ -1,8 +1,29 @@
 import { createClient } from '@supabase/supabase-js'
 
-// const supa_url = process.env.SUPABASE_URL as string
-// const supa_key = process.env.SUPABASE_SECRET as string
-export const supabase = createClient(
-  process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_SECRET as string,
-)
+function getSupabaseUrl(): string {
+  return (
+    process.env.AGANSWERS_SUPABASE_URL ||
+    process.env.SUPABASE_URL ||
+    ''
+  )
+}
+
+function getSupabaseKey(): string {
+  return (
+    process.env.AGANSWERS_SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.AGANSWERS_SUPABASE_API_KEY ||
+    process.env.SUPABASE_SECRET ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_API_KEY ||
+    ''
+  )
+}
+
+const supabaseUrl = getSupabaseUrl()
+const supabaseKey = getSupabaseKey()
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Missing Supabase environment variables for service client')
+}
+
+export const supabase = createClient(supabaseUrl, supabaseKey)

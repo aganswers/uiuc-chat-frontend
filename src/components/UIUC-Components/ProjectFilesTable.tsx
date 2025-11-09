@@ -38,7 +38,7 @@ import styled, { createGlobalStyle } from 'styled-components'
 
 import { CourseDocument, DocumentGroup } from 'src/types/courseMaterials'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { fetchPresignedUrl } from '~/utils/apiUtils'
+import { fetchPresignedUrl, getBackendUrl } from '~/utils/apiUtils'
 import {
   useAppendToDocGroup,
   useGetDocumentGroups,
@@ -295,7 +295,7 @@ export function ProjectFilesTable({
   const deleteDocumentMutation = useMutation({
     mutationFn: async (recordsToDelete: CourseDocument[]) => {
       console.debug('Deleting records:', recordsToDelete)
-      const API_URL = 'https://backend.aganswers.ai'
+      const API_URL = getBackendUrl()
       const deletePromises = recordsToDelete.map((record) =>
         axios.delete(`${API_URL}/delete`, {
           params: {
@@ -409,7 +409,7 @@ export function ProjectFilesTable({
         // position="top-center",
         title: was_error ? 'Error deleting file' : 'Deleting file...',
         message: was_error
-          ? "An error occurred while deleting the file. Please try again and I'd be so grateful if you email kvday2@illinois.edu to report this bug."
+          ? "An error occurred while deleting the file. Please try again and I'd be so grateful if you email aganswers@gmail.com to report this bug."
           : 'The file is being deleted in the background.',
         icon: was_error ? <IconAlertTriangle /> : <IconCheck />,
         styles: {

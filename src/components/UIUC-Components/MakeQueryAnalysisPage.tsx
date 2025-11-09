@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { montserrat_heading, montserrat_paragraph } from 'fonts'
 // import { DropzoneS3Upload } from '~/components/UIUC-Components/Upload_S3'
-import { fetchPresignedUrl } from '~/utils/apiUtils'
+import { fetchPresignedUrl, getBackendUrl } from '~/utils/apiUtils'
 import {
   // Badge,
   // MantineProvider,
@@ -929,8 +929,9 @@ const CourseFilesList = ({ files }: CourseFilesListProps) => {
   const { classes, theme } = useStyles()
   const handleDelete = async (s3_path: string, course_name: string) => {
     try {
+      const backendUrl = getBackendUrl()
       const response = await axios.delete(
-        `https://backend.aganswers.ai/delete`,
+        `${backendUrl}/delete`,
         {
           params: { s3_path, course_name: 'ece120' },
         },

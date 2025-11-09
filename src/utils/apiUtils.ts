@@ -16,6 +16,10 @@ export const getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 3000}` // dev SSR should use localhost
 }
 
+export const getBackendUrl = () => {
+  return process.env.NEXT_PUBLIC_BACKEND_URL || 'https://backend.aganswers.ai'
+}
+
 /**
  * Calls the API to set or update course metadata.
  * @param {string} courseName - The name of the course.
@@ -177,7 +181,8 @@ export async function fetchProjectGroupEmail(
   project_name: string,
 ): Promise<string | null> {
   try {
-    const endpoint = `https://backend.aganswers.ai/getProjectGroupEmail?project_name=${encodeURIComponent(project_name)}`
+    const backendUrl = getBackendUrl()
+    const endpoint = `${backendUrl}/getProjectGroupEmail?project_name=${encodeURIComponent(project_name)}`
     const response = await fetch(endpoint)
 
     if (!response.ok) {
