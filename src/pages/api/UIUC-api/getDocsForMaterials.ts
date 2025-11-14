@@ -7,8 +7,17 @@ export const runtime = 'edge'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = process.env.SUPABASE_URL as string
-const SUPABASE_SECRET = process.env.SUPABASE_SECRET as string
+const SUPABASE_URL =
+  process.env.AGANSWERS_SUPABASE_URL || process.env.SUPABASE_URL || ''
+const SUPABASE_SECRET =
+  process.env.AGANSWERS_SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.AGANSWERS_SUPABASE_API_KEY ||
+  process.env.SUPABASE_SECRET ||
+  ''
+
+if (!SUPABASE_URL || !SUPABASE_SECRET) {
+  throw new Error('Missing Supabase credentials for getDocsForMaterials API')
+}
 
 // Replace 'your_table' with the name of one of your tables
 // try {
