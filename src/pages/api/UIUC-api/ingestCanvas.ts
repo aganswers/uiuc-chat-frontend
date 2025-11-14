@@ -24,8 +24,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     console.log("About to send transactional email")
 
     // Send email to kastan alerting that he needs to approve a canvas course 
+    const backendUrl = process.env.BACKEND_URL || 'https://backend.aganswers.ai'
     const sendEmailResponse = await fetch(
-      `https://backend.aganswers.ai/send-transactional-email`,
+      `${backendUrl}/send-transactional-email`,
       {
         method: 'POST',
         headers: {

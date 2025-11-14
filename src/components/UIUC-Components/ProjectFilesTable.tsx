@@ -38,7 +38,7 @@ import styled, { createGlobalStyle } from 'styled-components'
 
 import { CourseDocument, DocumentGroup } from 'src/types/courseMaterials'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { fetchPresignedUrl } from '~/utils/apiUtils'
+import { fetchPresignedUrl, getBackendUrl } from '~/utils/apiUtils'
 import {
   useAppendToDocGroup,
   useGetDocumentGroups,
@@ -295,7 +295,7 @@ export function ProjectFilesTable({
   const deleteDocumentMutation = useMutation({
     mutationFn: async (recordsToDelete: CourseDocument[]) => {
       console.debug('Deleting records:', recordsToDelete)
-      const API_URL = 'https://backend.aganswers.ai'
+      const API_URL = getBackendUrl()
       const deletePromises = recordsToDelete.map((record) =>
         axios.delete(`${API_URL}/delete`, {
           params: {

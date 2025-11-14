@@ -9,6 +9,8 @@ import { UIUCTool } from '~/types/chat'
 import type { ToolOutput } from '~/types/chat'
 import posthog from 'posthog-js'
 
+const getBackendUrl = () => process.env.NEXT_PUBLIC_BACKEND_URL || 'https://backend.aganswers.ai'
+
 export async function handleFunctionCall(
   message: Message,
   availableTools: UIUCTool[],
@@ -198,8 +200,9 @@ const callN8nFunction = async (
   })
 
   const timeStart = Date.now()
+  const backendUrl = getBackendUrl()
   const response: Response = await fetch(
-    `https://backend.aganswers.ai/run_flow`,
+    `${backendUrl}/run_flow`,
     {
       method: 'POST',
       headers: {
@@ -468,8 +471,9 @@ export async function fetchTools(
 
   const parsedPagination = pagination.toLowerCase() === 'true'
 
+  const backendUrl = getBackendUrl()
   const response = await fetch(
-    `https://backend.aganswers.ai/getworkflows?api_key=${api_key}&limit=${limit}&pagination=${parsedPagination}`,
+    `${backendUrl}/getworkflows?api_key=${api_key}&limit=${limit}&pagination=${parsedPagination}`,
   )
   if (!response.ok) {
     // return res.status(response.status).json({ error: response.statusText })

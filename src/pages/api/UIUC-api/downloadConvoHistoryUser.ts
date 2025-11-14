@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getBackendUrl } from '~/utils/apiUtils'
 
 interface DownloadResult {
   message: string
@@ -12,8 +13,9 @@ export const downloadConversationHistoryUser = async (
     `Starting download for user: ${userEmail}, project: ${projectName}`,
   )
   try {
+    const backendUrl = getBackendUrl()
     const response = await axios.get(
-      `https://backend.aganswers.ai/export-convo-history-user?user_email=${userEmail}&project_name=${projectName}`,
+      `${backendUrl}/export-convo-history-user?user_email=${userEmail}&project_name=${projectName}`,
       { responseType: 'blob' },
     )
     console.log('Received response:', response)

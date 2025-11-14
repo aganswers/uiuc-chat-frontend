@@ -265,8 +265,9 @@ export const AgentChatbar: React.FC<AgentChatbarProps> = ({
 
   const handleSampleClick = (question: string, agentId: string): void => {
     const agent = agents.find((a) => a.id === agentId)
-    const agentPrefix = agent ? `@${agent.name} ` : ''
-    setContent(agentPrefix + question)
+    // const agentPrefix = agent ? `@${agent.name} ` : ''
+    // setContent(agentPrefix + question)
+    setContent(question)
     setSelectedAgent(agentId)
   }
 
@@ -567,7 +568,7 @@ export const AgentChatbar: React.FC<AgentChatbarProps> = ({
         </div>
 
         {/* Agents */}
-        <div className="animate-in fade-in slide-in-from-bottom-4 delay-100 flex items-center justify-center gap-3 duration-700">
+        {/* <div className="animate-in fade-in slide-in-from-bottom-4 delay-100 flex items-center justify-center gap-3 duration-700">
           {agents.map((agent) => {
             const Icon = agent.icon
             const isSelected = selectedAgent === agent.id
@@ -591,7 +592,7 @@ export const AgentChatbar: React.FC<AgentChatbarProps> = ({
               </button>
             )
           })}
-        </div>
+        </div> */}
 
         {/* Image Previews */}
         {imagePreviewUrls.length > 0 && (

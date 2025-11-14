@@ -48,7 +48,11 @@ export const ChatFolders = ({
   const ChatFolders = (currentFolder: FolderWithConversation) => {
     // console.log('currentFolder: ', currentFolder)
     // console.log('conversations in current folder:', currentFolder.conversations)
-    return (currentFolder.conversations || []).map((conversation, index) => {
+    const conversations = Array.isArray(currentFolder.conversations) 
+      ? currentFolder.conversations 
+      : []
+    
+    return conversations.map((conversation, index) => {
       return (
         <div key={index} className="ml-5 gap-2 border-l pl-2">
           <ConversationComponent conversation={conversation} />
