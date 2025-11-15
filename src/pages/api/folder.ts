@@ -10,11 +10,13 @@ export function convertDBFolderToChatFolder(
   dbFolder: Folder,
   dbConversations: any[],
 ): FolderWithConversation {
+  const conversations = Array.isArray(dbConversations) ? dbConversations : []
+  
   return {
     id: dbFolder.id,
     name: dbFolder.name,
     type: dbFolder.type as 'chat' | 'prompt',
-    conversations: (dbConversations || []).map((conv) => {
+    conversations: conversations.map((conv) => {
       const convMessages = conv.messages
       return convertDBToChatConversation(conv, convMessages)
     }),

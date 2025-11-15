@@ -105,7 +105,7 @@ const Sidebar = <T,>({
             onDragEnter={highlightDrop}
             onDragLeave={removeHighlight}
           >
-            {folders}
+            {folderComponent}
             {itemComponent}
           </div>
         </div>
